@@ -1,0 +1,14 @@
+{% load widget_tweaks %}
+<div id="the_navbar">
+	<ul class="menu">
+		<li><b><a href="{% url 'start' %}">SystemGraph</a></b></li>
+		<li style="flex: 1;"><a href="{% url 'vertex_search' %}">Szukaj wierzchołka</a></li>
+		{% if user.is_authenticated %}
+			<li><a href="{% url 'profile' username=user.username %}">{{ user.username }}</a></li>
+			<li><a href="{% url 'logout' %}">Wyloguj się</a></li>
+		{% else %}
+			<li><a href="{% url 'login' %}">Zaloguj się</a></li>
+			<li><a href="{% url 'register' %}">Rejestracja</a></li>
+		{% endif %}
+	</ul>
+</div>

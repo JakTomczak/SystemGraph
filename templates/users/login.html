@@ -1,0 +1,38 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}zaloguj się{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+    <div style="padding-left: 5%; padding-right: 5%;">
+        <form method="POST">
+			<div class="internal-menu sidepadd">
+				<h4>Zaloguj się</h4>
+				<button type="submit" name="save" style="font-size: 16px; margin-left: 25px;" class="btn btn-primary sgbutton">Zaloguj</button>
+			</div>
+            {% csrf_token %}
+			{% csrf_token %}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.username.id_for_label }}">Nazwa użytkownika</h5>
+				{% render_field form.username class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.username.label %}
+				{% for error in form.username.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+				<h5 for="{{ form.password.id_for_label }}" style="margin-top: 20px;">Hasło</h5>
+				{% render_field form.password class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.password.label %}
+				{% for error in form.password.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+        </form>
+        <div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+            <small>
+				Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się</a>
+            </small>
+        </div>
+    </div>
+{% endblock %}

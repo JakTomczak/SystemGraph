@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block title %}aktywacja udana{% endblock %}
+
+{% block content %}
+	<p>Dziękujemy, twoje konto jest teraz aktywne!</p>
+	<p>Możesz teraz <a class="fancy-a" href="{% url 'login' %}">zalogować</a> się do SystemGraph.</p>
+{% endblock %}

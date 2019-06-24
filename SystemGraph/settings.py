@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'widget_tweaks',
+	'users.apps.UsersConfig',
+	'SGMain.apps.SgmainConfig',
 ]
 
 
@@ -98,3 +100,15 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+
+
+AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_REDIRECT_URL = 'start'
+LOGOUT_REDIRECT_URL = 'login'
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+# EMAIL_PORT from local_settings.py
+# EMAIL_HOST_USER from local_settings.py
+# EMAIL_HOST_PASSWORD from local_settings.py

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	{% load static %}
+<head>
+	<meta charset="utf-8">
+	<title>System Graph - {% block title %}{% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="{% static '/dependencies/jquery.dataTables.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/dependencies/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/SystemGraph.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/TeX_figures.css' %}">
+	
+	<script type="text/javascript" src="{% static '/dependencies/jquery-3.4.1.js' %}"></script>
+	<script type="text/javascript" src="{% static '/dependencies/popper.min.js' %}"></script>
+	<script type="text/javascript" src="{% static '/dependencies/tippy.index.all.min.js' %}"></script>
+	<script type="text/javascript" src="{% static '/dependencies/jquery.dataTables.min.js' %}"></script>
+	
+	<script type="text/javascript" src="{% static '/Vertex.js' %}" ></script>
+	<script type="text/javascript" src="{% static '/SystemGraph.js' %}" ></script>
+	<script type="text/javascript">
+		window.MathJax = {
+			showMathMenu: false,
+			showMathMenuMSIE: false
+		};
+	</script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML' type='text/javascript'></script> 
+	{% block imports %}
+	{% endblock %}
+</head>
+<body>
+	<main>
+		{% include "navbar.html" %}
+		<div class="{% if float %}contentfloat{% else %}content{% endif %}">
+			{% if messages %}
+				<ul class="messages">
+				{% for message in messages %}
+					{% if message.level != DEFAULT_MESSAGE_LEVELS.INFO %}
+						<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					{% endif %}
+				{% endfor %}
+				</ul>
+			{% endif %}
+			{% block content %}
+			{% endblock %}
+		</div>
+	</main>
+	{% if edges %}
+	<script>
+	$(document).ready(function() {
+		{% for edge in edges %}
+		tippy('#{{ edge.id }}', {content: '{{ edge.content|safe }}',});
+		{% if edge.successor_id %}
+		document.getElementById("{{ edge.id }}").href="{% url 'vertex' vertex=edge.successor_id %}";
+		{% endif %}
+		{% endfor %}
+	});
+	</script>
+	{% endif %}
+	{% block javascript %}{% endblock %}
+</body>
+</html>

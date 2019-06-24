@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if account %}aktywacja konta{% else %}błąd aktywacji{% endif %}{% endblock %}
+
+{% block content %}
+{% if account %}
+<p>Dziękujemy {{ account }}, twoje konto jest teraz aktywne!</p>
+<p>Możesz teraz <a class="fancy-a" href="{% url 'login' %}">zalogować</a> się do SystemGraph.</p>
+{% else %}
+Podany link aktywacyjny jest niepoprawny. Sprawdź, czy wpisałeś dobry adres url.
+{% endif %}
+{% endblock %}
