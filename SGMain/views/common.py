@@ -33,5 +33,8 @@ def ONE_MORE_TIME ():
 def frontpage(request):
 	return render(request, 'common/frontpage.html', {})
 	
+def profile(request, username):
+	return render(request, 'common/profile_thisuser.html', {})
+	
 def SearchSite(request):
 	return render(request, 'common/search_vertexes.html', {})

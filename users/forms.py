@@ -11,3 +11,4 @@ class CustomRegistrationForm(RegistrationForm):
 	def save(self, commit = True):
 		user = super(CustomRegistrationForm, self).save(commit = False)
 		user.get_folder(save = commit)
+		return user

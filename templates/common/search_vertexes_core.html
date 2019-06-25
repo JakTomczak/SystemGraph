@@ -1,0 +1,70 @@
+<div class="include_div">
+	{% if Vlist %}
+	<table class="table table-striped border border-primary rounded" id="search-table" style="font-size: 15px;">
+		<thead>
+			<tr>
+				<th scope="col">ID wierzchołka</th>
+				<th scope="col">Tytuł</th>
+				<th scope="col">Data dodania</th>
+				<th scope="col">Autor</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for vertex in Vlist %}
+			<tr>
+				<td><a href="{% url 'vertex' vertex=vertex.vertex_id %}" class="fancy-a">{{ vertex.vertex_id }}</a></td>
+				<td>{{ vertex.title }}</td>
+				<td>{{ vertex.date.date|date:"d.m.Y" }}</td>
+				<td>{{ vertex.user.username }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<h5>Brak wyników</h5>
+	{% endif %}
+</div>
+<script>
+var ftext = ['ID', 'tytuł', 'datę', 'autora']
+var idtext = ['id', 'title', 'date', 'author']
+$(document).ready(function() {
+	$('#search-table thead tr').clone(true).appendTo( '#search-table thead' );
+	$('#search-table thead tr:eq(1) th').each( function (i) {
+		var title = $(this).text();
+		$(this).html( '<input type="text" style="width: 100%;" id="input-' + idtext[i] + '" placeholder="filtruj ' + ftext[i] + '" />' );
+ 
+		$( 'input', this ).on( 'keyup change', function () {
+			if ( table.column(i).search() !== this.value ) {
+				table
+					.column(i)
+					.search( this.value )
+					.draw();
+			}
+		} );
+		$(this).css( 'padding', '6px 4px');
+	} );
+	
+	$('#search-table thead tr:eq(0) th').each( function (i) {
+		$(this).css( 'background-color', 'white');
+	} );
+	
+	var table = $('#search-table').DataTable({
+		orderCellsTop: true,
+		"pageLength": {{ plen }},
+		"bLengthChange": false,
+		"bFilter": true,
+		"oLanguage": {
+			"sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+			"sInfoEmpty": "Showing 0 to 0 of 0 entries"
+		},
+		"pagingType": "simple",
+	});
+	
+	$('#search-table').css( 'min-width', 'min-content');
+	$('#search-table').css( 'width', '100%');
+	$('#input-id').css( 'min-width', '40px');
+	$('#input-title').css( 'min-width', '120px');
+	$('#input-date').css( 'min-width', '60px');
+	$('#input-author').css( 'min-width', '40px');
+});
+</script>

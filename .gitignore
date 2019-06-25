@@ -1,5 +1,6 @@
 *.pyc
 *~
 __pycache__
-/static
 /SystemGraph/local_settings.py
+/userfiles/*
+!/userfiles/readme.txt

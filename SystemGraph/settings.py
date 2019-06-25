@@ -100,15 +100,21 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = 'start'
 LOGOUT_REDIRECT_URL = 'login'
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
-# EMAIL_PORT from local_settings.py
+EMAIL_PORT = 587#465
 # EMAIL_HOST_USER from local_settings.py
 # EMAIL_HOST_PASSWORD from local_settings.py
+
+
+ACCOUNT_ACTIVATION_DAYS = 2
