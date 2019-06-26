@@ -24,4 +24,6 @@ urlpatterns = [
     path('graph/', include('SGMain.urls')),
     path('', common_views.frontpage, name='start'),
 	path('profile/<username>/', common_views.profile, name='profile'),
+	path('profile/<username>/edit/', common_views.edit_profile, name='edit_profile'),
+	path('profile/<username>/all_user_verticies/', common_views.all_user_verticies, name='all_user_verticies'),
 ]

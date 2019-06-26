@@ -27,3 +27,12 @@ def new_vertex(request):
 		form = forms.Add_New_Vertex_Form(user = request.user)
 	context = {'form': form}
 	return render(request, 'graph/add_new_vertex.html', context)
+
+def new_preamble(request):
+	return render(request, 'graph/add_new_preamble.html', context)
+
+def new_path(request):
+	return render(request, 'graph/add_new_path.html', context)
+
+def edit_preamble(request, preamble_id):
+	return render(request, 'graph/edit_preamble.html', context)

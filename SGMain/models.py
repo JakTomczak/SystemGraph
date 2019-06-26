@@ -259,6 +259,18 @@ class Path (models.Model):
 	
 	def read_verticies(self):
 		return [entry.vertex for entry in self.read()]
+		
+	def get_first_str(self):
+		if first:
+			return str(self.first)
+		else:
+			return 'Pierwszy wierzchołek tej ścieżki został usunięty.'
+		
+	def get_first_url(self):
+		if first:
+			return self.first.get_url()
+		else:
+			return '#'
 	
 	def write_and_save(self, vertexes):
 		for entry in Path_Entry.objects.filter(path=self):
