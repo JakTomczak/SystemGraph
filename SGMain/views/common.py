@@ -15,6 +15,12 @@ def frontpage(request):
 	return render(request, 'common/frontpage.html', context)
 	
 def profile(request, username):
+	try:
+		user = CustomUser.objects.get(username = username)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	else:
+		verts = model.Vertex.objects.filter(user = user, submitted = True).order_by('-date')
 	return render(request, 'common/profile_thisuser.html', {})
 	
 def SearchSite(request):
