@@ -34,7 +34,15 @@ class Vertex_Class (models.Model):
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VCLASS(cls):
-		pass
+		default = Vertex_Class()
+		default.polish_name = 'testowy'
+		default.polish_name_plural = 'testowe'
+		default.save()
+		default.left = default
+		default.right = default
+		default.top = default
+		default.bottom = default
+		default.save()
 
 '''
 Preamble is essential during LaTeX -> HTML compilation.
@@ -65,7 +73,14 @@ class Preamble (models.Model):
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES(cls, admin):
 		A = Preamble(preamble_id = 'AAAAAAAAAA', user = admin)
+		A.title = 'Default preamble'
+		A.desciption = 'It works with english planar text and math formulas.'
 		A.save()
+		B = Preamble(preamble_id = 'AAAAAAAAAB', user = admin)
+		B.directory = os.path.join( settings.BASE_DIR, 'static', 'AAAAAAAAAB.txt' )
+		B.title = 'Domyślna preambuła'
+		B.desciption = 'Działa z tekstem polskim i matematycznymi formułami.'
+		B.save()
 
 @receiver(models.signals.pre_delete, sender = Preamble)
 def delete_preamble_files (sender, instance, using, **kwargs):
@@ -163,7 +178,8 @@ class Edge_Class (models.Model):
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_ECLASS(cls):
-		pass
+		default = Edge_Class( polish_name = 'Od wewnątrz do wewnątrz.' )
+		default.save()
 	
 class Edge (models.Model):
 	edge_id = models.CharField(max_length = 10, primary_key = True, default = 'EAAAAAAAAA')
