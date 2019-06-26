@@ -6,7 +6,13 @@ import SGMain.models as model
 from users.models import CustomUser
 
 def frontpage(request):
-	return render(request, 'common/frontpage.html', {})
+	already = False
+	if request.user.is_authenticated:
+		verts = model.Vertex.objects.filter( user = request.user )
+		if verts:
+			already = True
+	context = {'already': already, 'Vlist': list( model.Vertex.objects.all() )}
+	return render(request, 'common/frontpage.html', context)
 	
 def profile(request, username):
 	return render(request, 'common/profile_thisuser.html', {})
