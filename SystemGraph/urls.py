@@ -16,14 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from SGMain.views import common as common_views
+from . import common_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 	path('users/', include('users.urls')),
+	path('profile/', include('userprofile.urls')),
     path('graph/', include('SGMain.urls')),
     path('', common_views.frontpage, name='start'),
-	path('profile/<username>/', common_views.profile, name='profile'),
-	path('profile/<username>/edit/', common_views.edit_profile, name='edit_profile'),
-	path('profile/<username>/all_user_verticies/', common_views.all_user_verticies, name='all_user_verticies'),
 ]

@@ -14,33 +14,6 @@ def frontpage(request):
 	context = {'already': already, 'Vlist': list( model.Vertex.objects.all() )}
 	return render(request, 'common/frontpage.html', context)
 	
-def profile(request, username):
-	try:
-		user = CustomUser.objects.get(username = username)
-	except exceptions.ObjectDoesNotExist:
-		return render(request, 'errors/404.html')
-	else:
-		verts = model.Vertex.objects.filter(user = user, submitted = True).order_by('-date')
-		if len(verts) > 4:
-			verts = verts[:4]
-		
-		paths = list( model.Path.objects.filter(user = user).order_by('-date') )
-		
-		if request.user == user:
-			projects = model.Vertex.objects.filter(user = user, submitted = False).order_by('-date')
-			preambles = model.Preamble.objects.filter(user = user)
-			context = {'this_user': user, 'projects': projects, 'verts': verts, 'preambles': preambles, 'paths': paths}
-			return render(request, 'common/profile_thisuser.html', context)
-		else:
-			context = {'this_user': user, 'verts': verts, 'paths': paths}
-			return render(request, 'common/profile_notthisuser.html', context)
-	
-def edit_profile(request, username):
-	return render(request, 'common/edit_profile.html', {})
-	
-def all_user_verticies(request, username):
-	return render(request, 'common/all_user_verticies.html', {})
-	
 def SearchSite(request):
 	return render(request, 'common/search_vertexes.html', {})
 
