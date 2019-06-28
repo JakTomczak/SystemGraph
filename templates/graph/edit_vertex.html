@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %}edycja wierzchołka{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+	<div style="padding-left: 2%; padding-right: 2%;">
+		<form method="post" id="edit-vertex-form">
+			<input type="hidden" id="hidden_action" value="" name="action">
+			{% csrf_token %}
+			<div style="display: flex;">
+				<div style="width: 60%">
+					<div class="internal-menu space-between sidepadd">
+						<h3>Edycja <a id="vertex_view">wierzchołka</a></h3>
+						<button id="save_all_button" name="save_all" class="btn btn-secondary sgbutton">Zapisz wszystko</button>
+						<button type="button" id="compile_all" name="compile" class="btn btn-primary sgbutton">Opublikuj</button>
+						<button type="button" id="delete_button" name="delete" class="btn btn-warning sgbutton">Usuń wierzchołek</button>
+					</div>
+					{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+					{% endfor %}
+					<div class="distinctarea border border-primary rounded medium-margin">
+						<ul class="internal-menu">
+							<li>
+								<h6 for="{{ form.preamble.id_for_label }}">Preambuła <small>(<a href="#">edytuj</a>)</small></h6>
+								{% render_field form.preamble class="form-control" style="width:100%; min-width:70px" placeholder=form.preamble.label %}
+								{% for error in form.preamble.errors %}
+									<span class="help-block">{{ error }}</span>
+								{% endfor %}
+								<a href="{% url 'new_preamble' %}">Utworzyć nową?</a>
+							</li>
+							<li>
+								<h6 for="{{ form.vertex_class.id_for_label }}">Rodzaj wierzchołka</h6>
+								{% render_field form.vertex_class class="form-control" style="width:100%; min-width:70px" placeholder=form.vertex_class.label %}
+								{% for error in form.vertex_class.errors %}
+									<span class="help-block">{{ error }}</span>
+								{% endfor %}
+								<a href="{% url 'new_vertex_class' %}">Utworzyć nowy?</a>
+							</li>
+						</ul>
+						<ul class="internal-menu">
+							<li>
+								<h6 for="{{ form.discipline.id_for_label }}">Dyscyplina</h6>
+								{% render_field form.discipline class="form-control" style="width:100%; min-width:70px" placeholder=form.discipline.label %}
+								{% for error in form.discipline.errors %}
+									<span class="help-block">{{ error }}</span>
+								{% endfor %}
+								<a href="{% url 'new_discipline' %}">Utworzyć nową?</a>
+							</li>
+							<li>
+								<h6 for="{{ form.subject.id_for_label }}">Temat</h6>
+								{% render_field form.subject class="form-control" style="width:100%; min-width:70px" placeholder=form.subject.label %}
+								{% for error in form.subject.errors %}
+									<span class="help-block">{{ error }}</span>
+								{% endfor %}
+								<a href="{% url 'new_subject' %}">Utworzyć nowy?</a>
+							</li>
+						</ul>
+					</div>
+					<div class="distinctarea border border-primary rounded medium-margin">
+						<div>
+							<h5 for="{{ form.title.id_for_label }}" style="text-align: left">Tytuł </h5>
+							{% render_field form.title class="form-control" style="min-width:150px" placeholder=form.title.label %}
+							{% for error in form.title.errors %}
+								<span class="help-block">{{ error }}</span>
+							{% endfor %}
+						</div>
+						<div class="flexonwidth nowrap" style="flex:1;">
+							<h6 for="{{ form.ifshorttitle.id_for_label }}" class="inline_desc">Krótki tytuł</h5>
+						{% render_field form.ifshorttitle style="margin-right: 19px;" placeholder=form.ifshorttitle.label %}
+						{% render_field form.shorttitle class="form-control" style="width:80%; min-width:150px" placeholder=form.shorttitle.label %}
+						{% for error in form.shorttitle.errors %}
+							<span class="help-block">{{ error }}</span>
+						{% endfor %}
+						</div>
+					</div>
+				</div>
+				<div class="distinctarea border border-primary rounded medium-margin medium-margin" style="flex-grow: 1;">
+					<span style="text-align: center;">Log kompilacji</span>
+					<div style="width: 100%; height: 100%;">
+						<textarea readonly id="js_comms" style="width: 100%; height: 100%;"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin">
+				<div class="flexonwidth nowrap" style="justify-content: inherit">
+					<h5 for="{{ form.description.id_for_label }}" style="text-align: left; align-self:center;">Krótka forma (opis)</h5>
+					<button type="button" id="save_desc" name="save_desc" class="btn btn-secondary sgbutton" style="margin-left: 20px;">Zapisz</button>
+					<button type="button" id="compile_desc" name="compile_desc" class="btn btn-primary sgbutton" style="margin-left: 20px;">Zapisz i kompiluj</button>
+				</div>
+				{% render_field form.description class="form-control" rows="1" style="width:100%; min-width:150px" placeholder=form.description.label %}
+				{% for error in form.description.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin">
+				<div class="internal-menu" style="justify-content:normal;">
+					<h5 style="text-align: left">Wychodzące krawędzie</h5>
+					<button type="submit" name="newedge" class="btn btn-secondary btn-sm" style="margin-left:15px;">Utwórz nową</button>
+				</div>
+				{% if successors %}
+				<div id="successor_list" style="background: #cacaca;">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">ID krawędzi:</th>
+								<th scope="col">Wierzchołek docelowy:</th>
+								<th scope="col">Opis (nadpisany opis wierzchołka docelowego)</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for edgedir in successors %}
+							<tr>
+								<td>{{ edgedir.edge.edge_id }}</td>
+								<td><a href="{{ edgedir.edge.get_successor_url }}" class="fancy-a">{{ edgedir.edge.successor.title }}</a></td>
+								<td>{{ edgedir.edge_content|safe }}</td>
+								<td><a  class="btn btn-secondary btn-sm" href="{% url 'edit_edge' edge=edgedir.edge %}" role="button">Edytuj</a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				{% else %}
+					<small>(brak)</small>
+				{% endif %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin">
+				<div class="flexonwidth nowrap" style="justify-content: inherit">
+					<h4 for="{{ form.content.id_for_label }}" style="text-align: left; align-self:center;">Treść</h4>
+					<button type="button" id="save_cont" name="save_cont" class="btn btn-secondary sgbutton" style="margin-left: 20px;">Zapisz</button>
+					<button type="button" id="compile_cont" name="compile_cont" class="btn btn-primary sgbutton" style="margin-left: 20px;">Zapisz i kompiluj</button>
+				</div>
+				{% render_field form.content class="form-control" rows="19" style="width:100%; min-width:150px" placeholder=form.content.label %}
+				{% for error in form.content.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+		</form>
+	</div>
+{% endblock %}
+{% block javascript %}
+	<script>
+	function check_for_messages(what) {
+		document.getElementById("js_comms").value += 'Compilation begun';
+		var still = true;
+		var m = [];
+		var len = 0;
+		var i = 0;
+		while (still) {
+			still = false;
+			$.ajax({
+				url: '{% url "check_compilation" %}',
+				type: 'post',
+				async: false,
+				data: {
+					'object': '{{ vid }}',
+					'object_type': 'vertex'
+				},
+				dataType: 'json',
+				success: function (data) {
+					still = data.still;
+					for (var j = len; j < data.messages.length; j++) {
+						document.getElementById("js_comms").value += "\n" + data.messages[j];
+						len++;
+					}
+					m = data.messages;
+				},
+				failure: function(data) { 
+					still = false;
+				}
+			});
+		}
+		document.getElementById("js_comms").value += "\n"
+	}
+	
+	function is_submitted() {
+		var a = document.getElementById("vertex_view");
+		a.classList.add("fancy-a");
+		a.href = "{% url 'vertex' vertex=vid %}";
+	}
+	
+	$(document).ready(function() {
+		{% if submitted %}
+		is_submitted();
+		{% endif %}
+		
+		document.getElementById("compile_all").addEventListener('click', function(event) {
+			$.ajax({
+				url: '{% url "save_vertex" vertex=vid %}',
+				type: 'post',
+				async: false,
+				data: {
+					'action': 'save_desc,save_content,save_props',
+					'description': $("#id_description").val(),
+					'content': $("#id_content").val(),
+					'vertex_class': $("#id_vertex_class").val(),
+					'preamble': $("#id_preamble").val(),
+					'discipline': $("#id_discipline").val(),
+					'subject': $("#id_subject").val(),
+					'title': $("#id_title").val(),
+					'shorttitle': $("#id_shorttitle").val()
+				},
+				dataType: 'json'
+			});
+			$.ajax({
+				url: '{% url "compile_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'description': $("#id_description").val(),
+					'content': $("#id_content").val()
+				},
+				dataType: 'json'
+			});
+			check_for_messages();
+			is_submitted();
+		});
+	
+		document.getElementById("save_desc").addEventListener('click', function(event) {
+			$.ajax({
+				url: '{% url "save_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'action': 'save_desc',
+					'description': $("#id_description").val()
+				},
+				dataType: 'json'
+			});
+		});
+		
+		document.getElementById("compile_desc").addEventListener('click', function(event) {
+			event.preventDefault();
+			$('html,body').scrollTop(0);
+			$.ajax({
+				url: '{% url "save_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'action': 'save_desc',
+					'description': $("#id_description").val(),
+				},
+				dataType: 'json'
+			});
+			$.ajax({
+				url: '{% url "compile_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'description': $("#id_description").val(),
+					'content': null
+				},
+				dataType: 'json'
+			});
+			check_for_messages();
+		});
+	
+		document.getElementById("save_cont").addEventListener('click', function(event) {
+			$.ajax({
+				url: '{% url "save_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'action': 'save_content',
+					'content': $("#id_content").val()
+				},
+				dataType: 'json'
+			});
+		});
+		
+		document.getElementById("compile_cont").addEventListener('click', function(event) {
+			event.preventDefault();
+			$('html,body').scrollTop(0);
+			$.ajax({
+				url: '{% url "save_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'action': 'save_content',
+					'content': $("#id_content").val(),
+				},
+				dataType: 'json'
+			});
+			$.ajax({
+				url: '{% url "compile_vertex" vertex=vid %}',
+				type: 'post',
+				data: {
+					'description': null,
+					'content': $("#id_content").val()
+				},
+				dataType: 'json'
+			});
+			check_for_messages();
+			is_submitted();
+		});
+	
+		document.getElementById("delete_button").addEventListener('click', function(event) {
+			var choice = confirm('Czy na pewno? \nWierzchołek zostanie usunięty na stałe.');
+			if (choice) {
+				document.getElementById("hidden_action").value += ',delete';
+				document.getElementById("edit-vertex-form").submit();
+			}
+		});
+    });
+	</script>
+{% endblock %}

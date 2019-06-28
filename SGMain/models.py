@@ -10,6 +10,7 @@ import django.core.exceptions as exceptions
 from django.urls import reverse
 
 from users.models import CustomUser
+import SGMain.tools as tools
 	
 '''
 Vertex_Class is what your Vertex is in the context of meta-narration, ie. 
@@ -111,6 +112,13 @@ class Vertex (models.Model):
 	submitted = models.BooleanField(default = False)
 	desc_dir = models.CharField(max_length = 200, null = True)
 	content_dir = models.CharField(max_length = 200, null = True)
+		
+	@classmethod
+	def new_id(cls):
+		id = tools.id_generator('V')
+		while len( cls.objects.filter(vertex_id = vid) ):
+			id = tools.id_generator('V')
+		return id
 	
 	def __str__(self):
 		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
@@ -137,7 +145,7 @@ class Vertex (models.Model):
 	'''
 	Note there are two desc and content dirs: 
 	one pair pre-compilation and second after-compilation.
-	As after-compilation are stored as fields, this two functions gets you the pre-compilation ones.
+	As after-compilation are stored as fields, this functions operates on the pre-compilation ones.
 	'''
 	def get_pre_content_dir(self):
 		return os.path.join( self.user.folder, self.vertex_id + '.txt' )
@@ -145,6 +153,10 @@ class Vertex (models.Model):
 	def get_pre_desc_dir(self):
 		return os.path.join( self.user.folder, self.vertex_id + 'desc.txt' )
 		
+	def create_pre_dirs(self):
+		open( self.get_pre_content_dir(), 'w+').close()
+		open( self.get_pre_desc_dir(), 'w+').close()
+	
 	def delete_pre_dirs(self):
 		try:
 			os.remove( self.get_pre_content_dir() )

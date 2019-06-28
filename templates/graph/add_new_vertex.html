@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}nowy wierzchołek{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+	<div style="padding: 12px 4% 0;">
+		<form method="post">
+			<div class="internal-menu sidepadd" >
+				<h4>Tworzenie nowego wierzchołka</h4>
+				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz nowy wierzchołek</button>
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin">
+				{% csrf_token %}
+				{% for hidden in form.hidden_fields %}
+					{{ hidden }}
+				{% endfor %}
+				<div class="form-group">
+					<h5 for="{{ form.preamble.id_for_label }}">Preambuła</h5>
+					{% render_field form.preamble class="form-control" style="width:30%; min-width:150px" placeholder=form.preamble.label %}
+					{% for error in form.preamble.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_preamble' %}">Utworzyć nową?</a>
+				</div>
+				<div class="form-group">
+					<h5 for="{{ form.vertex_class.id_for_label }}">Rodzaj wierzchołka (np. definicja, przykład)</h5>
+					{% render_field form.vertex_class class="form-control" style="width:30%; min-width:150px" placeholder=form.vertex_class.label %}
+					{% for error in form.vertex_class.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_vertex_class' %}">Utworzyć nowy?</a> Po wypełnieniu zgłoszenia będzie ono wysłane administratorowi serwisu do zaakceptowania.
+				</div>
+				<div class="form-group">
+					<h5 for="{{ form.discipline.id_for_label }}">Dyscyplina (naukowa)</h5>
+					{% render_field form.discipline class="form-control" style="width:30%; min-width:150px" placeholder=form.discipline.label %}
+					{% for error in form.discipline.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_discipline' %}">Utworzyć nową?</a>
+				</div>
+				<div class="form-group">
+					<h5 for="{{ form.subject.id_for_label }}">Temat, którego dotyczy zagadnienie</h5>
+					{% render_field form.subject class="form-control" style="width:30%; min-width:150px" placeholder=form.subject.label %}
+					{% for error in form.subject.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_subject' %}">Utworzyć nowy?</a>
+				</div>
+				<div class="form-group">
+					<h5 for="{{ form.title.id_for_label }}">Tytuł wierzchołka</h5>
+					{% render_field form.title class="form-control" style="width:30%; min-width:150px" placeholder=form.title.label %}
+					{% for error in form.title.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}
