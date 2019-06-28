@@ -1,10 +1,11 @@
 
 from django import forms
 from django_registration.forms import RegistrationForm
+from django.contrib.auth.forms import PasswordResetForm
 
 from .models import CustomUser
 		
-class CustomRegistrationForm(RegistrationForm):
+class SG_RegistrationForm(RegistrationForm):
 	
 	class Meta(RegistrationForm.Meta):
 		model = CustomUser
@@ -13,3 +14,7 @@ class CustomRegistrationForm(RegistrationForm):
 		user = super(CustomRegistrationForm, self).save(commit = False)
 		user.get_folder(save = commit)
 		return user
+		
+
+class SG_PasswordResetForm(PasswordResetForm):
+	pass

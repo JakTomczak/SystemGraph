@@ -12,7 +12,6 @@
 				<button type="submit" name="save" style="font-size: 16px; margin-left: 25px;" class="btn btn-primary sgbutton">Zaloguj</button>
 			</div>
             {% csrf_token %}
-			{% csrf_token %}
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
 			{% endfor %}
@@ -29,6 +28,11 @@
 				{% endfor %}
 			</div>
         </form>
+        <div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+            <small>
+				<a class="fancy-a" href="{% url 'password_reset' %}">Zapominiałeś hasła?</a>
+            </small>
+        </div>
         <div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
             <small>
 				Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się</a>
