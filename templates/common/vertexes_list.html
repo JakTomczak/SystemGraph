@@ -3,7 +3,7 @@
 <ul id="submitted_projects">
 	{% for vert in verts %}
 		<li class="open_project_wrapper">
-			<a href="{% url 'vertex' vertex=vert.vertex_id %}" class="fancy-a">{{ vert.title }}</a> <small style="margin-left: 8px;"><a href="{% url 'edit_vertex' vertex=vert.vertex_id %}">(edytuj)</a></small>
+			<a href="{% url 'view_vertex' vertex_id=vert.vertex_id %}" class="fancy-a">{{ vert.title }}</a> <small style="margin-left: 8px;"><a href="{% url 'edit_vertex' vertex_id=vert.vertex_id %}">(edytuj)</a></small>
 			{% if vert.desc_dir %}<br>
 			<span>{{ vert.description|safe }}</span>{% endif %}
 		</li>

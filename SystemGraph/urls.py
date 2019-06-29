@@ -23,5 +23,6 @@ urlpatterns = [
 	path('users/', include('users.urls')),
 	path('profile/', include('userprofile.urls')),
     path('graph/', include('SGMain.urls')),
+    path('ajax/', include('SGMain.ajax_urls')),
     path('', common_views.frontpage, name='start'),
 ]

@@ -11,7 +11,7 @@ def frontpage(request):
 		verts = model.Vertex.objects.filter( user = request.user )
 		if verts:
 			already = True
-	context = {'already': already, 'Vlist': list( model.Vertex.objects.all() )}
+	context = {'already': already, 'Vlist': list( model.Vertex.get_submitted() )}
 	return render(request, 'common/frontpage.html', context)
 	
 def SearchSite(request):

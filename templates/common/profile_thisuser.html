@@ -17,7 +17,7 @@
 					<ul id="open_projects">
 						{% for pro in projects %}
 							<li class="open_project_wrapper">
-								<a href="{% url 'edit_vertex' vertex=pro.vertex_id %}">{{ pro.title }}</a>
+								<a href="{% url 'edit_vertex' vertex_id=pro.vertex_id %}">{{ pro.title }}</a>
 							</li>
 						{% endfor %}
 					</ul>

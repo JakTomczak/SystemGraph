@@ -26,6 +26,39 @@ def new_vertex(request):
 	return render(request, 'graph/add_new_vertex.html', context)
 
 def edit_vertex(request, vertex_id):
+	try:
+		this_vertex = model.Vertex.objects.get(vertex_id = vertex_id)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	if not request.user == this_vertex.user:
+		return render(request, 'errors/403.html')
+	successors = this_vertex.get_successors()
+#	edges = [ {'edge': edge, 'edge_content': edge.content()} for edge in successors ]
+	if request.method == 'POST':
+		form = forms.Edit_Vertex_Form(request.POST, vertex = this_vertex)
+		action = request.POST['action'].split(',')
+		if 'save_all' in request.POST and form.is_valid():
+			this_vertex.vertex_class = form.cleaned_data['vertex_class']
+			this_vertex.preamble = form.cleaned_data['preamble']
+			this_vertex.discipline = form.cleaned_data['discipline']
+			this_vertex.subject = form.cleaned_data['subject']
+			this_vertex.title = form.cleaned_data['title']
+			this_vertex.shorttitle = form.cleaned_data['shorttitle']
+			this_vertex.save()
+			this_vertex.save_pre_content( form.cleaned_data['content'] )
+			this_vertex.save_pre_desc( form.cleaned_data['description'] )
+			messages.add_message(request, messages.SUCCESS, "Właściwości wierzchołka zostały zapisane.")
+		elif 'delete' in action:
+			user = this_vertex.user
+			this_vertex.delete()
+			messages.add_message(request, messages.SUCCESS, 'Wierzchołek został usunięty.')
+			return redirect('profile', username = user.username)
+		elif 'newedge' in request.POST:
+			request.session['pred'] = this_vertex.vertex_id
+			return redirect('new_edge')
+	else:
+		form = forms.Edit_Vertex_Form(vertex = this_vertex)
+	context = {'form': form, 'vid': this_vertex.vertex_id, 'submitted': this_vertex.submitted, 'successors': successors}
 	return render(request, 'graph/edit_vertex.html', context)
 
 def view_vertex(request, vertex_id):

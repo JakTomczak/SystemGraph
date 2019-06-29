@@ -26,12 +26,12 @@ class Vertex_Class (models.Model):
 	right = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='onright')
 	top = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='ontop')
 	bottom = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='onbottom')
-	
-	def __str__(self):
-		return self.polish_name
 		
 	class Meta:
 		verbose_name_plural = "Vertexes Classes"
+	
+	def __str__(self):
+		return self.polish_name
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VCLASS(cls):
@@ -113,18 +113,22 @@ class Vertex (models.Model):
 	desc_dir = models.CharField(max_length = 200, null = True)
 	content_dir = models.CharField(max_length = 200, null = True)
 		
-	@classmethod
-	def new_id(cls):
-		id = tools.id_generator('V')
-		while len( cls.objects.filter(vertex_id = vid) ):
-			id = tools.id_generator('V')
-		return id
+	class Meta:
+		verbose_name_plural = "Vertices"
 	
 	def __str__(self):
 		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
 		
-	class Meta:
-		verbose_name_plural = "Vertices"
+	@classmethod
+	def new_id(cls):
+		id = tools.id_generator('V')
+		while len( cls.objects.filter(vertex_id = id) ):
+			id = tools.id_generator('V')
+		return id
+		
+	@classmethod
+	def get_submitted(cls):
+		return Vertex.objects.filter( submitted = True )
 		
 	def description (self):
 		if self.submitted:
@@ -140,7 +144,10 @@ class Vertex (models.Model):
 			return ''
 			
 	def get_url(self):
-		return reverse('vertex', kwargs={'vertex_id': self.vertex_id})
+		return reverse('view_vertex', kwargs={'vertex_id': self.vertex_id})
+		
+	def get_successors(self):
+		return Edge.objects.filter(predecessor = self)
 
 	'''
 	Note there are two desc and content dirs: 
@@ -148,10 +155,10 @@ class Vertex (models.Model):
 	As after-compilation are stored as fields, this functions operates on the pre-compilation ones.
 	'''
 	def get_pre_content_dir(self):
-		return os.path.join( self.user.folder, self.vertex_id + '.txt' )
+		return os.path.join( self.user.get_folder(), self.vertex_id + '.txt' )
 		
 	def get_pre_desc_dir(self):
-		return os.path.join( self.user.folder, self.vertex_id + 'desc.txt' )
+		return os.path.join( self.user.get_folder(), self.vertex_id + 'desc.txt' )
 		
 	def create_pre_dirs(self):
 		open( self.get_pre_content_dir(), 'w+').close()
@@ -166,6 +173,16 @@ class Vertex (models.Model):
 			os.remove( self.get_pre_desc_dir() )
 		except FileNotFoundError:
 			pass
+			
+	def save_pre_content(self, text):
+		with codecs.open( self.get_pre_content_dir(), 'w', encoding = 'utf-8') as file:
+			file.truncate()
+			file.write( text )
+			
+	def save_pre_desc(self, text):
+		with codecs.open( self.get_pre_desc_dir(), 'w', encoding = 'utf-8') as file:
+			file.truncate()
+			file.write( text )
 		
 @receiver(models.signals.pre_delete, sender = Vertex)
 def delete_vertex_files (sender, instance, using, **kwargs):
@@ -181,12 +198,12 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 	
 class Edge_Class (models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana krawędź')
-	
-	def __str__(self):
-		return self.polish_name
 		
 	class Meta:
 		verbose_name_plural = "Edge Classes"
+	
+	def __str__(self):
+		return self.polish_name
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_ECLASS(cls):

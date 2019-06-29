@@ -111,12 +111,12 @@
 							</tr>
 						</thead>
 						<tbody>
-							{% for edgedir in successors %}
+							{% for edge in successors %}
 							<tr>
-								<td>{{ edgedir.edge.edge_id }}</td>
-								<td><a href="{{ edgedir.edge.get_successor_url }}" class="fancy-a">{{ edgedir.edge.successor.title }}</a></td>
-								<td>{{ edgedir.edge_content|safe }}</td>
-								<td><a  class="btn btn-secondary btn-sm" href="{% url 'edit_edge' edge=edgedir.edge %}" role="button">Edytuj</a></td>
+								<td>{{ edge.edge_id }}</td>
+								<td><a href="{{ edge.get_successor_url }}" class="fancy-a">{{ edge.successor.title }}</a></td>
+								<td>{{ edge.get_content|safe }}</td>
+								<td><a  class="btn btn-secondary btn-sm" href="{% url 'edit_edge' edge_id=edge.edge_id %}" role="button">Edytuj</a></td>
 							</tr>
 							{% endfor %}
 						</tbody>
@@ -178,7 +178,7 @@
 	function is_submitted() {
 		var a = document.getElementById("vertex_view");
 		a.classList.add("fancy-a");
-		a.href = "{% url 'vertex' vertex=vid %}";
+		a.href = "{% url 'view_vertex' vertex_id=vid %}";
 	}
 	
 	$(document).ready(function() {
@@ -188,7 +188,7 @@
 		
 		document.getElementById("compile_all").addEventListener('click', function(event) {
 			$.ajax({
-				url: '{% url "save_vertex" vertex=vid %}',
+				url: '{% url "save_vertex" vertex_id=vid %}',
 				type: 'post',
 				async: false,
 				data: {
@@ -205,7 +205,7 @@
 				dataType: 'json'
 			});
 			$.ajax({
-				url: '{% url "compile_vertex" vertex=vid %}',
+				url: '{% url "compile_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'description': $("#id_description").val(),
@@ -219,7 +219,7 @@
 	
 		document.getElementById("save_desc").addEventListener('click', function(event) {
 			$.ajax({
-				url: '{% url "save_vertex" vertex=vid %}',
+				url: '{% url "save_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'action': 'save_desc',
@@ -233,7 +233,7 @@
 			event.preventDefault();
 			$('html,body').scrollTop(0);
 			$.ajax({
-				url: '{% url "save_vertex" vertex=vid %}',
+				url: '{% url "save_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'action': 'save_desc',
@@ -242,7 +242,7 @@
 				dataType: 'json'
 			});
 			$.ajax({
-				url: '{% url "compile_vertex" vertex=vid %}',
+				url: '{% url "compile_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'description': $("#id_description").val(),
@@ -255,7 +255,7 @@
 	
 		document.getElementById("save_cont").addEventListener('click', function(event) {
 			$.ajax({
-				url: '{% url "save_vertex" vertex=vid %}',
+				url: '{% url "save_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'action': 'save_content',
@@ -269,7 +269,7 @@
 			event.preventDefault();
 			$('html,body').scrollTop(0);
 			$.ajax({
-				url: '{% url "save_vertex" vertex=vid %}',
+				url: '{% url "save_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'action': 'save_content',
@@ -278,7 +278,7 @@
 				dataType: 'json'
 			});
 			$.ajax({
-				url: '{% url "compile_vertex" vertex=vid %}',
+				url: '{% url "compile_vertex" vertex_id=vid %}',
 				type: 'post',
 				data: {
 					'description': null,
