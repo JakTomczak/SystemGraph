@@ -4,3 +4,5 @@ __pycache__
 /SystemGraph/local_settings.py
 /userfiles/*
 !/userfiles/readme.txt
+/compilationfiles/*
+config.mk4

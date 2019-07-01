@@ -4,8 +4,13 @@ from django.shortcuts import render
 
 import SGMain.models as model
 from users.models import CustomUser
+from SGMain import tasks
 
 def frontpage(request):
+	# M = tasks.test1.send('abba')
+	# print( repr(M.args[0]) )
+	# print( type(M.args) )
+	# tasks.test2()
 	already = False
 	if request.user.is_authenticated:
 		verts = model.Vertex.objects.filter( user = request.user )

@@ -15,9 +15,12 @@ import os
 try:
     from . local_settings import *
 except ModuleNotFoundError:
-    raise Exception("A local_settings.py file is required to run this project")
+    raise Exception("A local_settings.py file is required to run this project.")
 
 # BASE_DIR from local_settings.py
+
+PROPOSALS_DIR = os.path.join( BASE_DIR, 'proposals' )
+COMP_DIR = os.path.join( BASE_DIR, 'compilationfiles' )
 
 # SECRET_KEY from local_settings.py
 

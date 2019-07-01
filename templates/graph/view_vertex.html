@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Vertex{% endblock %}
+{% block title %}Wierzchołek{% endblock %}
 
 {% block content %}
 	<div id="upper_sidebar" class="vertsidebar" style="border-bottom: 1px solid;">
 	{% for vertdict in top %}
 		<div class="vertbar_element">
-			<small><a href="{% url 'vertex' vertex=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
+			<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
 			<br>
 			<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
 		</div>
@@ -21,7 +21,7 @@
 		<div id="left_sidebar" class="sidebar" style="border-right: 1px solid; border-top: 2px solid;">
 		{% for vertdict in left %}
 			<div class="sidebar_element">
-				<small><a href="{% url 'vertex' vertex=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
+				<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
 				<br>
 				<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
 			</div>
@@ -37,7 +37,7 @@
 		</div>
 
 		<div class="veryinnerframe" >
-		{% if thisuser %}<div class="optionsdiv"><small><a href="{% url 'edit_vertex' vertex=thisvertex.vertex_id %}">(edit)</a></small></div>{% endif %}
+		{% if thisuser %}<div class="optionsdiv"><small><a href="{% url 'edit_vertex' vertex_id=thisvertex.vertex_id %}">(edit)</a></small></div>{% endif %}
 			<h5>{{ thisvertex.title }}</h5>
 {{ thisvertexcontent|safe }}
 		</div>
@@ -53,7 +53,7 @@
 		<div id="right_sidebar" class="sidebar" style="border-left: 1px solid; border-top: 2px solid;">
 		{% for vertdict in right %}
 			<div class="sidebar_element">
-				<small><a href="{% url 'vertex' vertex=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
+				<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
 				<br>
 				<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
 			</div>
@@ -68,7 +68,7 @@
 	<div id="lower_sidebar" class="vertsidebar" style="border-top: 1px solid;">
 	{% for vertdict in bottom %}
 		<div class="vertbar_element">
-			<small><a href="{% url 'vertex' vertex=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
+			<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
 			<br>
 			<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
 		</div>

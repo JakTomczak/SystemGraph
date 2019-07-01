@@ -1,10 +1,13 @@
 import os
+import codecs
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
+import django.core.exceptions as exceptions
 
 from . import models as model
 from . import forms
+from . import tools
 from users.models import CustomUser
 
 def new_vertex(request):
@@ -61,7 +64,29 @@ def edit_vertex(request, vertex_id):
 	context = {'form': form, 'vid': this_vertex.vertex_id, 'submitted': this_vertex.submitted, 'successors': successors}
 	return render(request, 'graph/edit_vertex.html', context)
 
-def view_vertex(request, vertex_id):
+def view_vertex(request, vertex_id): # Needs big enhancements
+	try:
+		this_vertex = model.Vertex.objects.get(vertex_id = vertex_id, submitted = True)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	edges = this_vertex.get_successors()
+	with codecs.open( this_vertex.content_dir, 'r', encoding = 'utf-8') as file:
+		content = file.read()
+	sglinks = []
+	for e in edges:
+		if e.links:
+			cont = e.get_true_content()
+			cont = cont.replace('\n', '')
+			cont = cont.replace('\r', '')
+			links = e.links.split(',')
+			for link in links:
+				sglinks.append( {'id': link, 'content': cont, 'successor_id': e.get_successor_id()} )
+	(bolist, lelist, rilist, tolist) = tools.four_directions(this_vertex)
+	if request.user == this_vertex.user:
+		thisuser = True
+	else:
+		thisuser = False
+	context = {'float': 1, 'edges': sglinks, 'thisuser': thisuser, 'thisvertex': this_vertex, 'thisvertexcontent': content, 'bottom': bolist, 'left': lelist, 'right': rilist, 'top': tolist}
 	return render(request, 'graph/view_vertex.html', context)
 
 def new_vertex_class(request):
