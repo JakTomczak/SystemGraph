@@ -48,8 +48,8 @@ def edit_vertex(request, vertex_id):
 			this_vertex.title = form.cleaned_data['title']
 			this_vertex.shorttitle = form.cleaned_data['shorttitle']
 			this_vertex.save()
-			this_vertex.save_pre_content( form.cleaned_data['content'] )
-			this_vertex.save_pre_desc( form.cleaned_data['description'] )
+			this_vertex.write_pre_content( form.cleaned_data['content'] )
+			this_vertex.write_pre_desc( form.cleaned_data['description'] )
 			messages.add_message(request, messages.SUCCESS, "Właściwości wierzchołka zostały zapisane.")
 		elif 'delete' in action:
 			user = this_vertex.user
@@ -173,6 +173,35 @@ def new_vertex_class(request):
 		form = forms.Add_New_Vertex_Class_Form()
 	context = {'form': form}
 	return render(request, 'graph/add_new_vertex_class.html', context)
+
+def new_edge(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, '401.html')
+	if request.method == 'POST':
+		form = forms.Add_New_Edge_Form(request.POST, user = request.user )
+		if form.is_valid():
+			verts = request.POST['action'].split(',')
+			if verts:
+				pred = verts[0].split(':')[1]
+				succ = verts[1].split(':')[1]
+				edge = form.save(commit = False)
+				edge.user = request.user
+				edge.edge_id = model.Edge.new_id()
+				edge.create_pre_dirs()
+				edge.predecessor = model.Vertex.objects.get(vertex_id = pred)
+				if succ.startswith('V'):
+					edge.successor = model.Vertex.objects.get(vertex_id = succ)
+				else:
+					edge.successor = None
+				edge.save()
+				messages.add_message(request, messages.SUCCESS, 'Nowa krawędź została dodana.')
+				del request.session['pred']
+				return redirect('edit_edge', edge = edge.edge_id)
+	else:
+		form = forms.Add_New_Edge_Form(user = request.user)
+	previous_vertex_id = request.session.get('pred')
+	context = {'form': form, 'pred': previous_vertex_id, 'Plist': list( model.Vertex.objects.filter(user = request.user) ), 'Slist': list( model.Vertex.objects.filter(user = request.user) )}
+	return render(request, 'graph/add_new_edge.html', context)
 
 def new_path(request):
 	return render(request, 'graph/add_new_path.html', context)

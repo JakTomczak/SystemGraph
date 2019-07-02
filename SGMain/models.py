@@ -218,12 +218,12 @@ class Vertex (models.Model):
 		except FileNotFoundError:
 			pass
 			
-	def save_pre_content(self, text):
+	def write_pre_content(self, text):
 		with codecs.open( self.get_pre_content_dir(), 'w', encoding = 'utf-8') as file:
 			file.truncate()
 			file.write( text )
 			
-	def save_pre_desc(self, text):
+	def write_pre_desc(self, text):
 		with codecs.open( self.get_pre_desc_dir(), 'w', encoding = 'utf-8') as file:
 			file.truncate()
 			file.write( text )
@@ -268,6 +268,13 @@ class Edge (models.Model):
 	def __str__(self):
 		return self.edge_id
 		
+	@classmethod
+	def new_id(cls):
+		id = tools.id_generator('E')
+		while len( cls.objects.filter(edge_id = id) ):
+			id = tools.id_generator('E')
+		return id
+		
 	'''
 	Content of edge is meant to represent description of relationship between
 	its predecessor and successor. If no content is given,
@@ -298,6 +305,31 @@ class Edge (models.Model):
 			f.close()
 			return t
 			
+	'''
+	Similar to Vertices, Edges also have their content in pre- and post compilation versions
+	and similar to Vertices, pres are not stored as model fields.
+	'''
+	def get_pre_dir(self):
+		return os.path.join( self.user.get_folder(), self.edge_id + '.txt' )
+		
+	def create_pre_dirs(self):
+		codecs.open( self.get_pre_dir(), 'w', encoding = 'utf-8').close()
+		
+	def write_pre_dir(self, text):
+		with codecs.open( self.get_pre_dir(), 'w', encoding = 'utf-8') as file:
+			file.truncate()
+			file.write( text )
+			
+	def write_pre_dir(self):
+		with codecs.open( self.get_pre_dir(), 'r', encoding = 'utf-8') as file:
+			return file.read()
+	
+	def delete_pre_dir(self):
+		try:
+			os.remove( self.get_pre_dir() )
+		except FileNotFoundError:
+			pass
+	
 	def get_links(self):
 		if self.links:
 			return self.link
@@ -314,6 +346,14 @@ class Edge (models.Model):
 			return self.successor.get_url()
 		else:
 			return '#'
+		
+@receiver(models.signals.pre_delete, sender = Edge)
+def delete_vertex_files (sender, instance, using, **kwargs):
+	instance.delete_pre_dir()
+	try:
+		os.remove( instance.directory )
+	except FileNotFoundError:
+		pass
 			
 class Path (models.Model):
 	path_id = models.CharField(max_length = 10, primary_key = True, default = 'TAAAAAAAAA')

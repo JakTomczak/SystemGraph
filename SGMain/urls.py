@@ -8,6 +8,7 @@ urlpatterns = [
 	path('search/', common_views.SearchSite, name='vertex_search'),
 	
 	path('add_new_discipline/', views.new_discipline, name = 'new_discipline'),
+	path('add_new_edge/', views.new_edge, name='new_edge'),
 	path('add_new_path/', views.new_path, name='new_path'),
 	path('add_new_preamble/', views.new_preamble, name='new_preamble'),
 	path('add_new_subject/', views.new_subject, name = 'new_subject'),
