@@ -32,6 +32,27 @@ class Vertex_Class (models.Model):
 	
 	def __str__(self):
 		return self.polish_name
+	
+	'''
+	This model is central to SystemGraph, so I cannot just let users create it,
+	but nevertheless users may want to add new vertex classes with custom behaviour,
+	so I created this method for users to easily propose new VC to me.
+	'''
+	@classmethod
+	def make_proposal(cls, user, form):
+		message = str(datetime.datetime.now()) + '\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'polska pojedyncza: ' + form.cleaned_data['polish_name'] + '\n'
+		message += 'polska mnoga: ' + form.cleaned_data['polish_name_plural'] + '\n'
+#		message += 'angielska pojedyncza: ' + form.cleaned_data['english_name'] + '\n'
+#		message += 'angielska mnoga: ' + form.cleaned_data['english_name_plural'] + '\n'
+		message += 'top: ' + form.cleaned_data['top'] + '\n'
+		message += 'left: ' + form.cleaned_data['left'] + '\n'
+		message += 'right: ' + form.cleaned_data['right'] + '\n'
+		message += 'bottom: ' + form.cleaned_data['bottom'] + '\n'
+		message += 'info: \n' + form.cleaned_data['info']
+		with open( os.path.join(settings.PROPOSALS_DIR, datetime.datetime.now().strftime('%Y %m %d godz %H.%M.%S') + '.txt'), 'w+' ) as file:
+			file.write(message)
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VCLASS(cls):
@@ -47,7 +68,7 @@ class Vertex_Class (models.Model):
 
 '''
 Preamble is essential during LaTeX -> HTML compilation.
-It basicly holds your settings for this compilation.
+It basically holds your settings for this compilation.
 
 '''
 class Preamble (models.Model):

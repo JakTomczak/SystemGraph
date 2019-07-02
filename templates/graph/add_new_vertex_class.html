@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}nowy rodzaj wierzchołka{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+	<div class="maindiv mediumpadd">
+		<form method="post">
+			<div class="internal-menu sidepadd">
+				<h3>Tworzenie nowego rodzaju wierzchołka (wniosek)</h3>
+				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Wyślij wniosek</button>
+			</div>
+			{% csrf_token %}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.polish_name.id_for_label }}">Nazwa polska</h5>
+				<span>Liczba pojedyncza</span>
+				{% render_field form.polish_name class="form-control SGformwidget" placeholder=form.polish_name.label %}
+				{% for error in form.polish_name.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+				<span style="margin-top: 10px;">Liczba mnoga</span>
+				{% render_field form.polish_name_plural class="form-control SGformwidget" placeholder=form.polish_name_plural.label %}
+				{% for error in form.polish_name_plural.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5>Połączenia z innymi rodzajami wierzchołków</h5>
+				<span>Widoczne u góry</span>
+				{% render_field form.top class="form-control SGformwidget" placeholder=form.top.label %}
+				{% for error in form.top.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+				<span style="margin-top: 10px;">Widoczne z lewej strony</span>
+				{% render_field form.left class="form-control SGformwidget" placeholder=form.left.label %}
+				{% for error in form.left.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+				<span style="margin-top: 10px;">Widoczne z prawej strony</span>
+				{% render_field form.right class="form-control SGformwidget" placeholder=form.right.label %}
+				{% for error in form.right.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+				<span style="margin-top: 10px;">Widoczne na dole</span>
+				{% render_field form.bottom class="form-control SGformwidget" placeholder=form.bottom.label %}
+				{% for error in form.bottom.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.info.id_for_label }}">Dodatkowe zastrzeżenia</h5>
+				{% render_field form.info class="form-control SGformwidget" placeholder=form.info.label %}
+				{% for error in form.info.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+		</form>
+	</div>
+{% endblock %}

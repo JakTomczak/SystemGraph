@@ -88,3 +88,12 @@ class Edit_Preamble_Form(forms.Form):
 		self.initial['title'] = preamble.title
 		self.initial['description'] = preamble.description
 		self.initial['content'] = preamble.read()
+
+class Add_New_Vertex_Class_Form(forms.Form):
+	polish_name = forms.CharField(max_length = 50, required = False)
+	polish_name_plural = forms.CharField(max_length = 50, required = False)
+	left = forms.CharField(max_length = 50)
+	right = forms.CharField(max_length = 50)
+	top = forms.CharField(max_length = 50)
+	bottom = forms.CharField(max_length = 50)
+	info = forms.CharField(widget = forms.Textarea, required = False)

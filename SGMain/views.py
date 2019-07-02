@@ -161,6 +161,17 @@ def edit_preamble(request, preamble_id):
 	return render(request, 'graph/edit_preamble.html', context)
 
 def new_vertex_class(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, 'errors/401.html')
+	if request.method == 'POST':
+		form = forms.Add_New_Vertex_Class_Form(request.POST)
+		if 'save' in request.POST and form.is_valid():
+			model.Vertex_Class.make_proposal(request.user, form)
+			messages.add_message(request, messages.SUCCESS, 'Wniosek został wysłany.')
+			return redirect('profile', username = request.user.username)
+	else:
+		form = forms.Add_New_Vertex_Class_Form()
+	context = {'form': form}
 	return render(request, 'graph/add_new_vertex_class.html', context)
 
 def new_path(request):
