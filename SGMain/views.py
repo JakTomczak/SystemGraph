@@ -89,6 +89,34 @@ def view_vertex(request, vertex_id): # Needs big enhancements
 	context = {'float': 1, 'edges': sglinks, 'thisuser': thisuser, 'thisvertex': this_vertex, 'thisvertexcontent': content, 'bottom': bolist, 'left': lelist, 'right': rilist, 'top': tolist}
 	return render(request, 'graph/view_vertex.html', context)
 
+def new_discipline(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, 'errors/401.html')
+	if request.method == 'POST':
+		form = forms.Add_New_Discipline_Form(request.POST)
+		if 'save' in request.POST and form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Nowa dyscyplina została dodana.')
+			return redirect('profile', username = request.user.username)
+	else:
+		form = forms.Add_New_Discipline_Form()
+	context = {'form': form}
+	return render(request, 'graph/add_new_discipline.html', context)
+
+def new_subject(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, 'errors/401.html')
+	if request.method == 'POST':
+		form = forms.Add_New_Subject_Form(request.POST)
+		if 'save' in request.POST and form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Nowy temat został dodany.')
+			return redirect('profile', username = request.user.username)
+	else:
+		form = forms.Add_New_Subject_Form()
+	context = {'form': form}
+	return render(request, 'graph/add_new_subject.html', context)
+
 def new_vertex_class(request):
 	return render(request, 'graph/add_new_vertex_class.html', context)
 
@@ -97,12 +125,6 @@ def new_preamble(request):
 
 def edit_preamble(request, preamble_id):
 	return render(request, 'graph/edit_preamble.html', context)
-
-def new_discipline(request):
-	return render(request, 'graph/add_new_discipline.html', context)
-
-def new_subject(request):
-	return render(request, 'graph/add_new_subject.html', context)
 
 def new_path(request):
 	return render(request, 'graph/add_new_path.html', context)

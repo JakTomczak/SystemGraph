@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}nowa preambuła{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+	<div style="padding-left: 4%; padding-right: 4%;">
+		<form method="post">
+			<div class="internal-menu sidepadd">
+				<h3>Tworzenie nowej preambuły</h3>
+				<button type="submit" style="font-size: 16px; margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz nową preambułę</button>
+			</div>
+			{% csrf_token %}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.title.id_for_label }}">Tytuł</h5>
+				{% render_field form.title class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.title.label %}
+				{% for error in form.title.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.description.id_for_label }}">Opis (ułatwiający rozpoznanie)</h5>
+				{% render_field form.description class="form-control" rows="3" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.description.label %}
+				{% for error in form.description.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.content.id_for_label }}">Treść</h5>
+				{% render_field form.content class="form-control" rows="18" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.content.label %}
+				{% for error in form.content.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+		</form>
+	</div>
+{% endblock %}

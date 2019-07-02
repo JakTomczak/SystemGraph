@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}nowa dyscyplina{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+	<div class="maindiv mediumpadd">
+		<form method="post">
+			<div class="internal-menu sidepadd">
+				<h4>Tworzenie nowej dyscypliny</h4>
+				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
+			</div>
+			{% csrf_token %}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.polish_name.id_for_label }}">Nazwa polska</h5>
+				{% render_field form.polish_name class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.polish_name.label %}
+				{% for error in form.polish_name.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+		</form>
+	</div>
+{% endblock %}

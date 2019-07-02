@@ -43,6 +43,20 @@ div.content {
 	background: var(--secondary-two);
 }
 
+.maindiv {
+	padding-top: 10px;
+}
+
+.maindiv.smallpadd {
+	padding-left: 1%;
+	padding-right: 1%;
+}
+
+.maindiv.mediumpadd {
+	padding-left: 3%;
+	padding-right: 3%;
+}
+
 ul.messages {
 	padding-top: 5px;
 	padding-left: 16px;

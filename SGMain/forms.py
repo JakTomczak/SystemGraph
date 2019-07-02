@@ -53,3 +53,17 @@ class Edit_Vertex_Form (forms.Form):
 			self.initial['shorttitle'] = vertex.shorttitle
 		else:
 			self.initial['ifshorttitle'] = False
+			
+class Add_New_Discipline_Form(forms.ModelForm):
+	polish_name = forms.CharField(max_length = 60)
+	
+	class Meta:
+		model = Discipline
+		fields = ('polish_name', )
+			
+class Add_New_Subject_Form(forms.ModelForm):
+	polish_name = forms.CharField(max_length = 60)
+	
+	class Meta:
+		model = Subject
+		fields = ('polish_name', )
