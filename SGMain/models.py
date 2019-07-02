@@ -62,6 +62,29 @@ class Preamble (models.Model):
 			return self.title + ' (' + self.description + ')'
 		else:
 			return self.title
+		
+	@classmethod
+	def new_id(cls):
+		id = tools.id_generator('A')
+		while len( cls.objects.filter(preamble_id = id) ):
+			id = tools.id_generator('A')
+		return id
+		
+	def create_content_dir(self, content = ''):
+		self.directory = os.path.join( self.user.get_folder(), self.preamble_id + '.tex' )
+		if content:
+			self.write(content)
+		else:
+			open( self.directory, 'w+').close()
+		
+	def write(self, text):
+		with codecs.open( self.directory, 'w+', encoding = 'utf-8') as file:
+			file.truncate()
+			file.write( text )
+		
+	def read(self):
+		with codecs.open( self.directory, 'r', encoding = 'utf-8') as file:
+			return file.read()
 	
 	# Because there are default Preambles available to everyone.
 	@classmethod

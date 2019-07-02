@@ -97,6 +97,12 @@ ul.menu li a:hover {
     background-color: #111111;
 }
 
+.SGformwidget {
+	width:100%;
+	min-width:150px;
+	max-width: 600px;
+}
+
 .vertbuttonholder {
 	display: flex;
 }

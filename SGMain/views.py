@@ -117,14 +117,51 @@ def new_subject(request):
 	context = {'form': form}
 	return render(request, 'graph/add_new_subject.html', context)
 
-def new_vertex_class(request):
-	return render(request, 'graph/add_new_vertex_class.html', context)
-
 def new_preamble(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, 'errors/401.html')
+	if request.method == 'POST':
+		form = forms.Add_New_Preamble_Form(request.POST)
+		if form.is_valid():
+			preamble = form.save(commit = False)
+			preamble.user = request.user
+			preamble.preamble_id = model.Preamble.new_id()
+			preamble.create_content_dir( form.cleaned_data['content'] )
+			preamble.save()
+			messages.add_message(request, messages.SUCCESS, 'Nowa preambuła została dodana.')
+			return redirect('profile', username = request.user.username)
+	else:
+		form = forms.Add_New_Preamble_Form()
+	context = {'form': form}
 	return render(request, 'graph/add_new_preamble.html', context)
 
 def edit_preamble(request, preamble_id):
+	try:
+		this_preamble = model.Preamble.objects.get(preamble_id = preamble_id)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	if not request.user == this_preamble.user:
+		return render(request, 'errors/403.html')
+	if request.method == 'POST':
+		form = forms.Edit_Preamble_Form(request.POST, preamble = this_preamble)
+		action = request.POST['action'].split(',')
+		if 'save' in request.POST and form.is_valid():
+			this_preamble.title = form.cleaned_data['title']
+			this_preamble.description = form.cleaned_data['description']
+			this_preamble.write( form.cleaned_data['content'] )
+			this_preamble.save()
+			messages.add_message(request, messages.SUCCESS, 'Zmiany w preambule zostały zapisane.')
+		if 'delete' in action:
+			this_preamble.delete()
+			messages.add_message(request, messages.SUCCESS, 'Preambuła została usunięta.')
+			return redirect('profile', username = request.user.username)
+	else:
+		form = forms.Edit_Preamble_Form(preamble = this_preamble)
+	context = {'form': form}
 	return render(request, 'graph/edit_preamble.html', context)
+
+def new_vertex_class(request):
+	return render(request, 'graph/add_new_vertex_class.html', context)
 
 def new_path(request):
 	return render(request, 'graph/add_new_path.html', context)

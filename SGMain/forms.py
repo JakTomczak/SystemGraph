@@ -67,3 +67,24 @@ class Add_New_Subject_Form(forms.ModelForm):
 	class Meta:
 		model = Subject
 		fields = ('polish_name', )
+			
+class Add_New_Preamble_Form(forms.ModelForm):
+	title = forms.CharField(max_length = 60)
+	description = forms.CharField(widget = forms.Textarea, required = False)
+	content = forms.CharField(widget = forms.Textarea, required = False)
+	
+	class Meta:
+		model = Preamble
+		fields = ('title', 'description')
+			
+class Edit_Preamble_Form(forms.Form):
+	title = forms.CharField(max_length = 60)
+	description = forms.CharField(widget = forms.Textarea, required = False)
+	content = forms.CharField(widget = forms.Textarea, required = False)
+	
+	def __init__(self, *args, **kwargs):
+		preamble = kwargs.pop('preamble', None)
+		super(Edit_Preamble_Form, self).__init__(*args, **kwargs)
+		self.initial['title'] = preamble.title
+		self.initial['description'] = preamble.description
+		self.initial['content'] = preamble.read()
