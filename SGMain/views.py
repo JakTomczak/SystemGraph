@@ -245,4 +245,63 @@ def edit_edge(request, edge_id):
 	return render(request, 'graph/edit_edge.html', context)
 
 def new_path(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, 'errors/401.html')
+	if request.method == 'POST':
+		form = forms.Add_New_Path_Form(request.POST)
+		if 'save' in request.POST and form.is_valid():
+			path = model.Path(user = request.user, name = form.cleaned_data['name'])
+			path.description = form.cleaned_data['description'] or None
+			path.path_id = model.Path.new_id()
+			path.save()
+			path.write_and_save( [form.cleaned_data['beginnig'], ] )
+			messages.add_message(request, messages.SUCCESS, 'Nowa ścieżka została dodana.')
+			return redirect('edit_path', path_id = path.path_id)
+	else:
+		form = forms.Add_New_Path_Form()
+	context = {'form': form}
 	return render(request, 'graph/add_new_path.html', context)
+
+def edit_path(request, path_id):
+	try:
+		this_path = model.Path.objects.get(path_id = path_id)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	user = request.user or None
+	if user != this_path.user:
+		return render(request, 'errors/403.html')
+	if request.method == 'POST':
+		form = forms.Edit_Path_Form(request.POST, path = this_path)
+		action = request.POST['action'].split(',')
+		if 'save' in request.POST and form.is_valid():
+			this_path.name = form.cleaned_data['name']
+			this_path.description = form.cleaned_data['description']
+			this_path.save()
+			messages.add_message(request, messages.INFO, 'Zmiany w ścieżce zostały zapisane.')
+		if 'delete-path' in action:
+			this_path.delete()
+			messages.add_message(request, messages.SUCCESS, 'Ścieżka została usunięta.')
+			return redirect('profile', username = user.username)
+		if 'change' in action:
+			i = action.index('change')
+			which = action[i+1]
+			vid = action[i+2]
+			V = model.Vertex.objects.get(vertex_id = vid)
+			if which == 'end':
+				this_path.write_at_end_and_save( V )
+			else:
+				Vertexes = this_path.read_verticies()
+				w = float(which)
+				if abs(w - int(w)) < 0.001:
+					Vertexes[int(w) - 1] = V
+				else:
+					Vertexes.insert(int(w), V)
+				this_path.write_and_save(Vertexes)
+		elif 'delete-entry' in action:
+			i = action.index('delete-entry')
+			which = action[i+1] - 1
+			this_path.delete_one(which)
+	else:
+		form = forms.Edit_Path_Form(path = this_path)
+	context = {'form': form, 'start': this_path.first, 'the_rest': this_path.read_verticies()[1:], 'Vlist': list( model.Vertex.objects.all() )}
+	return render(request, 'graph/edit_path.html', context)

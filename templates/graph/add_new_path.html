@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}nowa ścieżka{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+	<div class="maindiv smallpadd">
+		<form method="post">
+			<div class="internal-menu sidepadd">
+				<h4>Tworzenie nowej ścieżki</h4>
+				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
+			</div>
+			{% csrf_token %}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
+				{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
+				{% for error in form.name.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.description.id_for_label }}">Opis</h5>
+				{% render_field form.description class="form-control SGformwidget" placeholder=form.description.label %}
+				{% for error in form.description.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+				<h5 for="{{ form.beginnig.id_for_label }}">Pierwszy wierzchołek</h5>
+				{% render_field form.beginnig class="form-control SGformwidget" placeholder=form.beginnig.label %}
+				{% for error in form.beginnig.errors %}
+					<span class="help-block">{{ error }}</span>
+				{% endfor %}
+			</div>
+		</form>
+	</div>
+{% endblock %}

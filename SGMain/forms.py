@@ -139,3 +139,18 @@ class Edit_Edge_Form(forms.Form):
 		
 	def both_limitation(self, user, discipline):
 		self.fields['successor'].queryset = Vertex.objects.filter(user__username__startswith = user) & Vertex.objects.filter(discipline = discipline)
+			
+class Add_New_Path_Form(forms.Form):
+	name = forms.CharField(max_length = 50)
+	description = forms.CharField(max_length = 200, required = False)
+	beginnig = forms.ModelChoiceField( queryset = Vertex.objects.all() )
+			
+class Edit_Path_Form(forms.Form):
+	name = forms.CharField(max_length = 50)
+	description = forms.CharField(max_length = 200, required = False)
+	
+	def __init__(self, *args, **kwargs):
+		path = kwargs.pop('path', None)
+		super(Edit_Path_Form, self).__init__(*args, **kwargs)
+		self.initial['name'] = path.name
+		self.initial['description'] = path.description

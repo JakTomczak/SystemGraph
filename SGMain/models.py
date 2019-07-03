@@ -366,6 +366,13 @@ class Path (models.Model):
 	
 	def __str__(self):
 		return self.name
+		
+	@classmethod
+	def new_id(cls):
+		id = tools.id_generator('P')
+		while len( cls.objects.filter(path_id = id) ):
+			id = tools.id_generator('P')
+		return id
 	
 	def read(self):
 		return list( Path_Entry.objects.filter(path=self) )
