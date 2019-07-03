@@ -320,7 +320,7 @@ class Edge (models.Model):
 			file.truncate()
 			file.write( text )
 			
-	def write_pre_dir(self):
+	def read_pre_dir(self):
 		with codecs.open( self.get_pre_dir(), 'r', encoding = 'utf-8') as file:
 			return file.read()
 	

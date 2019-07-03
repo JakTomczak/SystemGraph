@@ -203,5 +203,46 @@ def new_edge(request):
 	context = {'form': form, 'pred': previous_vertex_id, 'Plist': list( model.Vertex.objects.filter(user = request.user) ), 'Slist': list( model.Vertex.objects.filter(user = request.user) )}
 	return render(request, 'graph/add_new_edge.html', context)
 
+def edit_edge(request, edge_id):
+	try:
+		this_edge = model.Edge.objects.get(edge_id = edge_id)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	user = request.user
+	if user != this_edge.user:
+		return render(request, 'errors/403.html')
+	if request.method == 'POST':
+		form = forms.Edit_Edge_Form(request.POST, edge = this_edge)
+		action = request.POST['action'].split(',')
+		if 'save_all' in request.POST and form.is_valid():
+			this_edge.preamble = form.cleaned_data['preamble']
+			this_edge.successor = form.cleaned_data['successor']
+			this_edge.write_pre_dir( form.cleaned_data['content'] )
+			this_edge.save()
+			messages.add_message(request, messages.INFO, 'Zmiany w krawędzi zostały zapisane.')
+		elif 'limituser' in request.POST or 'limitdiscipline' in request.POST:
+			if form.is_valid():
+				u = form.cleaned_data['limituser']
+				d = form.cleaned_data['limitdiscipline']
+				if u:
+					if d:
+						form.both_limitation(u, d)
+					else:
+						form.user_limitation(u)
+				else:
+					if d:
+						form.discipline_limitation(d)
+					else:
+						form.nolimitation()
+		if 'delete' in action:
+			pred = this_edge.predecessor.vertex_id
+			this_edge.delete()
+			messages.add_message(request, messages.SUCCESS, 'Krawędź została usunięta.')
+			return redirect('edit_vertex', vertex = pred)
+	else:
+		form = forms.Edit_Edge_Form(edge = this_edge)
+	context = {'form': form, 'predecessor': this_edge.predecessor, 'edge_id': edge_id}
+	return render(request, 'graph/edit_edge.html', context)
+
 def new_path(request):
 	return render(request, 'graph/add_new_path.html', context)

@@ -5,11 +5,11 @@
 {% load widget_tweaks %}
 
 {% block content %}
-	<div style="padding-left: 4%; padding-right: 4%;">
+	<div class="maindiv mediumpadd">
 		<form method="post" id="edit-edge-form">
 			<input type="hidden" id="hidden_action" value="" name="action">
 			<div class="internal-menu space-between sidepadd">
-				<h2>Edycja krawędzi</h2>
+				<h4>Edycja krawędzi</h4>
 				<button id="save_button" name="save_all" class="btn btn-secondary sgbutton">Zapisz bez kompilacji</button>
 				<button type="button" id="compile_all" name="compile" class="btn btn-primary sgbutton">Zapisz i kompiluj</button>
 				<button type="button" id="delete_edge" name="delete" class="btn btn-warning sgbutton">Usuń krawędź</button>
@@ -20,7 +20,7 @@
 			{% endfor %}
 			<div class="form-group">
 				<h5>Początek (wierzchołek wyjściowy): </h5>
-				<a href="{% url 'edit_vertex' vertex=predecessor.vertex_id %}" class="fancy-a">{{ predecessor }}</a>
+				<a href="{% url 'edit_vertex' vertex_id=predecessor.vertex_id %}" class="fancy-a">{{ predecessor }}</a>
 			</div>
 			<div class="distinctarea border border-primary rounded medium-margin">
 				<div>
@@ -102,7 +102,7 @@
 	$(document).ready(function() {
 		document.getElementById("compile_all").addEventListener('click', function(event) {
 			$.ajax({
-				url: '{% url "compile_edge" edge=edge_id %}',
+				url: '{% url "compile_edge" edge_id=edge_id %}',
 				type: 'post',
 				data: {
 					'content': $("#id_content").val()
@@ -110,7 +110,7 @@
 				dataType: 'json'
 			});
 			$.ajax({
-				url: '{% url "save_edge" edge=edge_id %}',
+				url: '{% url "save_edge" edge_id=edge_id %}',
 				type: 'post',
 				data: {
 					'content': $("#id_content").val(),

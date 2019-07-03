@@ -109,3 +109,33 @@ class Add_New_Edge_Form(forms.ModelForm):
 	class Meta:
 		model = Edge
 		fields = ('preamble',)
+			
+class Edit_Edge_Form(forms.Form):
+	preamble = forms.ModelChoiceField( queryset = Preamble.objects.none(), empty_label = None )
+	successor = forms.ModelChoiceField( queryset = Vertex.objects.all(), required = False )
+	content = forms.CharField(widget = forms.Textarea, required = False)
+	limituser = forms.CharField(max_length = 50, required = False)
+	limitdiscipline = forms.ModelChoiceField(queryset = Discipline.objects.all(), required = False)
+	
+	def __init__(self, *args, **kwargs):
+		edge = kwargs.pop('edge', None)
+		super(Edit_Edge_Form, self).__init__(*args, **kwargs)
+		self.fields['preamble'].queryset = Preamble.get_user_preambles(edge.user)
+		self.nolimitation()
+		self.initial['preamble'] = edge.preamble
+		self.initial['successor'] = edge.successor
+		self.fields['limitdiscipline'].empty_label = 'Bez ograniczeń'
+		with codecs.open( os.path.join(edge.user.folder, edge.edge_id + '.txt'), 'r', encoding = 'utf-8') as file:
+			self.initial['content'] = file.read()
+			
+	def nolimitation(self):
+		self.fields['successor'].queryset = Vertex.objects.all()
+		
+	def user_limitation(self, user):
+		self.fields['successor'].queryset = Vertex.objects.filter(user__username__startswith = user)
+		
+	def discipline_limitation(self, discipline):
+		self.fields['successor'].queryset = Vertex.objects.filter(discipline = discipline)
+		
+	def both_limitation(self, user, discipline):
+		self.fields['successor'].queryset = Vertex.objects.filter(user__username__startswith = user) & Vertex.objects.filter(discipline = discipline)

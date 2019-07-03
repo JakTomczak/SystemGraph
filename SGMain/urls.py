@@ -15,6 +15,7 @@ urlpatterns = [
 	path('add_new_vertex/', views.new_vertex, name='new_vertex'),
 	path('add_new_vertex_class/', views.new_vertex_class, name = 'new_vertex_class'),
 	
+	path('edit_edge/<edge_id>/', views.edit_edge, name='edit_edge'),
 	path('edit_preamble/<preamble_id>/', views.edit_preamble, name='edit_preamble'),
 	path('edit_vertex/<vertex_id>/', views.edit_vertex, name = 'edit_vertex'),
 	
