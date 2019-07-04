@@ -211,6 +211,7 @@ def edit_edge(request, edge_id):
 	user = request.user
 	if user != this_edge.user:
 		return render(request, 'errors/403.html')
+	dummy = model.Vertex.objects.get(is_default = True)
 	if request.method == 'POST':
 		form = forms.Edit_Edge_Form(request.POST, edge = this_edge)
 		action = request.POST['action'].split(',')
@@ -241,7 +242,7 @@ def edit_edge(request, edge_id):
 			return redirect('edit_vertex', vertex = pred)
 	else:
 		form = forms.Edit_Edge_Form(edge = this_edge)
-	context = {'form': form, 'predecessor': this_edge.predecessor, 'edge_id': edge_id}
+	context = {'form': form, 'predecessor': this_edge.predecessor, 'edge_id': edge_id, 'dummy': dummy}
 	return render(request, 'graph/edit_edge.html', context)
 
 def new_path(request):
@@ -259,7 +260,7 @@ def new_path(request):
 			return redirect('edit_path', path_id = path.path_id)
 	else:
 		form = forms.Add_New_Path_Form()
-	context = {'form': form}
+	context = {'form': form, 'Vlist': list( model.Vertex.objects.all() )}
 	return render(request, 'graph/add_new_path.html', context)
 
 def edit_path(request, path_id):

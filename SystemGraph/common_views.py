@@ -24,33 +24,28 @@ def SearchSite(request):
 
 '''
 When you didn't change database, but changed base directory of this project,
-call this function ONCE.
+call this function.
 '''
 def I_HAVE_CHANGED_BASEDIR ():
-	Users = CustomUser.objects.all()
-	for user in Users:
+	for user in CustomUser.objects.all():
 		user.folder = None
-		user.get_folder()
-		user.save()
-	Prems = model.Preamble.objects.all()
-	for P in Prems:
-		P.directory = os.path.join( P.user.folder, P.preamble_id + '.tex' )
+		user.get_folder(save = True)
+	for P in model.Preamble.objects.all():
+		P.directory = os.path.join( P.user.get_folder(), P.preamble_id + '.tex' )
 		P.save()
-	Verts = model.Vertex.objects.all()
-	for V in Verts:
-		V.content_dir = os.path.join( settings.PUF_DIR, V.vertex_id + '.txt' )
+	for V in model.Vertex.objects.all():
+		V.content_dir = os.path.join( settings.COMP_DIR, V.vertex_id + '.txt' )
 		if V.desc_dir:
-			V.desc_dir = os.path.join( settings.PUF_DIR, V.vertex_id + 'desc.txt' )
+			V.desc_dir = os.path.join( settings.COMP_DIR, V.vertex_id + 'desc.txt' )
 		V.save()
-	Edges = model.Edge.objects.all()
-	for E in Edges:
-		E.directory = os.path.join( settings.PUF_DIR, E.edge_id + '.txt' )
+	for E in model.Edge.objects.all():
+		E.directory = os.path.join( settings.COMP_DIR, E.edge_id + '.txt' )
 		E.save()
 	A = model.Preamble.objects.get(preamble_id = 'AAAAAAAAAA')
-	A.directory = os.path.join( settings.BASE_DIR, 'static', 'AAAAAAAAAA.tex' )
+	A.directory = os.path.join( settings.COMP_DIR, 'AAAAAAAAAA.tex' )
 	A.save()
 	B = model.Preamble.objects.get(preamble_id = 'AAAAAAAAAB')
-	B.directory = os.path.join( settings.BASE_DIR, 'static', 'AAAAAAAAAB.tex' )
+	B.directory = os.path.join( settings.COMP_DIR, 'AAAAAAAAAB.tex' )
 	B.save()
 '''
 When you run this project first time or you changed database without migrating records,
@@ -61,6 +56,9 @@ def I_HAVE_NEW_DATABASE():
 	I_GUESS_YOU_ARE_ADMIN = CustomUser.objects.get(is_superuser = True)
 	model.Preamble.FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES( I_GUESS_YOU_ARE_ADMIN )
 	model.Vertex_Class.FIRST_TIME_RUN_ADD_DEFAULT_VCLASS()
+	model.Discipline.FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE()
+	model.Subject.FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT()
+	model.Vertex.FIRST_TIME_RUN_ADD_DEFAULT_VERTEX( I_GUESS_YOU_ARE_ADMIN )
 	model.Edge_Class.FIRST_TIME_RUN_ADD_DEFAULT_ECLASS()
 	i_want_math = True
 	if i_want_math:

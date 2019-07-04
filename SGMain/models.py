@@ -26,6 +26,7 @@ class Vertex_Class (models.Model):
 	right = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='onright')
 	top = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='ontop')
 	bottom = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='onbottom')
+	is_default = models.BooleanField(default = False)
 		
 	class Meta:
 		verbose_name_plural = "Vertexes Classes"
@@ -56,9 +57,7 @@ class Vertex_Class (models.Model):
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VCLASS(cls):
-		default = Vertex_Class()
-		default.polish_name = 'testowy'
-		default.polish_name_plural = 'testowe'
+		default = Vertex_Class(polish_name = 'testowy', polish_name_plural = 'testowe', is_default = True)
 		default.save()
 		default.left = default
 		default.right = default
@@ -76,7 +75,8 @@ class Preamble (models.Model):
 	user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
 	title = models.CharField(max_length = 60, default = 'My preamble')
 	description = models.CharField(max_length = 200, null = True)
-	directory = models.CharField(max_length = 200, default = os.path.join( settings.BASE_DIR, 'static', 'AAAAAAAAAA.txt' ))
+	directory = models.CharField(max_length = 200, default = os.path.join( settings.COMP_DIR, 'AAAAAAAAAA.txt' ))
+	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		if self.description:
@@ -111,18 +111,20 @@ class Preamble (models.Model):
 	@classmethod
 	def get_user_preambles(cls, user):
 		if user:
-			return Preamble.objects.filter(user = user) | Preamble.objects.filter(preamble_id = 'AAAAAAAAAA') | Preamble.objects.filter(preamble_id = 'AAAAAAAAAB')
+#			return Preamble.objects.filter(user = user) | Preamble.objects.filter(preamble_id = 'AAAAAAAAAA') | Preamble.objects.filter(preamble_id = 'AAAAAAAAAB')
+			return Preamble.objects.filter(user = user) | Preamble.objects.filter(is_default = True)
 		else:
-			return Preamble.objects.filter(preamble_id = 'AAAAAAAAAA') | Preamble.objects.filter(preamble_id = 'AAAAAAAAAB')
+#			return Preamble.objects.filter(preamble_id = 'AAAAAAAAAA') | Preamble.objects.filter(preamble_id = 'AAAAAAAAAB')
+			return Preamble.objects.filter(is_default = True)
 	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES(cls, admin):
-		A = Preamble(preamble_id = 'AAAAAAAAAA', user = admin)
+		A = Preamble(preamble_id = 'AAAAAAAAAA', user = admin, is_default = True)
 		A.title = 'Default preamble'
 		A.desciption = 'It works with english planar text and math formulas.'
 		A.save()
-		B = Preamble(preamble_id = 'AAAAAAAAAB', user = admin)
-		B.directory = os.path.join( settings.BASE_DIR, 'static', 'AAAAAAAAAB.txt' )
+		B = Preamble(preamble_id = 'AAAAAAAAAB', user = admin, is_default = True)
+		B.directory = os.path.join( settings.COMP_DIR, 'AAAAAAAAAB.txt' )
 		B.title = 'Domyślna preambuła'
 		B.desciption = 'Działa z tekstem polskim i matematycznymi formułami.'
 		B.save()
@@ -133,34 +135,48 @@ def delete_preamble_files (sender, instance, using, **kwargs):
 	
 class Discipline (models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
+	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return self.polish_name
+	
+	@classmethod
+	def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
+		Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
 		
 class Subject (models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany temat')
+	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return self.polish_name
+	
+	@classmethod
+	def FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT(cls):
+		Subject(polish_name = 'Brak tematu', is_default = True).save()
 
 class Vertex (models.Model):
 	vertex_id = models.CharField(max_length = 10, primary_key = True, default = 'VAAAAAAAAA')
-	vertex_class = models.ForeignKey(Vertex_Class, on_delete = models.SET_NULL, null = True)
+	vertex_class = models.ForeignKey(Vertex_Class, on_delete = models.SET_DEFAULT, default = 1)
 	preamble = models.ForeignKey(Preamble, on_delete = models.SET_DEFAULT, default = 'AAAAAAAAAA')
 	user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-	discipline = models.ForeignKey(Discipline, on_delete = models.SET_NULL, null = True)
-	subject = models.ForeignKey(Subject, on_delete = models.SET_NULL, null = True)
+	discipline = models.ForeignKey(Discipline, on_delete = models.SET_DEFAULT, default = 1)
+	subject = models.ForeignKey(Subject, on_delete = models.SET_DEFAULT, default = 1)
 	date = models.DateTimeField(auto_now = True)
 	title = models.CharField(max_length = 120, default = 'default title')
 	shorttitle = models.CharField(max_length = 40, null = True, blank = True)
 	submitted = models.BooleanField(default = False)
 	desc_dir = models.CharField(max_length = 200, null = True)
 	content_dir = models.CharField(max_length = 200, null = True)
+	is_default = models.BooleanField(default = False)
 		
 	class Meta:
 		verbose_name_plural = "Vertices"
 	
 	def __str__(self):
+		return str(self.discipline) + ': ' + self.title + ' (' + self.vertex_id + ')'
+	
+	def str2(self):
 		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
 		
 	@classmethod
@@ -227,6 +243,12 @@ class Vertex (models.Model):
 		with codecs.open( self.get_pre_desc_dir(), 'w', encoding = 'utf-8') as file:
 			file.truncate()
 			file.write( text )
+	
+	@classmethod
+	def FIRST_TIME_RUN_ADD_DEFAULT_VERTEX(cls, admin):
+		V = Vertex(user = admin, title = 'Dummy vertex', shorttitle = 'Dummy', submitted = True, is_default = True)
+		V.create_pre_dirs()
+		V.save()
 		
 @receiver(models.signals.pre_delete, sender = Vertex)
 def delete_vertex_files (sender, instance, using, **kwargs):

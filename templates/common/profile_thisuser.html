@@ -14,19 +14,29 @@
 					<a href="{% url 'new_vertex' %}" class="btn btn-primary" role="button" style="margin-left: 20px;">Utwórz nowy wierzchołek</a>
 				</div>
 				{% if projects %}
-					<ul id="open_projects">
+				{% for vert in projects %}
+				{% include 'common/vertex_singleframe.html' with this_vertex=vert %}
+				{% endfor %}
+					<!--<ul id="open_projects">
 						{% for pro in projects %}
 							<li class="open_project_wrapper">
 								<a href="{% url 'edit_vertex' vertex_id=pro.vertex_id %}">{{ pro.title }}</a>
 							</li>
 						{% endfor %}
-					</ul>
+					</ul>-->
 				{% else %}
 					<small>(brak)</small>
 				{% endif %}
 			</div>
 			<div class="distinctarea border border-primary rounded medium-margin">
-				{% include 'common/vertexes_list.html' %}
+				<h5 style="padding-top: 7px;">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
+				{% if verts %}
+				{% for vert in verts %}
+				{% include 'common/vertex_singleframe.html' with this_vertex=vert %}
+				{% endfor %}
+				{% else %}
+				<small>(brak)</small>
+				{% endif %}
 			</div>
 			<div class="distinctarea border border-primary rounded medium-margin" >
 				<div class="internal-menu" style="justify-content: inherit;">
@@ -36,7 +46,7 @@
 				{% if preambles %}
 					<ul id="preambles">
 						{% for pam in preambles %}
-							<li class="open_project_wrapper border border-warning rounded small-margin">
+							<li class="border border-warning rounded small-margin">
 								<a href="{% url 'edit_preamble' preamble_id=pam.preamble_id %}" class="fancy-a">{{ pam.title }}</a>
 								<br>
 								<span>{{ pam.description }}</span>

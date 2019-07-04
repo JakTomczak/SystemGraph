@@ -1,6 +1,6 @@
 <h5 style="padding-top: 7px;">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
 {% if verts %}
-<ul id="submitted_projects">
+<!--<ul id="submitted_projects">
 	{% for vert in verts %}
 		<li class="open_project_wrapper">
 			<a href="{% url 'view_vertex' vertex_id=vert.vertex_id %}" class="fancy-a">{{ vert.title }}</a> <small style="margin-left: 8px;"><a href="{% url 'edit_vertex' vertex_id=vert.vertex_id %}">(edytuj)</a></small>
@@ -8,7 +8,10 @@
 			<span>{{ vert.description|safe }}</span>{% endif %}
 		</li>
 	{% endfor %}
-</ul>
+</ul>-->
+{% for vert in verts %}
+{% include 'common/vertex_singleframe.html' with this_vertex=vert %}
+{% endfor %}
 {% else %}
 <small>(brak)</small>
 {% endif %}

@@ -8,3 +8,4 @@ __pycache__
 /proposals/*
 !/proposals/readme.txt
 config.mk4
+migrations

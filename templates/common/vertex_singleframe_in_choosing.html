@@ -1,0 +1,12 @@
+<span id="not_chosen_span_{{ my_id }}">(nie wybrano)<span>
+<div id="chosen_div_{{ my_id }}" class="innerdistinctarea border border-warning rounded small-margin">
+	<a id="chosen_a_{{ my_id }}" href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}" class="fancy-a">{{ this_vertex }}</a> {% if user == this_vertex.user %}<a id="edit_a_{{ my_id }}" style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
+	<br>
+	<span id="desc_span_{{ my_id }}">{{ this_vertex.description|safe }}</span>
+</div>
+<script>
+$(document).ready(function() {
+	var not_chosen_span = document.getElementById("not_chosen_span_{{ my_id }}");
+	{% if not_chosen %}
+});
+</script>

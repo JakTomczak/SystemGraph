@@ -10,14 +10,25 @@
 			<input type="hidden" id="hidden_action" value="" name="action">
 			<div class="internal-menu space-between sidepadd">
 				<h4>Edycja krawędzi</h4>
-				<button id="save_button" name="save_all" class="btn btn-secondary sgbutton">Zapisz bez kompilacji</button>
+				<button id="save_button" name="save_all" class="btn btn-secondary sgbutton">Zapisz&nbspbez kompilacji</button>
 				<button type="button" id="compile_all" name="compile" class="btn btn-primary sgbutton">Zapisz i kompiluj</button>
+				{% if predecessor %}<a role="button" id="return_button" class="btn btn-secondary sgbutton" href="{% url 'edit_vertex' vertex_id=predecessor %}">Powrót</a>{% endif %}
 				<button type="button" id="delete_edge" name="delete" class="btn btn-warning sgbutton">Usuń krawędź</button>
 			</div>
 			{% csrf_token %}
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
 			{% endfor %}
+			<div class="distinctarea border border-primary rounded medium-margin">
+				<h5>Początek (wierzchołek wyjściowy)</h5>
+				{% include 'common/vertex_singleframe.html' with this_vertex=predecessor %}
+			</div>
+			<div class="distinctarea border border-primary rounded medium-margin">
+				<h5>Koniec (wierzchołek docelowy)</h5>
+				{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=dummy not_chosen=1 %}
+				<span id="not_chosen_span">(nie wybrano)<span>
+			</div>
+			<!--
 			<div class="form-group">
 				<h5>Początek (wierzchołek wyjściowy): </h5>
 				<a href="{% url 'edit_vertex' vertex_id=predecessor.vertex_id %}" class="fancy-a">{{ predecessor }}</a>
@@ -37,6 +48,7 @@
 					{% render_field form.limitdiscipline class="form-control smallformfield" style="min-width:70px; padding-bottom:0; padding-top:0" onChange="form.submit();" placeholder=form.limitdiscipline.label %}
 				</div>
 			</div>
+			-->
 			<div class="flexonwidth" style="width: 100%;">
 				<div class="distinctarea border border-primary rounded medium-margin" style="flex:1; flex-grow: 3;">
 					<div class="form-group" style="display: block;">
@@ -129,6 +141,7 @@
 				document.getElementById("edit-edge-form").submit();
 			}
 		});
+		{% if predecessor %}tippy('#return_button', {content: 'Powrót do edycji wierzchołka',});{% endif %}
     });
 	</script>
 {% endblock %}

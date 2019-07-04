@@ -36,6 +36,9 @@
 					<span class="help-block">{{ error }}</span>
 				{% endfor %}
 			</div>
+			<div class="SG-modal">
+				{% include "common/vertex_choosing.html" with plen=4 thisi='1' okbutton=1 list=Vlist %}
+			</div>
 		</form>
 	</div>
 {% endblock %}

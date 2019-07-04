@@ -10,7 +10,7 @@
 			<div class="internal-menu sidepadd">
 				<h4>Tworzenie nowej krawędzi</h4>
 				<button type="button" id="save_button" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
-				<a role="button" id="return_button" class="btn btn-secondary sgbutton" href="{% url 'edit_vertex' vertex_id=pred %}" style="margin-left: 15px;">Powrót</a>
+				{% if pred %}<a role="button" id="return_button" class="btn btn-secondary sgbutton" href="{% url 'edit_vertex' vertex_id=pred %}" style="margin-left: 15px;">Powrót</a>{% endif %}
 			</div>
 			{% csrf_token %}
 			{% for hidden in form.hidden_fields %}
@@ -66,7 +66,7 @@
 				alert('Wierzchołek początkowy musi być wybrany.');
 			}
 		});
-		tippy('#return_button', {content: 'Powrót do edycji wierzchołka',});
+		{% if pred %}tippy('#return_button', {content: 'Powrót do edycji wierzchołka',});{% endif %}
     });
 	</script>
 {% endblock %}

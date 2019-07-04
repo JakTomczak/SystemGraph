@@ -1,10 +1,10 @@
 :root {
-	--primary-one: #c9ddd7;
-	--secondary-one: #c8cece;
-	--ternary-one: #333333;
-	--primary-two: #ffe6ff;
-	--secondary-two: #e1edf2;
-	--white-text: white;
+	--primary-one: #c9ddd7; /* main background color - pale green-ish? */
+	--secondary-one: #c8cece; /* background color of distict areas - light grey */
+	--ternary-one: #333333; /* background color of menu bars - graphite */
+	--primary-two: #ffe6ff; /* background color of vertex in viewing vertex - light pink */
+	--secondary-two: #e1edf2; /* background color of everything else in viewing vertex - very light blue */
+	--white-text: white; /* I once had c++ project with variable int ten = 11; */
 	--fancy-a-one: #e2389e;
 	--fancy-a-two: #8fd3f4;
 }
@@ -17,7 +17,6 @@ html {
 }
 
 body {
-	/* height: 100%; */
 	height: calc(100% - 56px);
 	font-family: Arial, Verdana, sans-serif;
 }
@@ -26,23 +25,44 @@ main {
 	height: 100%;
 }
 
-div.content {
+textarea {
+	resize: none;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* in base */
+/* ul for messages */
+.SG_messages {
+	padding-top: 5px;
+	padding-left: 16px;
+}
+
+/* in base */
+/* div directly in main with only navbar and footer */
+.content {
 	width: 100%;
-	/* height: 90%; */
 	background: var(--primary-one);
 	margin: 0;
 	padding-bottom: 20px;
 }
 
+/* in base */
+/* the same div as higher, but everything's flexing, used in viewing vertex */
 .contentfloat {
-	width:100%;
-	height:100%;
-	/* overflow: hidden; */
+	width: 100%;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	background: var(--secondary-two);
 }
 
+/* in basically everything in templates/graph/ except for view_vertex */
+/* div directly in content div (higher) for holding forms */
 .maindiv {
 	padding-top: 10px;
 }
@@ -57,21 +77,8 @@ div.content {
 	padding-right: 3%;
 }
 
-ul.messages {
-	padding-top: 5px;
-	padding-left: 16px;
-}
-
-textarea {
-	resize: none;
-}
-
-ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-
+/* in navbar */
+/* navbar */
 ul.menu {
     overflow: hidden;
     background-color: var(--ternary-one);
@@ -97,6 +104,8 @@ ul.menu li a:hover {
     background-color: #111111;
 }
 
+/*  */
+/*  */
 .SGformwidget {
 	width:100%;
 	min-width:150px;
@@ -425,4 +434,56 @@ a:not([href]) {
 .div-column {
 	display:flex;
 	justify-content: space-around;
+}
+
+.SG-modal {
+	display: block;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgba(0,0,0,0.4);
+}
+
+.SG-modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 0 20px;
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close-button {
+  position: absolute;
+  right: 32px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+}
+.close-button:hover {
+  opacity: 1;
+}
+.close-button:before, .close-button:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 33px;
+  width: 2px;
+  background-color: #333;
+}
+.close-button:before {
+  transform: rotate(45deg);
+}
+.close-button:after {
+  transform: rotate(-45deg);
+}
+
+.innerdistinctarea {
+	padding-top: 7px;
+	padding-bottom: 5px;
+	padding-left: 15px;
+	padding-right: 10px;
 }
