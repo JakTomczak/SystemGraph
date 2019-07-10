@@ -179,6 +179,9 @@ class Vertex (models.Model):
 	def str2(self):
 		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
 		
+	def ajax(self):
+		return { 'str': str(self), 'vid': self.vertex_id, 'description': self.description(), 'view_url': self.get_url(), 'edit_url': self.get_edit_url() }
+		
 	@classmethod
 	def new_id(cls):
 		id = tools.id_generator('V')
@@ -205,6 +208,9 @@ class Vertex (models.Model):
 			
 	def get_url(self):
 		return reverse('view_vertex', kwargs={'vertex_id': self.vertex_id})
+			
+	def get_edit_url(self):
+		return reverse('edit_vertex', kwargs={'vertex_id': self.vertex_id})
 		
 	def get_successors(self):
 		return Edge.objects.filter(predecessor = self)
@@ -249,6 +255,14 @@ class Vertex (models.Model):
 		V = Vertex(user = admin, title = 'Dummy vertex', shorttitle = 'Dummy', submitted = True, is_default = True)
 		V.create_pre_dirs()
 		V.save()
+	
+	# More then one default Vertex is forbidden in this project.
+	@classmethod
+	def get_default(cls):
+		try:
+			return Vertex.objects.get(is_default = True)
+		except exceptions.ObjectDoesNotExist:
+			return Vertex.objects.all()[0]
 		
 @receiver(models.signals.pre_delete, sender = Vertex)
 def delete_vertex_files (sender, instance, using, **kwargs):

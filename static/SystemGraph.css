@@ -437,7 +437,7 @@ a:not([href]) {
 }
 
 .SG-modal {
-	display: block;
+	display: none;
 	position: fixed;
 	z-index: 1;
 	left: 0;
@@ -486,4 +486,16 @@ a:not([href]) {
 	padding-bottom: 5px;
 	padding-left: 15px;
 	padding-right: 10px;
+}
+
+.h5withbuttons {
+	display: flex;
+}
+
+.h5withbuttons h5 {
+	padding-top: 8px;
+}
+
+.h5withbuttons button {
+	margin-left: 20px;
 }

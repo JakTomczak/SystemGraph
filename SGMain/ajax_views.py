@@ -1,9 +1,22 @@
 
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+import django.core.exceptions as exceptions
+import time
 
 from . import tasks
 from .models import Vertex
+
+@csrf_exempt
+def get_vertex_from_id(request):
+	vid = request.POST.get('vid', '')
+	try:
+		V = Vertex.objects.get(vertex_id = vid)
+	except exceptions.ObjectDoesNotExist:
+		V = Vertex.get_default()
+	context = {'vertex': V.ajax()}
+	return JsonResponse(context)
 	
 @csrf_exempt
 def update_compilation_status(request):
@@ -29,9 +42,10 @@ def start_compilation(request, vertex_id):
 	return JsonResponse({})
 	
 @csrf_exempt
-def start_edge_compilation(request, vertex_id):
+def start_edge_compilation(request, edge_id):
 	return JsonResponse({})
 	
 @csrf_exempt
-def edge_save(request, vertex_id):
+def edge_save(request, edge_id):
+	time.sleep(3);
 	return JsonResponse({})

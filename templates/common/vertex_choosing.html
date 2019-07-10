@@ -3,8 +3,8 @@
 	<span style="font-size: x-large;">Wybór wierzchołka</span>
 	<span class="close-button" id="close_modal_button"></span>
 	</header>
-	{% if list %}
-	<table class="table table-striped border border-primary rounded" id="search-table-{{ thisi }}" style="font-size: {% if small %}small;{% else %}15px;{% endif %}">
+	{% if query %}
+	<table class="table table-striped border border-primary rounded" id="modal_choose_table" style="font-size: {% if small %}small;{% else %}15px;{% endif %}">
 		<thead>
 			<tr>
 				<th scope="col">ID{% if not small %} wierzchołka{% endif %}</th>
@@ -15,13 +15,13 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for vertex in list %}
+			{% for vertex in query %}
 			<tr>
 				<td><a href="{% url 'view_vertex' vertex_id=vertex.vertex_id %}" class="fancy-a">{{ vertex.vertex_id }}</a></td>
 				<td>{{ vertex.title }}</td>
 				<td>{{ vertex.date.date|date:"d.m.Y" }}</td>
 				<td>{{ vertex.user.username }}</td>
-				<td><button type="button" onclick="choose_this_one_{{ thisi }}('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button></td>
+				<td><button type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button></td>
 			</tr>
 			{% endfor %}
 		</tbody>
@@ -31,38 +31,50 @@
 	{% endif %}
 </div>
 <script>
-function choose_this_one_{{ thisi }}(which) {
-	S = document.getElementById("chosen-one-{{ thisi }}");
-	S.innerHTML = which;
-	S.setAttribute('data-chosen', 'yes');
+var CF_DISPLAY;
+
+function modal_choose_this_one(which) {
+	$.ajax({
+		url: '{% url "get_vertex_from_id" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'vid': which
+		},
+		dataType: 'json',
+		success: function (data) {
+			CF_DISPLAY(data.vertex);
+			MODAL_HIDE();
+		}
+	});
 }
-	
-function no_choice_{{ thisi }}() {
-	S = document.getElementById("chosen-one-{{ thisi }}");
-	S.innerHTML = '-';
-	S.setAttribute('data-chosen', 'no');
-	if ( document.getElementById("clean_button-{{ thisi }}").getAttribute('data-default') == 'yes' ) {
-		$('#search-table-{{ thisi }}').DataTable().column(0).search( '' ).draw();
-	}
+
+function MODAL_SHOW() {
+	document.getElementsByClassName("SG-modal")[0].style.display = "block";
+}
+
+function MODAL_HIDE() {
+	document.getElementsByClassName("SG-modal")[0].style.display = "none";
 }
 
 var ftext = ['ID', 'tytuł', 'datę', 'autora']
 var idtext = ['id', 'title', 'date', 'author']
 $(document).ready(function() {
 	var modal = document.getElementsByClassName("SG-modal")[0];
+	MODAL_HIDE();
 	document.getElementById("close_modal_button").onclick = function() {
-		modal.style.display = "none";
+		MODAL_HIDE();
 	}
 	window.onclick = function(event) {
 		if (event.target == modal) {
-			modal.style.display = "none";
+			MODAL_HIDE();
 		}
 	}
-	$('#search-table-{{ thisi }} thead tr').clone(true).appendTo( '#search-table-{{ thisi }} thead' );
-	$('#search-table-{{ thisi }} thead tr:eq(1) th').each( function (i) {
+	$('#modal_choose_table thead tr').clone(true).appendTo( '#modal_choose_table thead' );
+	$('#modal_choose_table thead tr:eq(1) th').each( function (i) {
 		if (i < 4) {
 			var title = $(this).text();
-			$(this).html( '<input type="text" style="width: 100%;" id="input-' + idtext[i] + '-{{ thisi }}" placeholder="filtruj ' + ftext[i] + '" />' );
+			$(this).html( '<input type="text" style="width: 100%;" id="input-' + idtext[i] + '" placeholder="filtruj ' + ftext[i] + '" />' );
 
 			$( 'input', this ).on( 'keyup change', function () {
 				if ( table.column(i).search() !== this.value ) {
@@ -76,11 +88,11 @@ $(document).ready(function() {
 		$(this).css( 'padding', '6px 4px');
 	} );
 	
-	$('#search-table-{{ thisi }} thead tr:eq(0) th').each( function (i) {
+	$('#modal_choose_table thead tr:eq(0) th').each( function (i) {
 		$(this).css( 'background-color', 'white');
 	} );
 	
-	var table = $('#search-table-{{ thisi }}').DataTable({
+	var table = $('#modal_choose_table').DataTable({
 		orderCellsTop: true,
 		"pageLength": {{ plen }},
 		"bLengthChange": false,
@@ -88,17 +100,11 @@ $(document).ready(function() {
 		"pagingType": "simple",
 	});
 	
-	$('#search-table-{{ thisi }}').css( 'min-width', 'min-content');
-	$('#search-table-{{ thisi }}').css( 'width', '100%');
-	$('#input-id-{{ thisi }}').css( 'min-width', '50px');
-	$('#input-title-{{ thisi }}').css( 'min-width', '120px');
-	$('#input-date-{{ thisi }}').css( 'min-width', '60px');
-	$('#input-author-{{ thisi }}').css( 'min-width', '80px');
-	
-	{% if chosen %}
-	choose_this_one_{{ thisi }}('{{ chosen }}');
-	table.column(0).search( '{{ chosen }}' ).draw();
-	document.getElementById("clean_button-{{ thisi }}").setAttribute('data-default', 'yes');
-	{% endif %}
+	$('#modal_choose_table').css( 'min-width', 'min-content');
+	$('#modal_choose_table').css( 'width', '100%');
+	$('#input-id').css( 'min-width', '50px');
+	$('#input-title').css( 'min-width', '120px');
+	$('#input-date').css( 'min-width', '60px');
+	$('#input-author').css( 'min-width', '80px');
 });
 </script>

@@ -1,12 +1,43 @@
-<span id="not_chosen_span_{{ my_id }}">(nie wybrano)<span>
+<div class="h5withbuttons">
+	<h5>{{ header }}</h5>
+	<button type="button" id="choose_button_{{ my_id }}" class="btn btn-secondary sgbutton" onclick="choose_from_{{ my_id }}()">Wybierz</button>
+	<button type="button" id="clear_button_{{ my_id }}" class="btn btn-secondary sgbutton" onclick="clear_choose_{{ my_id }}()">Wyczyść wybór</button>
+</div>
+<span id="not_chosen_span_{{ my_id }}">(nie wybrano)</span>
 <div id="chosen_div_{{ my_id }}" class="innerdistinctarea border border-warning rounded small-margin">
 	<a id="chosen_a_{{ my_id }}" href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}" class="fancy-a">{{ this_vertex }}</a> {% if user == this_vertex.user %}<a id="edit_a_{{ my_id }}" style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
 	<br>
 	<span id="desc_span_{{ my_id }}">{{ this_vertex.description|safe }}</span>
 </div>
 <script>
+var CHOSEN_VID_{{ my_id }} = 'none';
+function choose_{{ my_id }}() {
+	document.getElementById("not_chosen_span_{{ my_id }}").style.display = 'none';
+	document.getElementById("chosen_div_{{ my_id }}").style.display = 'block';
+}
+function display_chosen_{{ my_id }}(vertex_json) {
+	CHOSEN_VID_{{ my_id }} = vertex_json.vid;
+	a = document.getElementById("chosen_a_{{ my_id }}");
+	a.href = vertex_json.view_url;
+	a.innerHTML = vertex_json.str;
+	document.getElementById("edit_a_{{ my_id }}").href = vertex_json.edit_url;
+	document.getElementById("desc_span_{{ my_id }}").innerHTML = vertex_json.description;
+	choose_{{ my_id }}();
+}
+function choose_from_{{ my_id }}() {
+	CF_DISPLAY = display_chosen_{{ my_id }};
+	MODAL_SHOW();
+}
+function clear_choose_{{ my_id }}() {
+	CHOSEN_VID_{{ my_id }} = 'none';
+	document.getElementById("not_chosen_span_{{ my_id }}").style.display = 'block';
+	document.getElementById("chosen_div_{{ my_id }}").style.display = 'none';
+}
 $(document).ready(function() {
-	var not_chosen_span = document.getElementById("not_chosen_span_{{ my_id }}");
-	{% if not_chosen %}
+	{% if chosen %}
+	choose_{{ my_id }}();
+	{% else %}
+	clear_choose_{{ my_id }}();
+	{% endif %}
 });
 </script>
