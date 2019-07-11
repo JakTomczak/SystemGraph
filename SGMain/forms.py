@@ -112,7 +112,6 @@ class Edit_Edge_Form(forms.Form):
 class Add_New_Path_Form(forms.Form):
 	name = forms.CharField(max_length = 50)
 	description = forms.CharField(max_length = 200, required = False)
-	beginnig = forms.ModelChoiceField( queryset = Vertex.objects.all() )
 			
 class Edit_Path_Form(forms.Form):
 	name = forms.CharField(max_length = 50)

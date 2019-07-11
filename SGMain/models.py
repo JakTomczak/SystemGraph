@@ -417,13 +417,13 @@ class Path (models.Model):
 		return [entry.vertex for entry in self.read()]
 		
 	def get_first_str(self):
-		if first:
+		if self.first:
 			return str(self.first)
 		else:
 			return 'Pierwszy wierzchołek tej ścieżki został usunięty.'
 		
 	def get_first_url(self):
-		if first:
+		if self.first:
 			return self.first.get_url()
 		else:
 			return '#'

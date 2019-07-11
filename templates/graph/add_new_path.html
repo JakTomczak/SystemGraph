@@ -5,40 +5,60 @@
 {% load widget_tweaks %}
 
 {% block content %}
-	<div class="maindiv smallpadd">
-		<form method="post">
-			<div class="internal-menu sidepadd">
-				<h4>Tworzenie nowej ścieżki</h4>
-				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
-			</div>
-			{% csrf_token %}
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
-				{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
-				{% for error in form.name.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.description.id_for_label }}">Opis</h5>
-				{% render_field form.description class="form-control SGformwidget" placeholder=form.description.label %}
-				{% for error in form.description.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.beginnig.id_for_label }}">Pierwszy wierzchołek</h5>
-				{% render_field form.beginnig class="form-control SGformwidget" placeholder=form.beginnig.label %}
-				{% for error in form.beginnig.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div class="SG-modal">
-				{% include "common/vertex_choosing.html" with plen=4 thisi='1' okbutton=1 list=Vlist %}
-			</div>
-		</form>
+<div class="maindiv smallpadd">
+	<div class="SG-modal">
+		{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
 	</div>
+	<form id="add-new-path-form" method="post">
+		{% csrf_token %}
+		<input type="hidden" id="hidden_action" value="" name="action">
+		<div class="internal-menu sidepadd">
+			<h4>Tworzenie nowej ścieżki</h4>
+			<button type="button" class="btn btn-primary sgbutton" style="margin-left: 25px;" onclick="save()">Utwórz</button>
+		</div>
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		<div class="div-column">
+			<div style="flex: 2">
+				<div class="distinctarea border border-primary rounded big-margin">
+					<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
+					{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
+					{% for error in form.name.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				</div>
+				<div class="distinctarea border border-primary rounded big-margin">
+					<h5 for="{{ form.description.id_for_label }}">Opis</h5>
+					{% render_field form.description class="form-control SGformwidget" placeholder=form.description.label %}
+					{% for error in form.description.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				</div>
+				<div class="distinctarea border border-primary rounded big-margin">
+					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=dummy my_id="first" header="Pierwszy wierzchołek" %}
+				</div>
+			</div>
+			<div style="flex: 1">
+				<div class="distinctarea border border-primary rounded small-margin">
+					<h5>Co to jest ścieżka?</h5>
+					{% include "FAQ/what_is_path_pl.html" %}
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+function save() {
+	if (CHOSEN_VID_first != 'none') {
+		document.getElementById("hidden_action").value += ',save,' + CHOSEN_VID_first;
+		document.getElementById("add-new-path-form").submit();
+	}
+	else {
+		alert('Wierzchołek początkowy musi być wybrany. Będziesz mógł go później zmienić.');
+	}
+}
+</script>
 {% endblock %}

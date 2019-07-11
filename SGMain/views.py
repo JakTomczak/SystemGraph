@@ -256,17 +256,24 @@ def new_path(request):
 		return render(request, 'errors/401.html')
 	if request.method == 'POST':
 		form = forms.Add_New_Path_Form(request.POST)
-		if 'save' in request.POST and form.is_valid():
+		action = request.POST['action'].split(',')
+		if 'save' in action and form.is_valid():
 			path = model.Path(user = request.user, name = form.cleaned_data['name'])
 			path.description = form.cleaned_data['description'] or None
 			path.path_id = model.Path.new_id()
+			i = action.index('save')
+			first = model.Vertex.objects.get( vertex_id = action[i+1] )
 			path.save()
-			path.write_and_save( [form.cleaned_data['beginnig'], ] )
+			path.write_and_save( [first, ] )
 			messages.add_message(request, messages.SUCCESS, 'Nowa ścieżka została dodana.')
 			return redirect('edit_path', path_id = path.path_id)
 	else:
 		form = forms.Add_New_Path_Form()
-	context = {'form': form, 'Vlist': list( model.Vertex.objects.all() )}
+	context = {
+		'form': form, 
+		'vertices': model.Vertex.objects.all(),
+		'dummy': model.Vertex.get_default()
+		}
 	return render(request, 'graph/add_new_path.html', context)
 
 def edit_path(request, path_id):
