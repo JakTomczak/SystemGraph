@@ -36,6 +36,7 @@ function clear_choose_{{ my_id }}() {
 $(document).ready(function() {
 	{% if chosen %}
 	choose_{{ my_id }}();
+	CHOSEN_VID_{{ my_id }} = "{{ this_vertex.vertex_id }}";
 	{% else %}
 	clear_choose_{{ my_id }}();
 	{% endif %}

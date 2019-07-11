@@ -388,7 +388,7 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 	instance.delete_pre_dir()
 	try:
 		os.remove( instance.directory )
-	except FileNotFoundError:
+	except (TypeError, FileNotFoundError):
 		pass
 			
 class Path (models.Model):

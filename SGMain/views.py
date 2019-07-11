@@ -178,29 +178,31 @@ def new_edge(request):
 	if not request.user or request.user.is_anonymous:
 		return render(request, '401.html')
 	if request.method == 'POST':
-		form = forms.Add_New_Edge_Form(request.POST, user = request.user )
-		if form.is_valid():
-			verts = request.POST['action'].split(',')
-			if verts:
-				pred = verts[0].split(':')[1]
-				succ = verts[1].split(':')[1]
-				edge = form.save(commit = False)
-				edge.user = request.user
-				edge.edge_id = model.Edge.new_id()
-				edge.create_pre_dirs()
-				edge.predecessor = model.Vertex.objects.get(vertex_id = pred)
-				if succ.startswith('V'):
-					edge.successor = model.Vertex.objects.get(vertex_id = succ)
-				else:
-					edge.successor = None
-				edge.save()
-				messages.add_message(request, messages.SUCCESS, 'Nowa krawędź została dodana.')
-				del request.session['pred']
-				return redirect('edit_edge', edge = edge.edge_id)
-	else:
-		form = forms.Add_New_Edge_Form(user = request.user)
-	previous_vertex_id = request.session.get('pred')
-	context = {'form': form, 'pred': previous_vertex_id, 'Plist': list( model.Vertex.objects.filter(user = request.user) ), 'Slist': list( model.Vertex.objects.filter(user = request.user) )}
+		action = request.POST['action'].split(',')
+		if 'save' in action:
+			i = action.index('save')
+			pred = action[i+1]
+			succ = action[i+2]
+			edge = model.Edge()
+			edge.user = request.user
+			edge.edge_id = model.Edge.new_id()
+			edge.create_pre_dirs()
+			edge.predecessor = model.Vertex.objects.get(vertex_id = pred)
+			if succ.startswith('V'):
+				edge.successor = model.Vertex.objects.get(vertex_id = succ)
+			else:
+				edge.successor = None
+			edge.save()
+			messages.add_message(request, messages.SUCCESS, 'Nowa krawędź została dodana.')
+			del request.session['pred']
+			return redirect('edit_edge', edge_id = edge.edge_id)
+	context = {
+		'pred_is_chosen': True, 
+		'predecessor': model.Vertex.objects.get( vertex_id = request.session.get('pred') ), 
+		'succ_is_chosen': False,
+		'successor': model.Vertex.get_default(), 
+		'vertices': model.Vertex.objects.filter(user = request.user)
+		}
 	return render(request, 'graph/add_new_edge.html', context)
 
 def edit_edge(request, edge_id):
@@ -218,11 +220,10 @@ def edit_edge(request, edge_id):
 			this_edge.preamble = form.cleaned_data['preamble']
 			i = action.index('save')
 			successor_id = action[i+1]
-			if successor_id == 'none':
-				this_edge.successor = None
-			else:
-				print(successor_id)
+			if successor_id.startswith('V'):
 				this_edge.successor = model.Vertex.objects.get(vertex_id = successor_id)
+			else:
+				this_edge.successor = None
 			this_edge.write_pre_dir( form.cleaned_data['content'] )
 			this_edge.save()
 			messages.add_message(request, messages.INFO, 'Zmiany w krawędzi zostały zapisane.')
@@ -231,7 +232,7 @@ def edit_edge(request, edge_id):
 			this_edge.delete()
 			messages.add_message(request, messages.SUCCESS, 'Krawędź została usunięta.')
 			if pred:
-				return redirect('edit_vertex', vertex = pred.vertex_id)
+				return redirect('edit_vertex', vertex_id = pred.vertex_id)
 			else:
 				return redirect('start')
 	else:
@@ -240,7 +241,7 @@ def edit_edge(request, edge_id):
 		'form': form, 
 		'predecessor': this_edge.predecessor, 
 		'edge_id': edge_id, 
-		'vertices': model.Vertex.objects.all()
+		'vertices': model.Vertex.objects.filter(user = request.user)
 		}
 	if this_edge.successor:
 		context['successor'] = this_edge.successor

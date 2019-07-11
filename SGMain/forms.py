@@ -98,18 +98,6 @@ class Add_New_Vertex_Class_Form(forms.Form):
 	bottom = forms.CharField(max_length = 50)
 	info = forms.CharField(widget = forms.Textarea, required = False)
 			
-class Add_New_Edge_Form(forms.ModelForm):
-	preamble = forms.ModelChoiceField( queryset = Preamble.objects.none(), empty_label = None )
-	
-	def __init__(self, *args, **kwargs):
-		user = kwargs.pop('user', None)
-		super(Add_New_Edge_Form, self).__init__(*args, **kwargs)
-		self.fields['preamble'].queryset = Preamble.get_user_preambles(user)
-	
-	class Meta:
-		model = Edge
-		fields = ('preamble',)
-			
 class Edit_Edge_Form(forms.Form):
 	preamble = forms.ModelChoiceField( queryset = Preamble.objects.none(), empty_label = None )
 	content = forms.CharField(widget = forms.Textarea, required = False)
