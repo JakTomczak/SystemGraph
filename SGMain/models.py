@@ -275,6 +275,22 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 		os.remove( instance.content_dir )
 	except FileNotFoundError:
 		pass
+	PEs = Path_Entry.objects.filter(vertex = instance)
+	for entry in PEs:
+		path = entry.path
+		next_ones = Path_Entry.objects.filter(path = path, index__gt = entry.index)
+		for e in next_ones:
+			e.index -= 1
+			e.save()
+		path.length -= 1
+		entry.delete()
+		if path.length < 1:
+			path.delete()
+		else:
+			path.save()
+	for path in Path.objects.filter(first = instance):
+		path.first = Path_Entry.objects.filter(path = path, index = 1)[0].vertex
+		path.save()
 	
 class Edge_Class (models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana krawędź')
@@ -411,7 +427,17 @@ class Path (models.Model):
 		return id
 	
 	def read(self):
-		return list( Path_Entry.objects.filter(path=self) )
+		PEs = Path_Entry.objects.filter(path = self).order_by('index')
+		i = 0
+		for entry in PEs:
+			i += 1
+			if entry.index != i:
+				raise Exception('Path error')
+			if not entry.vertex:
+				raise Exception('Path error')
+		if self.length != i:
+			raise Exception('Path error')
+		return PEs
 	
 	def read_verticies(self):
 		return [entry.vertex for entry in self.read()]
@@ -429,7 +455,7 @@ class Path (models.Model):
 			return '#'
 	
 	def write_and_save(self, vertexes):
-		for entry in Path_Entry.objects.filter(path=self):
+		for entry in Path_Entry.objects.filter(path = self):
 			entry.delete() 
 		self.first = vertexes[0]
 		i = 0
@@ -443,16 +469,47 @@ class Path (models.Model):
 				E.save()
 		self.length = i
 		self.save()
+		
+	def add_here_and_save(self, where, vertex):
+		if not vertex:
+			return
+		if where > self.length:
+			self.add_at_end_and_save(vertex)
+			return
+		if where <= 1:
+			self.first = vertex
+			where = 1
+		for entry in Path_Entry.objects.filter(path = self, index__gte = where):
+			entry.index += 1
+			entry.save()
+		E = Path_Entry(
+			path = self,
+			index = where,
+			vertex = vertex
+			)
+		E.save()
+		self.length += 1
+		self.save()
 			
-	def write_at_end_and_save(self, Vert):
-		if Vert:
-			i = self.length + 1
-			E = Path_Entry()
-			E.path = self
-			E.index = i
-			E.vertex = Vert
-			E.save()
-			self.length = i
+	def add_at_end_and_save(self, vertex):
+		if not vertex:
+			return
+		E = Path_Entry()
+		E.path = self
+		self.length += 1
+		E.index = self.length
+		E.vertex = vertex
+		E.save()
+		self.save()
+		
+	def change_this_one_and_save(self, where, to_which):
+		if where < 1 or where > self.length:
+			return
+		E = Path_Entry.objects.get(path = self, index = where)
+		E.vertex = to_which
+		E.save()
+		if where == 1:
+			self.first = to_which
 			self.save()
 		
 	def delete_one(self, ind):
@@ -466,7 +523,7 @@ class Path (models.Model):
 				if ind == 1:
 					self.first = after[0].vertex
 				for entry in after:
-					entry.index = entry.index - 1
+					entry.index -= 1
 					entry.save()
 			elif ind == 1:
 				self.first = None

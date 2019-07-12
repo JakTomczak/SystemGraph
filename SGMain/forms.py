@@ -111,11 +111,11 @@ class Edit_Edge_Form(forms.Form):
 			
 class Add_New_Path_Form(forms.Form):
 	name = forms.CharField(max_length = 50)
-	description = forms.CharField(max_length = 200, required = False)
+	description = forms.CharField(widget = forms.Textarea, max_length = 200, required = False)
 			
 class Edit_Path_Form(forms.Form):
 	name = forms.CharField(max_length = 50)
-	description = forms.CharField(max_length = 200, required = False)
+	description = forms.CharField(widget = forms.Textarea, max_length = 200, required = False)
 	
 	def __init__(self, *args, **kwargs):
 		path = kwargs.pop('path', None)

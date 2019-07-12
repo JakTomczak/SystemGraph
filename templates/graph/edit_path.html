@@ -5,122 +5,82 @@
 {% load widget_tweaks %}
 
 {% block content %}
-	<div class="maindiv smallpadd">
-		<form method="post" id="edit-path-form">
-			<input type="hidden" id="hidden_action" value="" name="action">
-			<div class="internal-menu sidepadd">
-				<h4>Edycja ścieżki</h4>
-				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zapisz</button>
-				<button type="button" id="delete_path" name="delete" class="btn btn-warning sgbutton">Usuń ścieżkę</button>
-			</div>
-			{% csrf_token %}
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
-				{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
-				{% for error in form.name.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.description.id_for_label }}">Opis</h5>
-				{% render_field form.description class="form-control SGformwidget" placeholder=form.description.label %}
-				{% for error in form.description.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div id="choose-div" class="distinctarea border border-primary rounded big-margin" style="width: 100%; display: none;">
-				<h5 id="chve-no" data-whichone=""></h5>
-				{% include "common/choose_vertex.html" with plen=4 thisi='1' okbutton=1 list=Vlist %}
-			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="width: 100%;">
-				<h5 for="{{ form.description.id_for_label }}">Wierzchołki</h5>
-				<a name="add-vert" onclick="add_new_to_path(0)" href="#">Dodaj na początku</a>
-				<div class="border border-warning rounded small-margin" style="max-width: 100%;">
-					<div class="flexonwidth">
-						<div style="height: 100%; width: 25px; align-self: center;">
-							<span style="margin-left: 15px;">1.</span>
-						</div>
-						<div class="internal-menu sidepadd" style="flex: 1;">
-							<a class="fancy-a" href="{% url 'view_vertex' vertex_id=start.vertex_id %}">{{ start.title }} ({{ start.vertex_id }})</a>
-							<button type="button" onclick="change_one_in_path(1)" style="font-size: 14px; margin-left: 25px;" class="btn btn-secondary sgbutton">Zmień na inny</button>
-							{% if the_rest %}
-							<button type="button" onclick="delete_one_in_path(1)" style="font-size: 14px; margin-left: 25px;" class="btn btn-secondary sgbutton">Usuń ze ścieżki</button>
-							{% endif %}
-						</div>
-					</div>
-				</div>
-				{% for vert in the_rest %}
-				<a name="add-vert" onclick="add_new_to_path({{ forloop.counter }})" data-number='{{ forloop.counter|add:"0.5" }}' href="#">Dodaj tutaj</a>
-				<div class="border border-warning rounded small-margin" style="max-width: 100%;">
-					<div class="flexonwidth">
-						<div style="height: 100%; width: 25px; align-self: center;">
-							<span style="margin-left: 15px;">{{ forloop.counter|add:"1" }}.</span>
-						</div>
-						<div class="internal-menu sidepadd" style="flex: 1;">
-							<a class="fancy-a" href="{% url 'view_vertex' vertex_id=vert.vertex_id %}">{{ vert.title }} ({{ vert.vertex_id }})</a>
-							<button type="button" onclick="change_one_in_path({{ forloop.counter|add:'1' }})" style="font-size: 14px; margin-left: 25px;" class="btn btn-secondary sgbutton">Zmień na inny</button>
-							<button type="button" onclick="delete_one_in_path({{ forloop.counter|add:'1' }})" style="font-size: 14px; margin-left: 25px;" class="btn btn-secondary sgbutton">Usuń ze ścieżki</button>
-						</div>
-					</div>
-				</div>
-				{% endfor %}
-				<a name="add-vert" onclick="add_new_to_path('end')" data-number="end" href="#">Dodaj na końcu</a>
-			</div>
-		</form>
+<div class="maindiv smallpadd">
+	<div class="SG-modal">
+		{% include "common/vertex_choosing.html" with plen=8 query=vertices add=1 %}
 	</div>
+	<form method="post" id="edit-path-form">
+		{% csrf_token %}
+		<input type="hidden" id="hidden_action" value="" name="action">
+		<div class="internal-menu sidepadd">
+			<h4>Edycja ścieżki</h4>
+			<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zapisz</button>
+			<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń ścieżkę</button>
+		</div>
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
+			{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
+			{% for error in form.name.errors %}
+				<span class="help-block">{{ error }}</span>
+			{% endfor %}
+		</div>
+		<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<h5 for="{{ form.description.id_for_label }}">Opis</h5>
+			{% render_field form.description rows="3" class="form-control SGformwidget" placeholder=form.description.label %}
+			{% for error in form.description.errors %}
+				<span class="help-block">{{ error }}</span>
+			{% endfor %}
+		</div>
+		<h4 class="big-margin">Kolejne wierzchołki ścieżki</h4>
+		<a class="border border-warning rounded big-margin" style="padding: 8px;" onclick="add_new_to_path(0)" href="#">Dodaj na początku</a>
+		<div class="distinctarea border border-primary rounded big-margin">
+{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=first chosen="1" my_id="1" header="Wierzchołek początkowy" mtitle="Zmień wierzchołek nr 1" %}
+		</div>
+		{% for vert in the_rest %}
+		{% with ii=forloop.counter|add:'1'|stringformat:"s" %}
+		{% with head="Wierzchołek nr "|add:ii %}
+		{% with mt="Zmień wierzchołek nr "|add:ii %}
+		<a class="border border-warning rounded big-margin" style="padding: 8px;" onclick="add_new_to_path({{ forloop.counter }})" href="#">Dodaj tutaj</a>
+		<div class="distinctarea border border-primary rounded big-margin">
+			{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=vert chosen="1" my_id=ii header=head mtitle=mt %}
+		</div>
+		{% endwith %}
+		{% endwith %}
+		{% endwith %}
+		{% endfor %}
+		<a class="border border-warning rounded big-margin" style="padding: 8px;" onclick="add_new_to_path('end')" href="#">Dodaj na końcu</a>
+	</form>
+</div>
 {% endblock %}
 {% block javascript %}
-	<script>
-	function add_new_to_path(which) {
-		H5 = document.getElementById("chve-no");
-		if (which == 'end') {
-			H5.textContent = 'Dodanie wierzchołka na końcu';
-			H5.setAttribute('data-whichone', 'end');
-		}
-		else {
-			if (which === 0) {
-				H5.textContent = 'Dodanie wierzchołka na początku';
-			}
-			else {
-				H5.textContent = 'Dodanie wierzchołka za wierzchołkiem nr ' + which;
-			}
-			H5.setAttribute('data-whichone', (which + 0.5).toString());
-		}
-		$('#choose-div').css("display", "block");
+<script>
+function delete_this() {
+	var choice = confirm('Czy na pewno? \nŚcieżka zostanie usunięta na stałe.');
+	if (choice) {
+		document.getElementById("hidden_action").value += ',delete';
+		document.getElementById("edit-path-form").submit();
 	}
-		
-	function change_one_in_path(which) {
-		H5 = document.getElementById("chve-no");
-		H5.textContent = 'Zmiana wierzchołka nr ' + which;
-		H5.setAttribute('data-whichone', which.toString());
-		$('#choose-div').css("display", "block");
+}
+function add_new_to_path(which) {
+	CHANGE_CALLER = null;
+	ADD_CALLER = which;
+	var title;
+	if (which == 'end') {
+		title = "Dodaj wierzchołek na końcu";
 	}
-	
-	function delete_one_in_path(which) {
-		var choice = confirm('Czy usunąć wierzchołek nr ' + which + ' ze ścieżki?');
-		if (choice) {
-			document.getElementById("hidden_action").value += ',delete-entry,' + which.toString();
-			document.getElementById("edit-path-form").submit();
-		}
+	else if (which > 0) {
+		title = "Dodaj wierzchołek za wierzchołkiem nr " + which;
 	}
-		
-	$(document).ready(function() {
-	
-		document.getElementById("chok_button-1").addEventListener('click', function(event) {
-			document.getElementById("hidden_action").value += ',change,' + document.getElementById("chve-no").getAttribute('data-whichone') +  ',' + document.getElementById("chosen-one-1").innerHTML;
-			document.getElementById("edit-path-form").submit();
-		});
-	
-		document.getElementById("delete_path").addEventListener('click', function(event) {
-			var choice = confirm('Czy na pewno? \nŚcieżka zostanie usunięta na stałe.');
-			if (choice) {
-				document.getElementById("hidden_action").value += ',delete-path';
-				document.getElementById("edit-path-form").submit();
-			}
-		});
-    });
-	</script>
+	else {
+		title = "Dodaj wierzchołek na początku";
+	}
+	MODAL_TITLE( title );
+	MODAL_SHOW();
+}
+$(document).ready(function() {
+});
+</script>
 {% endblock %}

@@ -1,6 +1,6 @@
 <div class="SG-modal-content">
 	<header style="position: relative; padding: 20px; 0">
-	<span style="font-size: x-large;">Wybór wierzchołka</span>
+	<span id="modal-title" style="font-size: x-large;">Wybór wierzchołka</span>
 	<span class="close-button" id="close_modal_button"></span>
 	</header>
 	{% if query %}
@@ -21,7 +21,12 @@
 				<td>{{ vertex.title }}</td>
 				<td>{{ vertex.date.date|date:"d.m.Y" }}</td>
 				<td>{{ vertex.user.username }}</td>
-				<td><button type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button></td>
+				<td>
+				{% if add %}
+					<button name="modal-add-button" type="button" onclick="modal_add_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Dodaj</button>
+				{% endif %}
+					<button name="modal-choose-button" type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button>
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
@@ -32,7 +37,41 @@
 </div>
 <script>
 var CF_DISPLAY;
-
+var ADD_CALLER = null;
+var CHANGE_CALLER = null;
+{% if add %}
+function modal_add_this_one(which) {
+	$.ajax({
+		url: '{% url "add_vertex_to_path_from_id" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'path_id': "{{ path_id }}",
+			'vid': which,
+			'where': ADD_CALLER
+		},
+		dataType: 'json',
+		success: function (data) {
+			location.reload(true);
+		}
+	});
+}
+function modal_choose_this_one(which) {
+	$.ajax({
+		url: '{% url "change_vertex_in_path_from_id" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'path_id': "{{ path_id }}",
+			'vid': which,
+			'where': CHANGE_CALLER
+		},
+		dataType: 'json',
+		success: function (data) {
+			location.reload(true);
+		}
+	});
+}{% else %}
 function modal_choose_this_one(which) {
 	$.ajax({
 		url: '{% url "get_vertex_from_id" %}',
@@ -47,9 +86,26 @@ function modal_choose_this_one(which) {
 			MODAL_HIDE();
 		}
 	});
+}{% endif %}
+
+var mt = document.getElementById("modal-title");
+function MODAL_TITLE(title) {
+	mt.innerHTML = title;
 }
 
 function MODAL_SHOW() {
+	{% if add %}var adds = document.getElementsByName("modal-add-button");
+	var chooses = document.getElementsByName("modal-choose-button");
+	for(var i = 0; i < adds.length; i++) {
+		if (ADD_CALLER === null) {
+			adds[i].style.display = "none";
+			chooses[i].style.display = "block";
+		}
+		else {
+			chooses[i].style.display = "none";
+			adds[i].style.display = "block";
+		}
+	}{% endif %}
 	document.getElementsByClassName("SG-modal")[0].style.display = "block";
 }
 

@@ -30,7 +30,7 @@
 				</div>
 				<div class="distinctarea border border-primary rounded big-margin">
 					<h5 for="{{ form.description.id_for_label }}">Opis</h5>
-					{% render_field form.description class="form-control SGformwidget" placeholder=form.description.label %}
+					{% render_field form.description rows="3" class="form-control SGformwidget" placeholder=form.description.label %}
 					{% for error in form.description.errors %}
 						<span class="help-block">{{ error }}</span>
 					{% endfor %}
