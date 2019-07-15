@@ -21,6 +21,8 @@ except ModuleNotFoundError:
 
 PROPOSALS_DIR = os.path.join( BASE_DIR, 'proposals' )
 COMP_DIR = os.path.join( BASE_DIR, 'compilationfiles' )
+BEGINTEX_FILE = os.path.join( COMP_DIR, 'Begin.tex' )
+ENDTEX_FILE = os.path.join( COMP_DIR, 'End.tex' )
 
 # SECRET_KEY from local_settings.py
 

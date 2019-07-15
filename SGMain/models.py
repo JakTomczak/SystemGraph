@@ -249,6 +249,18 @@ class Vertex (models.Model):
 		with codecs.open( self.get_pre_desc_dir(), 'w', encoding = 'utf-8') as file:
 			file.truncate()
 			file.write( text )
+			
+	'''
+	Another file related to every object of this class is file with encoded sglinks.
+	Sglinks are part of compilation. And this file is then created.
+	'''
+	def get_sglinks_dir(self, cwd):
+		return os.path.join( cwd, self.vertex_id + 'sglinks.txt' )
+	
+	def write_sglinks(self, text, cwd):
+		with open( self.get_sglinks_dir(cwd), 'w+') as file:
+			file.truncate()
+			file.write( text )
 	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VERTEX(cls, admin):
@@ -315,7 +327,6 @@ class Edge (models.Model):
 	successor = models.ForeignKey(Vertex, on_delete = models.CASCADE, related_name='successor', null = True)
 	validated = models.BooleanField(default = False)
 	directory = models.CharField(max_length = 200, null = True)
-	links = models.CharField(max_length = 200, blank = True)
 	
 	def __str__(self):
 		return self.edge_id
