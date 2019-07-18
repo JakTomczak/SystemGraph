@@ -6,9 +6,7 @@
 
 {% block content %}
 <div class="maindiv smallpadd">
-	<div class="SG-modal">
-		{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
-	</div>
+{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
 	<form id="add-new-edge-form" method="post">
 		{% csrf_token %}
 		<div class="internal-menu sidepadd">

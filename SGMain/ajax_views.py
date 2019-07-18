@@ -1,12 +1,16 @@
+import threading
+import time
 
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import django.core.exceptions as exceptions
-import time
+from datetime import datetime
 
 from . import tasks
+from . import compilation
 from .models import Vertex, Path
+from .ajax_models import CompilationData
 
 @csrf_exempt
 def add_vertex_to_path_from_id(request):
@@ -80,13 +84,81 @@ def get_vertex_from_id(request):
 	return JsonResponse(context)
 	
 @csrf_exempt
-def update_compilation_status(request):
-	return JsonResponse({})
-	
-@csrf_exempt
 def vertex_save(request, vertex_id):
 	return JsonResponse({})
 	
+@csrf_exempt
+def save_vertex_cd(request, vertex_id):
+	vertex = Vertex.objects.get(vertex_id = vertex_id)
+	content = request.POST.get('content', '')
+	vertex.write_pre_content(content)
+	description = request.POST.get('description', '')
+	vertex.write_pre_desc(description)
+	return JsonResponse({})
+	
+@csrf_exempt
+def save_vertex_props(request, vertex_id):
+	vertex = Vertex.objects.get(vertex_id = vertex_id)
+	content = request.POST.get('content', '')
+	vertex.write_pre_content(content)
+	description = request.POST.get('description', '')
+	vertex.write_pre_desc(description)
+	return JsonResponse({})
+	
+@csrf_exempt
+def start_vertex_cont_compilation(request, vertex_id):
+	print('A')
+	content = request.POST.get('content', '')
+	context = {'ok': False, 'error_message': ''}
+	if content:
+		print('B')
+		fcode = vertex_id
+		cdata = CompilationData.objects.get(fcode = fcode)
+		context['error_message'] = cdata.check_if_idle()
+		print('C')
+		print(context['error_message'])
+		if context['error_message'] == '':
+			print('D')
+			context['ok'] = True
+			threading.Thread( target = compilation.compile_v1, kwargs = {'cdata': cdata, 'vertex_id': vertex_id, 'desc': False, 'text': content} )
+			print('E')
+			time.sleep(1)
+	else:
+		context['error_message'] = 'Nie możesz opublikować pustego wierzchołka'
+	return JsonResponse(context)
+	
+@csrf_exempt
+def start_vertex_desc_compilation(request, vertex_id):
+	description = request.POST.get('description', '')
+	context = {'ok': False, 'error_message': ''}
+	if description:
+		fcode = vertex_id + 'desc'
+		cdata = CompilationData.objects.get(fcode = fcode)
+		context['error_message'] = cdata.check_if_idle()
+		if context['error_message'] == '':
+			context['ok'] = True
+			threading.Thread( target = compilation.compile_v1, kwargs = {'cdata': cdata, 'vertex_id': vertex_id, 'desc': True, 'text': description} )
+			time.sleep(1)
+	else:
+		compilation.CompilationCore.empty_vdesc(vertex_id)
+	return JsonResponse(context)
+	
+@csrf_exempt
+def update_compilation_status(request):
+	fcode = request.POST.get('fcode', '')
+	mlength = request.POST.get('mlength', 0)
+	if fcode:
+		running, error, messages = CompilationData.check_status(fcode)
+		if messages:
+			if type(messages) == list:
+				messages = messages[mlength:]
+			else:
+				messages = [messages, ]
+		context = {'still': running, 'error': error, 'messages': messages}
+	else:
+		context = {'still': False, 'error': True, 'messages': []}
+	return JsonResponse(context)
+
 @csrf_exempt
 def start_compilation(request, vertex_id):
 	print('abba')

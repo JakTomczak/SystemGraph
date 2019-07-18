@@ -1,0 +1,41 @@
+<div class="SG-modal" id="SG-modal-compilation">
+	<div class="SG-modal-content">
+		<header style="position: relative; padding: 20px; 0">
+			<span style="font-size: x-large;">Log kompilacji</span>
+			<span class="close-button" id="close_modal_compilation_button"></span>
+		</header>
+		<div class="flexonwidth" style="height: 600px; width:90%">
+			<div style="width: 50%; height: 100%;">
+				<textarea readonly id="compilation_log" style="width: 100%; height: 100%;"></textarea>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+function COMP_MODAL_SHOW() {
+	document.getElementById("SG-modal-compilation").style.display = "block";
+}
+
+function COMP_MODAL_HIDE() {
+	document.getElementById("SG-modal-compilation").style.display = "none";
+}
+var comp_modal_textarea = document.getElementById("compilation_log");
+function LOG_MESSAGES(messages) {
+	for (var i = 0; i < messages.length; i++) {
+		comp_modal_textarea.value += message[i] + '\n';
+	}
+}
+$(document).ready(function() {
+	var modal_co = document.getElementById("SG-modal-compilation");
+	COMP_MODAL_HIDE();
+	document.getElementById("close_modal_compilation_button").onclick = function() {
+		COMP_MODAL_HIDE();
+	}
+	window.onclick = function(event) {
+		if (event.target == modal_co) {
+			COMP_MODAL_HIDE();
+		}
+	}
+});
+</script>

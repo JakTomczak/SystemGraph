@@ -11,6 +11,11 @@ def frontpage(request):
 	# print( repr(M.args[0]) )
 	# print( type(M.args) )
 	# tasks.test2()
+	# for vertex in model.Vertex.objects.all():
+		# model.CompilationData(fcode = vertex.vertex_id).save()
+		# model.CompilationData(fcode = vertex.vertex_id + 'desc').save()
+	# for edge in model.Edge.objects.all():
+		# model.CompilationData(fcode = edge.edge_id).save()
 	already = False
 	if request.user.is_authenticated:
 		verts = model.Vertex.objects.filter( user = request.user )

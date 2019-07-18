@@ -6,9 +6,7 @@
 
 {% block content %}
 <div class="maindiv smallpadd">
-	<div class="SG-modal">
-		{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
-	</div>
+{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
 	<form id="add-new-path-form" method="post">
 		{% csrf_token %}
 		<input type="hidden" id="hidden_action" value="" name="action">

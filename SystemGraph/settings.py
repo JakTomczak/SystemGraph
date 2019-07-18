@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'SystemGraph.wsgi.application'
 
 
 # DATABASES from local_settings.py
-
+# database must be postgres
 
 AUTH_PASSWORD_VALIDATORS = [
     {

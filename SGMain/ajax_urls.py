@@ -13,4 +13,7 @@ urlpatterns = [
 	path('get_vertex_from_id/', views.get_vertex_from_id, name='get_vertex_from_id'),
 	path('save_edge/<edge_id>/', views.edge_save, name='save_edge'),
 	path('save_vertex/<vertex_id>/', views.vertex_save, name='save_vertex'),
+	path('save_vertex_cd/<vertex_id>/', views.save_vertex_cd, name='save_vertex_cd'),
+	path('start_vertex_cont_compilation/<vertex_id>/', views.start_vertex_cont_compilation, name='start_vertex_cont_compilation'),
+	path('start_vertex_desc_compilation/<vertex_id>/', views.start_vertex_desc_compilation, name='start_vertex_desc_compilation'),
 ]

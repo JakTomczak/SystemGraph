@@ -11,6 +11,7 @@ from django.urls import reverse
 
 from users.models import CustomUser
 import SGMain.tools as tools
+from .ajax_models import *
 	
 '''
 Vertex_Class is what your Vertex is in the context of meta-narration, ie. 
@@ -19,7 +20,7 @@ or Vertex "how to use SystemGraph's Vertex Classes" if of Class "tutorial point"
 or Vertex "yo mamma fat" is of Class "universal truth".
 
 '''
-class Vertex_Class (models.Model):
+class Vertex_Class(models.Model):
 	polish_name = models.CharField(max_length = 50, default = 'Nienazwany wierzchołek')
 	polish_name_plural = models.CharField(max_length = 50, default = 'Nienazwane wierzchołki')
 	left = models.ForeignKey('self', null = True, on_delete = models.SET_NULL, related_name='onleft')
@@ -70,7 +71,7 @@ Preamble is essential during LaTeX -> HTML compilation.
 It basically holds your settings for this compilation.
 
 '''
-class Preamble (models.Model):
+class Preamble(models.Model):
 	preamble_id = models.CharField(max_length = 10, primary_key = True, default = 'AAAAAAAAAA')
 	user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
 	title = models.CharField(max_length = 60, default = 'My preamble')
@@ -133,7 +134,7 @@ class Preamble (models.Model):
 def delete_preamble_files (sender, instance, using, **kwargs):
 	os.remove(instance.directory)
 	
-class Discipline (models.Model):
+class Discipline(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
 	is_default = models.BooleanField(default = False)
 	
@@ -144,7 +145,7 @@ class Discipline (models.Model):
 	def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
 		Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
 		
-class Subject (models.Model):
+class Subject(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany temat')
 	is_default = models.BooleanField(default = False)
 	
@@ -155,7 +156,7 @@ class Subject (models.Model):
 	def FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT(cls):
 		Subject(polish_name = 'Brak tematu', is_default = True).save()
 
-class Vertex (models.Model):
+class Vertex(models.Model):
 	vertex_id = models.CharField(max_length = 10, primary_key = True, default = 'VAAAAAAAAA')
 	vertex_class = models.ForeignKey(Vertex_Class, on_delete = models.SET_DEFAULT, default = 1)
 	preamble = models.ForeignKey(Preamble, on_delete = models.SET_DEFAULT, default = 'AAAAAAAAAA')
@@ -303,8 +304,17 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 	for path in Path.objects.filter(first = instance):
 		path.first = Path_Entry.objects.filter(path = path, index = 1)[0].vertex
 		path.save()
+	CompilationData.objects.get(fcode = instance.vertex_id).delete()
+	CompilationData.objects.get(fcode = instance.vertex_id + 'desc').delete()
+		
+@receiver(models.signals.post_save, sender = Vertex)
+def add_vertex_compilation_objects (sender, instance, created, **kwargs):
+	if created:
+		instance.create_pre_dirs()
+		CompilationData(fcode = instance.vertex_id).save()
+		CompilationData(fcode = instance.vertex_id + 'desc').save()
 	
-class Edge_Class (models.Model):
+class Edge_Class(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana krawędź')
 		
 	class Meta:
@@ -318,7 +328,7 @@ class Edge_Class (models.Model):
 		default = Edge_Class( polish_name = 'Od wewnątrz do wewnątrz.' )
 		default.save()
 	
-class Edge (models.Model):
+class Edge(models.Model):
 	edge_id = models.CharField(max_length = 10, primary_key = True, default = 'EAAAAAAAAA')
 	edge_class = models.ForeignKey(Edge_Class, on_delete = models.SET_NULL, null = True)
 	preamble = models.ForeignKey(Preamble, on_delete = models.SET_DEFAULT, default = 'AAAAAAAAAA')
@@ -375,7 +385,7 @@ class Edge (models.Model):
 	def get_pre_dir(self):
 		return os.path.join( self.user.get_folder(), self.edge_id + '.txt' )
 		
-	def create_pre_dirs(self):
+	def create_pre_dir(self):
 		codecs.open( self.get_pre_dir(), 'w', encoding = 'utf-8').close()
 		
 	def write_pre_dir(self, text):
@@ -417,8 +427,16 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 		os.remove( instance.directory )
 	except (TypeError, FileNotFoundError):
 		pass
+		path.save()
+	CompilationData.objects.get(fcode = instance.edge_id).delete()
+		
+@receiver(models.signals.post_save, sender = Edge)
+def add_vertex_compilation_objects (sender, instance, created, **kwargs):
+	if created:
+		instance.create_pre_dir()
+		CompilationData(fcode = instance.edge_id).save()
 			
-class Path (models.Model):
+class Path(models.Model):
 	path_id = models.CharField(max_length = 10, primary_key = True, default = 'TAAAAAAAAA')
 	user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
 	name = models.CharField(max_length = 50, default = 'Nienazwana ścieżka')
@@ -543,7 +561,7 @@ class Path (models.Model):
 			E.delete()
 			return True
 	
-class Path_Entry (models.Model):
+class Path_Entry(models.Model):
 	path = models.ForeignKey(Path, on_delete = models.CASCADE)
 	index = models.IntegerField()
 	vertex = models.ForeignKey(Vertex, on_delete = models.SET_NULL, null = True)

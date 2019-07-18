@@ -1,39 +1,41 @@
-<div class="SG-modal-content">
-	<header style="position: relative; padding: 20px; 0">
-	<span id="modal-title" style="font-size: x-large;">Wybór wierzchołka</span>
-	<span class="close-button" id="close_modal_button"></span>
-	</header>
-	{% if query %}
-	<table class="table table-striped border border-primary rounded" id="modal_choose_table" style="font-size: {% if small %}small;{% else %}15px;{% endif %}">
-		<thead>
-			<tr>
-				<th scope="col">ID{% if not small %} wierzchołka{% endif %}</th>
-				<th scope="col">Tytuł</th>
-				<th scope="col">Data{% if not small %} dodania{% endif %}</th>
-				<th scope="col">Autor</th>
-				<th scope="col"></th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for vertex in query %}
-			<tr>
-				<td><a href="{% url 'view_vertex' vertex_id=vertex.vertex_id %}" class="fancy-a">{{ vertex.vertex_id }}</a></td>
-				<td>{{ vertex.title }}</td>
-				<td>{{ vertex.date.date|date:"d.m.Y" }}</td>
-				<td>{{ vertex.user.username }}</td>
-				<td>
-				{% if add %}
-					<button name="modal-add-button" type="button" onclick="modal_add_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Dodaj</button>
-				{% endif %}
-					<button name="modal-choose-button" type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button>
-				</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	{% else %}
-	<h5>Brak wyników</h5>
-	{% endif %}
+<div class="SG-modal" id="SG-modal-choosing">
+	<div class="SG-modal-content">
+		<header style="position: relative; padding: 20px; 0">
+			<span id="modal-title" style="font-size: x-large;">Wybór wierzchołka</span>
+			<span class="close-button" id="close_modal_choosing_button"></span>
+		</header>
+		{% if query %}
+		<table class="table table-striped border border-primary rounded" id="modal_choose_table" style="font-size: {% if small %}small;{% else %}15px;{% endif %}">
+			<thead>
+				<tr>
+					<th scope="col">ID{% if not small %} wierzchołka{% endif %}</th>
+					<th scope="col">Tytuł</th>
+					<th scope="col">Data{% if not small %} dodania{% endif %}</th>
+					<th scope="col">Autor</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for vertex in query %}
+				<tr>
+					<td><a href="{% url 'view_vertex' vertex_id=vertex.vertex_id %}" class="fancy-a">{{ vertex.vertex_id }}</a></td>
+					<td>{{ vertex.title }}</td>
+					<td>{{ vertex.date.date|date:"d.m.Y" }}</td>
+					<td>{{ vertex.user.username }}</td>
+					<td>
+					{% if add %}
+						<button name="modal-add-button" type="button" onclick="modal_add_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Dodaj</button>
+					{% endif %}
+						<button name="modal-choose-button" type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		<h5>Brak wyników</h5>
+		{% endif %}
+	</div>
 </div>
 <script>
 var CF_DISPLAY;
@@ -106,23 +108,23 @@ function MODAL_SHOW() {
 			adds[i].style.display = "block";
 		}
 	}{% endif %}
-	document.getElementsByClassName("SG-modal")[0].style.display = "block";
+	document.getElementById("SG-modal-choosing").style.display = "block";
 }
 
 function MODAL_HIDE() {
-	document.getElementsByClassName("SG-modal")[0].style.display = "none";
+	document.getElementById("SG-modal-choosing").style.display = "none";
 }
 
 var ftext = ['ID', 'tytuł', 'datę', 'autora']
 var idtext = ['id', 'title', 'date', 'author']
 $(document).ready(function() {
-	var modal = document.getElementsByClassName("SG-modal")[0];
+	var modal_ch = document.getElementById("SG-modal-choosing");
 	MODAL_HIDE();
-	document.getElementById("close_modal_button").onclick = function() {
+	document.getElementById("close_modal_choosing_button").onclick = function() {
 		MODAL_HIDE();
 	}
 	window.onclick = function(event) {
-		if (event.target == modal) {
+		if (event.target == modal_ch) {
 			MODAL_HIDE();
 		}
 	}

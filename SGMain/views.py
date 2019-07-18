@@ -19,7 +19,6 @@ def new_vertex(request):
 			vertex = form.save(commit = False)
 			vertex.user = request.user
 			vertex.vertex_id = model.Vertex.new_id()
-			vertex.create_pre_dirs()
 			vertex.save()
 			messages.add_message(request, messages.SUCCESS, 'Nowy wierzchołek został dodany.')
 			return redirect('edit_vertex', vertex_id = vertex.vertex_id)
@@ -61,7 +60,7 @@ def edit_vertex(request, vertex_id):
 			return redirect('new_edge')
 	else:
 		form = forms.Edit_Vertex_Form(vertex = this_vertex)
-	context = {'form': form, 'vid': this_vertex.vertex_id, 'submitted': this_vertex.submitted, 'successors': successors}
+	context = {'form': form, 'vertex_id': this_vertex.vertex_id, 'submitted': this_vertex.submitted, 'successors': successors}
 	return render(request, 'graph/edit_vertex.html', context)
 
 def view_vertex(request, vertex_id): # Needs big enhancements
@@ -186,7 +185,6 @@ def new_edge(request):
 			edge = model.Edge()
 			edge.user = request.user
 			edge.edge_id = model.Edge.new_id()
-			edge.create_pre_dirs()
 			edge.predecessor = model.Vertex.objects.get(vertex_id = pred)
 			if succ.startswith('V'):
 				edge.successor = model.Vertex.objects.get(vertex_id = succ)
