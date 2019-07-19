@@ -8,6 +8,7 @@ from celery import shared_task
 from django.conf import settings
 
 from . import compilation
+from .models import CompilationData
 
 @shared_task
 def test(fcode = None, vertex_id = None, desc = False, edge_id = None, text = ''):

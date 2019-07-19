@@ -1,25 +1,28 @@
 import os
 
 from django.dispatch import receiver
-from django.db.models import signals
+from django.db.models.signals import pre_delete, post_save
+import django.core.exceptions as exceptions
 
-from . import models
-		
-@receiver(signals.pre_delete, sender = models.Vertex)
+from SGMain.models import *
+
+# post_save.connect(create_activity_item, sender=Status, dispatch_uid="create_activity_item")
+
+@receiver(pre_delete, sender = Vertex)
 def delete_vertex_files (sender, instance, using, **kwargs):
 	instance.delete_pre_dirs()
 	try:
 		os.remove( instance.desc_dir )
-	except FileNotFoundError:
+	except (TypeError, FileNotFoundError):
 		pass
 	try:
 		os.remove( instance.content_dir )
-	except FileNotFoundError:
+	except (TypeError, FileNotFoundError):
 		pass
-	PEs = models.Path_Entry.objects.filter(vertex = instance)
+	PEs = Path_Entry.objects.filter(vertex = instance)
 	for entry in PEs:
 		path = entry.path
-		next_ones = models.Path_Entry.objects.filter(path = path, index__gt = entry.index)
+		next_ones = Path_Entry.objects.filter(path = path, index__gt = entry.index)
 		for e in next_ones:
 			e.index -= 1
 			e.save()
@@ -29,36 +32,44 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 			path.delete()
 		else:
 			path.save()
-	for path in models.Path.objects.filter(first = instance):
-		path.first = models.Path_Entry.objects.filter(path = path, index = 1)[0].vertex
+	for path in Path.objects.filter(first = instance):
+		path.first = Path_Entry.objects.filter(path = path, index = 1)[0].vertex
 		path.save()
-	models.CompilationData.objects.get(fcode = instance.vertex_id).delete()
-	models.CompilationData.objects.get(fcode = instance.vertex_id + 'desc').delete()
+	try:
+		CompilationData.objects.get(fcode = instance.vertex_id).delete()
+	except exceptions.ObjectDoesNotExist:
+		pass
+	try:
+		CompilationData.objects.get(fcode = instance.vertex_id + 'desc').delete()
+	except exceptions.ObjectDoesNotExist:
+		pass
 		
-@receiver(signals.post_save, sender = models.Vertex)
+@receiver(post_save, sender = Vertex)
 def add_vertex_compilation_objects (sender, instance, created, **kwargs):
+	print('abba')
+	print(created)
 	if created:
 		instance.create_pre_dirs()
-		cd1 = models.CompilationData(fcode = instance.vertex_id)
+		cd1 = CompilationData(fcode = instance.vertex_id)
 		cd1.save()
-		cd2 = models.CompilationData(fcode = instance.vertex_id + 'desc')
+		cd2 = CompilationData(fcode = instance.vertex_id + 'desc')
 		cd2.save()
 
-@receiver(signals.pre_delete, sender = models.Preamble)
+@receiver(pre_delete, sender = Preamble)
 def delete_preamble_files (sender, instance, using, **kwargs):
 	os.remove(instance.directory)
 		
-@receiver(signals.pre_delete, sender = models.Edge)
+@receiver(pre_delete, sender = Edge)
 def delete_edge_files (sender, instance, using, **kwargs):
 	instance.delete_pre_dir()
 	try:
 		os.remove( instance.directory )
 	except (TypeError, FileNotFoundError):
 		pass
-	models.CompilationData.objects.get(fcode = instance.edge_id).delete()
+	CompilationData.objects.get(fcode = instance.edge_id).delete()
 		
-@receiver(signals.post_save, sender = models.Edge)
-def add_vertex_compilation_objects (sender, instance, created, **kwargs):
+@receiver(post_save, sender = Edge)
+def add_edge_compilation_objects (sender, instance, created, **kwargs):
 	if created:
 		instance.create_pre_dir()
-		models.CompilationData(fcode = instance.edge_id).save()
+		CompilationData(fcode = instance.edge_id).save()

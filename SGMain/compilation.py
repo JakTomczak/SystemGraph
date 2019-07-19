@@ -153,7 +153,7 @@ class CompilationCore(object):
 		
 	def prepare(self):
 		if self._mode == 1:
-			texsoup, sglinks, self.errortext = CompilationCore.get_sglinks(self.text, self.object)
+			texsoup, self.sglinks, self.errortext = CompilationCore.get_sglinks(self.text, self.object)
 			if self.errortext:
 				self._log_error()
 				return
@@ -189,7 +189,7 @@ class CompilationCore(object):
 		texsoup = TexSoup(textext)
 		sglinks = []
 		used_edges = {}
-		for sgl in soup.find_all(name = 'sglink'):
+		for sgl in texsoup.find_all(name = 'sglink'):
 			sglink = SGlink(vertex, sgl)
 			if not sglink.valid:
 				return texsoup, sglinks, sglink.errortext
@@ -226,11 +226,11 @@ class CompilationCore(object):
 		i = 0
 		STILL = False
 		for line in iter(self.process.stdout.readline, b''):
-			# self.log_info('got line: {0}'.format(line.decode('cp1252')), end='')
+			#self.log_info('got line: {0}'.format(line.decode('cp1252')), end='')
 			if not self.error and line.startswith(b'!'):
 				self.error = True
 				STILL = True
-			if line.startswith(b'Output'):
+			if line is None or line.startswith(b'Output'):
 				STILL = False
 			if self.error and i < 5 and STILL:
 				self.errortext += line
@@ -257,7 +257,7 @@ class CompilationCore(object):
 		
 	def paste_sglinks(self):
 		t = ''
-		for link in sglinks:
+		for link in self.sglinks:
 			self.output = self.output.replace(link.id, link.tag)
 			t = link.add_self(t)
 		self.object.write_sglinks(t, self.cwd)
@@ -298,13 +298,9 @@ class CompilationCore(object):
 		vertex.save()
 	
 def compile_v1(cdata = None, vertex_id = None, desc = False, edge_id = None, text = ''):
-#def compile_v1(fcode = None, vertex_id = None, desc = False, edge_id = None, text = ''):
-	print('D-')
 	if cdata is None:
 		return
-	print('DA')
 	cdata.launch()
-	print('DB')
 	ccore = CompilationCore(cdata, vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
 	if not ccore.error:
 		ccore.prepare()

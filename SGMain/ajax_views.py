@@ -147,7 +147,7 @@ def start_vertex_desc_compilation(request, vertex_id):
 @csrf_exempt
 def update_compilation_status(request):
 	fcode = request.POST.get('fcode', '')
-	mlength = request.POST.get('mlength', 0)
+	mlength = int(request.POST.get('mlength', '0'))
 	if fcode:
 		running, error, messages = CompilationData.check_status(fcode)
 		if messages:
@@ -162,8 +162,6 @@ def update_compilation_status(request):
 
 @csrf_exempt
 def start_compilation(request, vertex_id):
-	print('abba')
-	# task = tasks.test1.apply_async(task_id = vertex_id)
 	content = request.POST.get('content', '')
 	description = request.POST.get('description', '')
 	v = Vertex.objects.get(vertex_id = vertex_id)

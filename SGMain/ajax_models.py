@@ -37,18 +37,25 @@ class CompilationData(models.Model):
 		if m:
 			while ';;' in m:
 				m.replace(';;', ';')
-			self.message += m + ';;'
+			self.messages += m + ';;'
 			if error:
 				self.state = "ERROR"
 			self.save()
 			
 	def read_messages(self):
-		return self.messages.split(';;') or []
+		return self.messages.split(';;')[:-1]
+#		return self.messages.split(';;') or []
+#		m = self.messages.split(';;')
+#		if m :
+#			return m[:-1]
+#		else:
+#			return []
 			
 	def close(self):
 		self.state = "CLOSED"
 		self.last_end_time = timezone.now()
-		self.save()
+		self.add_message('Compilation successful')
+		#self.save()
 	
 	def clean(self):
 		self.step = -1
@@ -66,11 +73,13 @@ class CompilationData(models.Model):
 			return False, True, 'Internal server error A'
 		# now = timezone.now()
 		if cdata.state == "CLOSED":
+			m = cdata.read_messages()
 			cdata.clean()
-			return False, False, cdata.read_messages()
+			return False, False, m
 		elif cdata.state == "ERROR":
+			m = cdata.read_messages()
 			cdata.clean()
-			return False, True, cdata.read_messages()
+			return False, True, m
 		elif cdata.state == "IDLE":
 			return False, False, []
 		return True, False, cdata.read_messages()

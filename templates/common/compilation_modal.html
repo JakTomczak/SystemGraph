@@ -23,7 +23,7 @@ function COMP_MODAL_HIDE() {
 var comp_modal_textarea = document.getElementById("compilation_log");
 function LOG_MESSAGES(messages) {
 	for (var i = 0; i < messages.length; i++) {
-		comp_modal_textarea.value += message[i] + '\n';
+		comp_modal_textarea.value += messages[i] + '\n';
 	}
 }
 $(document).ready(function() {

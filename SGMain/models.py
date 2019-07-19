@@ -76,7 +76,7 @@ class Preamble(models.Model):
 	user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
 	title = models.CharField(max_length = 60, default = 'My preamble')
 	description = models.CharField(max_length = 200, null = True)
-	directory = models.CharField(max_length = 200, default = os.path.join( settings.COMP_DIR, 'AAAAAAAAAA.txt' ))
+	directory = models.CharField(max_length = 200, default = os.path.join( settings.COMP_DIR, 'AAAAAAAAAA.tex' ))
 	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
@@ -92,12 +92,14 @@ class Preamble(models.Model):
 			id = tools.id_generator('A')
 		return id
 		
-	def create_content_dir(self, content = ''):
+	def create_content_dir(self, content = '', save = False):
 		self.directory = os.path.join( self.user.get_folder(), self.preamble_id + '.tex' )
 		if content:
 			self.write(content)
 		else:
 			open( self.directory, 'w+').close()
+		if save:
+			self.save()
 		
 	def write(self, text):
 		with codecs.open( self.directory, 'w+', encoding = 'utf-8') as file:
@@ -125,7 +127,7 @@ class Preamble(models.Model):
 		A.desciption = 'It works with english planar text and math formulas.'
 		A.save()
 		B = Preamble(preamble_id = 'AAAAAAAAAB', user = admin, is_default = True)
-		B.directory = os.path.join( settings.COMP_DIR, 'AAAAAAAAAB.txt' )
+		B.directory = os.path.join( settings.COMP_DIR, 'AAAAAAAAAB.tex' )
 		B.title = 'Domyślna preambuła'
 		B.desciption = 'Działa z tekstem polskim i matematycznymi formułami.'
 		B.save()
