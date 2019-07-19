@@ -1,20 +1,19 @@
 import time
-import dramatiq
 import subprocess
 import codecs
 import os
 
+from celery import shared_task
+
 from django.conf import settings
 
-@dramatiq.actor
-def test1(my_id):
-	time.sleep(2)
-	print('A')
-	time.sleep(2)
-	print('B')
-	time.sleep(2)
-	print('C')
-	time.sleep(2)
+from . import compilation
+
+@shared_task
+def test(fcode = None, vertex_id = None, desc = False, edge_id = None, text = ''):
+	cdata = CompilationData.objects.get(fcode = fcode)
+	print('D--')
+	compilation.compile_v1(cdata = cdata, vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
 	
 def test2():
 	print( make4ht_compile('VALLLGXKSAdesc.tex', settings.COMP_DIR) )

@@ -59,6 +59,7 @@ call this function ONCE.
 def I_HAVE_NEW_DATABASE():
 	#I_GUESS_YOU_ARE_ADMIN = CustomUser.objects.get(username = 'YOUR_USERNAME')
 	I_GUESS_YOU_ARE_ADMIN = CustomUser.objects.get(is_superuser = True)
+	I_GUESS_YOU_ARE_ADMIN.get_folder()
 	model.Preamble.FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES( I_GUESS_YOU_ARE_ADMIN )
 	model.Vertex_Class.FIRST_TIME_RUN_ADD_DEFAULT_VCLASS()
 	model.Discipline.FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE()

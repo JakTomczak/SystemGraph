@@ -120,7 +120,8 @@ def start_vertex_cont_compilation(request, vertex_id):
 		if context['error_message'] == '':
 			print('D')
 			context['ok'] = True
-			threading.Thread( target = compilation.compile_v1, kwargs = {'cdata': cdata, 'vertex_id': vertex_id, 'desc': False, 'text': content} )
+			tasks.test.delay(fcode = fcode, vertex_id = vertex_id, desc = False, text = content)
+#			threading.Thread( target = compilation.compile_v1, kwargs = {'cdata': cdata, 'vertex_id': vertex_id, 'desc': False, 'text': content} )
 			print('E')
 			time.sleep(1)
 	else:

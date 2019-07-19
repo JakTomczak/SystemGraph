@@ -298,6 +298,7 @@ class CompilationCore(object):
 		vertex.save()
 	
 def compile_v1(cdata = None, vertex_id = None, desc = False, edge_id = None, text = ''):
+#def compile_v1(fcode = None, vertex_id = None, desc = False, edge_id = None, text = ''):
 	print('D-')
 	if cdata is None:
 		return

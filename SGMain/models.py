@@ -129,10 +129,6 @@ class Preamble(models.Model):
 		B.title = 'Domyślna preambuła'
 		B.desciption = 'Działa z tekstem polskim i matematycznymi formułami.'
 		B.save()
-
-@receiver(models.signals.pre_delete, sender = Preamble)
-def delete_preamble_files (sender, instance, using, **kwargs):
-	os.remove(instance.directory)
 	
 class Discipline(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
@@ -276,43 +272,6 @@ class Vertex(models.Model):
 			return Vertex.objects.get(is_default = True)
 		except exceptions.ObjectDoesNotExist:
 			return Vertex.objects.all()[0]
-		
-@receiver(models.signals.pre_delete, sender = Vertex)
-def delete_vertex_files (sender, instance, using, **kwargs):
-	instance.delete_pre_dirs()
-	try:
-		os.remove( instance.desc_dir )
-	except FileNotFoundError:
-		pass
-	try:
-		os.remove( instance.content_dir )
-	except FileNotFoundError:
-		pass
-	PEs = Path_Entry.objects.filter(vertex = instance)
-	for entry in PEs:
-		path = entry.path
-		next_ones = Path_Entry.objects.filter(path = path, index__gt = entry.index)
-		for e in next_ones:
-			e.index -= 1
-			e.save()
-		path.length -= 1
-		entry.delete()
-		if path.length < 1:
-			path.delete()
-		else:
-			path.save()
-	for path in Path.objects.filter(first = instance):
-		path.first = Path_Entry.objects.filter(path = path, index = 1)[0].vertex
-		path.save()
-	CompilationData.objects.get(fcode = instance.vertex_id).delete()
-	CompilationData.objects.get(fcode = instance.vertex_id + 'desc').delete()
-		
-@receiver(models.signals.post_save, sender = Vertex)
-def add_vertex_compilation_objects (sender, instance, created, **kwargs):
-	if created:
-		instance.create_pre_dirs()
-		CompilationData(fcode = instance.vertex_id).save()
-		CompilationData(fcode = instance.vertex_id + 'desc').save()
 	
 class Edge_Class(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana krawędź')
@@ -419,22 +378,6 @@ class Edge(models.Model):
 			return self.successor.get_url()
 		else:
 			return '#'
-		
-@receiver(models.signals.pre_delete, sender = Edge)
-def delete_vertex_files (sender, instance, using, **kwargs):
-	instance.delete_pre_dir()
-	try:
-		os.remove( instance.directory )
-	except (TypeError, FileNotFoundError):
-		pass
-		path.save()
-	CompilationData.objects.get(fcode = instance.edge_id).delete()
-		
-@receiver(models.signals.post_save, sender = Edge)
-def add_vertex_compilation_objects (sender, instance, created, **kwargs):
-	if created:
-		instance.create_pre_dir()
-		CompilationData(fcode = instance.edge_id).save()
 			
 class Path(models.Model):
 	path_id = models.CharField(max_length = 10, primary_key = True, default = 'TAAAAAAAAA')
