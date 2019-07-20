@@ -10,6 +10,7 @@ from django.conf import settings
 import django.core.exceptions as exceptions
 
 import SGMain.models as model
+import SGmain.tools
 
 def rreplace(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)
@@ -105,17 +106,16 @@ class CompilationCore(object):
 		self._mode = 1
 		self.object = vertex
 		self.pk = 'vertex_id'
-		self.fcode = vertex.vertex_id
+		self.fcode = tools.fcode_from_id(vertex_id = vertex.vertex_id, desc = desc)
 		if desc:
 			self._mode = 2
-			self.fcode += 'desc'
 		self.set_state('PROGRESS')
 			
 	def _load_edge(self, edge):
 		self._mode = 3
 		self.object = edge
 		self.pk = 'edge_id'
-		self.fcode = edge.edge_id
+		self.fcode = tools.fcode_from_id(edge_id = edge.edge_id)
 		self.set_state('PROGRESS')
 	
 	def log_info(self, info, **kwargs):

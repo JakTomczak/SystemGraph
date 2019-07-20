@@ -8,9 +8,9 @@ import django.core.exceptions as exceptions
 from datetime import datetime
 
 from . import tasks
+from . import tools
 from . import compilation
-from .models import Vertex, Path
-from .ajax_models import CompilationData
+from .models import Vertex, Path, CompilationData
 
 @csrf_exempt
 def add_vertex_to_path_from_id(request):
@@ -107,22 +107,14 @@ def save_vertex_props(request, vertex_id):
 	
 @csrf_exempt
 def start_vertex_cont_compilation(request, vertex_id):
-	print('A')
 	content = request.POST.get('content', '')
 	context = {'ok': False, 'error_message': ''}
 	if content:
-		print('B')
-		fcode = vertex_id
-		cdata = CompilationData.objects.get(fcode = fcode)
-		context['error_message'] = cdata.check_if_idle()
-		print('C')
-		print(context['error_message'])
+		fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = False)
+		context['error_message'] = CompilationData.check_if_idle(fcode)
 		if context['error_message'] == '':
-			print('D')
 			context['ok'] = True
 			tasks.test.delay(fcode = fcode, vertex_id = vertex_id, desc = False, text = content)
-#			threading.Thread( target = compilation.compile_v1, kwargs = {'cdata': cdata, 'vertex_id': vertex_id, 'desc': False, 'text': content} )
-			print('E')
 			time.sleep(1)
 	else:
 		context['error_message'] = 'Nie możesz opublikować pustego wierzchołka'
@@ -133,9 +125,8 @@ def start_vertex_desc_compilation(request, vertex_id):
 	description = request.POST.get('description', '')
 	context = {'ok': False, 'error_message': ''}
 	if description:
-		fcode = vertex_id + 'desc'
-		cdata = CompilationData.objects.get(fcode = fcode)
-		context['error_message'] = cdata.check_if_idle()
+		fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = True)
+		context['error_message'] = CompilationData.check_if_idle(fcode)
 		if context['error_message'] == '':
 			context['ok'] = True
 			threading.Thread( target = compilation.compile_v1, kwargs = {'cdata': cdata, 'vertex_id': vertex_id, 'desc': True, 'text': description} )
@@ -146,7 +137,10 @@ def start_vertex_desc_compilation(request, vertex_id):
 	
 @csrf_exempt
 def update_compilation_status(request):
-	fcode = request.POST.get('fcode', '')
+	vertex_id = request.POST.get('vertex_id', None)
+	desc = request.POST.get('desc', False)
+	edge_id = request.POST.get('edge_id', None)
+	fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = desc, edge_id = edge_id)
 	mlength = int(request.POST.get('mlength', '0'))
 	if fcode:
 		running, error, messages = CompilationData.check_status(fcode)

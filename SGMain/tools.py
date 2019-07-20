@@ -10,6 +10,21 @@ def id_generator(letter, size = 9, chars = string.ascii_uppercase):
 	if len(letter) != 1 or letter not in chars:
 		raise Exception('Expected letter')
 	return letter + ''.join(random.choice(chars) for _ in range(size))
+	
+def fcode_from_id(vertex_id = None, desc = False, edge_id = None):
+	if vertex_id is None:
+		if edge_id is None:
+			return
+		else:
+			return edge_id
+	else:
+		if edge_id is None:
+			if desc:
+				return vertex_id + 'desc'
+			else:
+				return vertex_id
+		else:
+			return
 
 def rreplace(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)

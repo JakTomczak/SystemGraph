@@ -144,8 +144,6 @@
 {% block javascript %}
 <script>
 var vertex_id = "{{ vertex_id }}";
-var content_fcode = "{{ vertex_id }}";
-var description_fcode = "{{ vertex_id }}" + "desc";
 function delete_this() {
 	var choice = confirm('Czy na pewno? \nWierzchołek zostanie usunięty na stałe.');
 	if (choice) {
@@ -170,7 +168,7 @@ function save_cont_and_desc() {
 		dataType: 'json'
 	});
 }
-function check_for_messages(fcode, mlength) {
+function check_for_messages(desc, mlength) {
 	var still = false;
 	var error = false;
 	var m = [];
@@ -179,7 +177,8 @@ function check_for_messages(fcode, mlength) {
 		type: 'post',
 		async: false,
 		data: {
-			'fcode': fcode,
+			'vertex_id': vertex_id,
+			'desc': desc,
 			'mlength': mlength
 		},
 		dataType: 'json',
@@ -195,13 +194,13 @@ function check_for_messages(fcode, mlength) {
 	});
 	return [still, error, m];
 }
-function update_compilation(fcode) {
+function update_compilation(desc) {
 	var still = true;
 	var error = false;
 	var messages = [];
 	var mlength = 0;
 	while (still) {
-		[still, error, messages] = check_for_messages(fcode, mlength);
+		[still, error, messages] = check_for_messages(desc, mlength);
 		if (messages) {
 			COMP_MODAL_SHOW();
 			LOG_MESSAGES(messages);
@@ -231,7 +230,7 @@ function run_content_compilation() {
 	});
 	var error = false;
 	if (ok) {
-		error = update_compilation(content_fcode);
+		error = update_compilation(false);
 		if (!error) {
 			is_submitted();
 		}
@@ -263,7 +262,7 @@ function run_desc_compilation() {
 	});
 	var error = false;
 	if (ok) {
-		error = update_compilation(description_fcode);
+		error = update_compilation(true);
 	}
 	else if (error_message) {
 		error = true;
