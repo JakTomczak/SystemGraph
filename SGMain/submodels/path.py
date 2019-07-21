@@ -99,7 +99,7 @@ class Path(models.Model):
 		self.length += 1
 		Path_Entry(
 			path = self,
-			index = self.length
+			index = self.length,
 			vertex = vertex
 			).save()
 		self.save()
@@ -137,7 +137,7 @@ class Path(models.Model):
 class Path_Entry(models.Model):
 	path = models.ForeignKey(Path, on_delete = models.CASCADE)
 	index = models.IntegerField()
-	vertex = models.ForeignKey(Vertex, on_delete = models.SET_NULL, null = True)
+	vertex = models.ForeignKey(vertex_models.Vertex, on_delete = models.SET_NULL, null = True)
 	
 	class Meta:
 		verbose_name_plural = "Path Entries"

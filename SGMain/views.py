@@ -34,12 +34,19 @@ def edit_vertex(request, vertex_id):
 		return render(request, 'errors/404.html')
 	if not request.user == this_vertex.user:
 		return render(request, 'errors/403.html')
-	successors = this_vertex.get_successors()
-#	edges = [ {'edge': edge, 'edge_content': edge.content()} for edge in successors ]
+	outgoing_edges = this_vertex.get_successors()
 	if request.method == 'POST':
 		form = forms.Edit_Vertex_Form(request.POST, vertex = this_vertex)
 		action = request.POST['action'].split(',')
-		if 'save_all' in request.POST and form.is_valid():
+		if 'delete' in action:
+			user = this_vertex.user
+			this_vertex.delete()
+			messages.add_message(request, messages.SUCCESS, 'Wierzchołek został usunięty.')
+			return redirect('profile', username = user.username)
+		if 'newedge' in request.POST:
+			request.session['pred'] = this_vertex.vertex_id
+			return redirect('new_edge')
+		if 'save' in action and form.is_valid():
 			this_vertex.vertex_class = form.cleaned_data['vertex_class']
 			this_vertex.preamble = form.cleaned_data['preamble']
 			this_vertex.discipline = form.cleaned_data['discipline']
@@ -50,17 +57,14 @@ def edit_vertex(request, vertex_id):
 			this_vertex.write_pre_content( form.cleaned_data['content'] )
 			this_vertex.write_pre_desc( form.cleaned_data['description'] )
 			messages.add_message(request, messages.SUCCESS, "Właściwości wierzchołka zostały zapisane.")
-		elif 'delete' in action:
-			user = this_vertex.user
-			this_vertex.delete()
-			messages.add_message(request, messages.SUCCESS, 'Wierzchołek został usunięty.')
-			return redirect('profile', username = user.username)
-		elif 'newedge' in request.POST:
-			request.session['pred'] = this_vertex.vertex_id
-			return redirect('new_edge')
 	else:
 		form = forms.Edit_Vertex_Form(vertex = this_vertex)
-	context = {'form': form, 'vertex_id': this_vertex.vertex_id, 'submitted': this_vertex.submitted, 'successors': successors}
+	context = {
+		'form': form, 
+		'vertex_id': this_vertex.vertex_id, 
+		'submitted': this_vertex.submitted, 
+		'outgoing_edges': outgoing_edges
+		}
 	return render(request, 'graph/edit_vertex.html', context)
 
 def view_vertex(request, vertex_id): # Needs big enhancements

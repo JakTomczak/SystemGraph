@@ -205,7 +205,8 @@ class Vertex(models.Model):
 		return reverse('edit_vertex', kwargs={'vertex_id': self.vertex_id})
 		
 	def get_successors(self):
-		return Edge.objects.filter(predecessor = self)
+		from . import edge as edge_models
+		return edge_models.Edge.objects.filter(predecessor = self)
 
 	'''
 	Note there are two desc and content dirs: 

@@ -4,6 +4,8 @@ from django.db import models
 import django.core.exceptions as exceptions
 import django.utils.timezone as timezone
 
+import SGMain.tools as tools
+
 class CompilationData(models.Model):
 	fcode = models.CharField(max_length = 20, null = True)
 	last_end_time = models.DateTimeField(default = timezone.now)
@@ -41,14 +43,16 @@ class CompilationData(models.Model):
 		self.save()
 	
 	@classmethod
-	def check_if_idle(cls, fcode):
+	def check_if_idle(cls, vertex_id = None, desc = False, edge_id = None):
+		fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = desc, edge_id = edge_id)
 		try:
 			cdata = CompilationData.objects.get(fcode = fcode)
 		except exceptions.ObjectDoesNotExist:
 			return 'Niewłaściwy fcode'
 		now = timezone.now()
-		if cdata.state == "CLOSING" and now > cdata.last_end_time + datetime.timedelta(seconds = 12):
+		if cdata.state == "CLOSED" and now > cdata.last_end_time + datetime.timedelta(seconds = 8):
 			cdata.clean()
+			return ''
 		if cdata.step != -1:
 			return 'Kompilacja w toku.'
 		if now < cdata.last_end_time + datetime.timedelta(seconds = 4):
@@ -61,7 +65,8 @@ class CompilationData(models.Model):
 	
 	# returns (still_running, error, m) where m is one ise message or list of compilation messages
 	@classmethod
-	def check_status(cls, fcode):
+	def check_status(cls, vertex_id = None, desc = False, edge_id = None):
+		fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = desc, edge_id = edge_id)
 		try:
 			cdata = CompilationData.objects.get(fcode = fcode)
 		except exceptions.ObjectDoesNotExist:

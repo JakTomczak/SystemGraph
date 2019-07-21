@@ -11,10 +11,8 @@ from . import compilation
 from .models import CompilationData
 
 @shared_task
-def test(fcode = None, vertex_id = None, desc = False, edge_id = None, text = ''):
-	cdata = CompilationData.objects.get(fcode = fcode)
-	print('D--')
-	compilation.compile_v1(cdata = cdata, vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
+def start_compilation(vertex_id = None, desc = False, edge_id = None, text = ''):
+	compilation.compile_v1(vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
 	
 def test2():
 	print( make4ht_compile('VALLLGXKSAdesc.tex', settings.COMP_DIR) )

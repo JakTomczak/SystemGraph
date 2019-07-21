@@ -100,8 +100,8 @@
 				<h5 style="text-align: left">Wychodzące krawędzie</h5>
 				<button type="submit" name="newedge" class="btn btn-secondary btn-sm" style="margin-left:15px;">Utwórz nową</button>
 			</div>
-			{% if successors %}
-			<div id="successor_list" style="background: #cacaca;">
+			{% if outgoing_edges %}
+			<div style="background: #cacaca;">
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -112,7 +112,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for edge in successors %}
+						{% for edge in outgoing_edges %}
 						<tr>
 							<td>{{ edge.edge_id }}</td>
 							<td><a href="{{ edge.get_successor_url }}" class="fancy-a">{{ edge.successor.title }}</a></td>
@@ -169,8 +169,8 @@ function save_cont_and_desc() {
 	});
 }
 function check_for_messages(desc, mlength) {
-	var still = false;
-	var error = false;
+	var still;
+	var error;
 	var m = [];
 	$.ajax({
 		url: '{% url "check_compilation" %}',
@@ -228,18 +228,19 @@ function run_content_compilation() {
 			ok = false;
 		}
 	});
-	var error = false;
-	if (ok) {
-		error = update_compilation(false);
+	if (error_message) {
+		alert(error_message);
+		return true;
+	}
+	else if (ok) {
+		COMP_MODAL_SHOW();
+		var error = update_compilation(false);
 		if (!error) {
 			is_submitted();
 		}
+		return error;
 	}
-	else if (error_message) {
-		error = true;
-		alert(error_message);
-	}
-	return error;
+	return true;
 }
 function run_desc_compilation() {
 	var ok;
@@ -260,15 +261,15 @@ function run_desc_compilation() {
 			ok = false;
 		}
 	});
-	var error = false;
-	if (ok) {
-		error = update_compilation(true);
-	}
-	else if (error_message) {
-		error = true;
+	if (error_message) {
 		alert(error_message);
+		return true;
 	}
-	return error;
+	else if (ok) {
+		COMP_MODAL_SHOW();
+		return update_compilation(true);
+	}
+	return true;
 }
 function vertex_save_all_dont_compile() {
 	save_cont_and_desc();
@@ -277,7 +278,7 @@ function vertex_save_all_dont_compile() {
 }
 function vertex_compile_all() {
 	save_cont_and_desc();
-	COMP_MODAL_SHOW();
+	
 	var error = run_content_compilation();
 	if (!error) {
 		error = run_desc_compilation();
@@ -289,12 +290,10 @@ function vertex_compile_all() {
 }
 function vertex_compile_desc() {
 	save_cont_and_desc();
-	COMP_MODAL_SHOW();
 	run_desc_compilation();
 }
 function vertex_compile_cont() {
 	save_cont_and_desc();
-	COMP_MODAL_SHOW();
 	run_content_compilation();
 }
 $(document).ready(function() {

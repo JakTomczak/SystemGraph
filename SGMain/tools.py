@@ -54,13 +54,13 @@ def weighting (thevertex, queryset):
 			weight *= the_same_subject_modifier
 		
 		from_edges_modifier = 0
-		edges = SGmodels.Edge.objects.filter( predecessor = thevertex, successor = vert )
+		edges = models.Edge.objects.filter( predecessor = thevertex, successor = vert )
 		for edge in edges:
 			if edge.user == thevertex.user:
 				from_edges_modifier += outgoing_edge_weight
 			else:
 				from_edges_modifier += outgoing_edge_weight * not_the_same_author_of_edge_modifier
-		edges = SGmodels.Edge.objects.filter( predecessor = vert, successor = thevertex )
+		edges = models.Edge.objects.filter( predecessor = vert, successor = thevertex )
 		for edge in edges:
 			if edge.user == thevertex.user:
 				from_edges_modifier += incoming_edge_weight

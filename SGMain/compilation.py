@@ -10,7 +10,7 @@ from django.conf import settings
 import django.core.exceptions as exceptions
 
 import SGMain.models as model
-import SGmain.tools
+import SGMain.tools as tools
 
 def rreplace(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)
@@ -67,14 +67,13 @@ class CompilationCore(object):
 	begin_document_file = settings.BEGINTEX_FILE
 	end_document_file = settings.ENDTEX_FILE
 	errortext = b''
-	error = False
 	pk = 'pk'
 #	state = 'IDLE'
 	_mode = 0
 	
-	def __init__(self, cdata, text = None, vertex_id = None, desc = False, edge_id = None):
+	def __init__(self, text = None, vertex_id = None, desc = False, edge_id = None):
 		self.output = ''
-		self.cdata = cdata
+		self.error = False
 		if self.check_text(text):
 			self.text = text
 		else:
@@ -103,19 +102,32 @@ class CompilationCore(object):
 		return True
 			
 	def _load_vertex(self, vertex, desc):
+		self.fcode = tools.fcode_from_id(vertex_id = vertex.vertex_id, desc = desc)
+		try:
+			self.cdata = model.CompilationData.objects.get(fcode = self.fcode)
+		except exceptions.ObjectDoesNotExist:
+			self.error = True
+			return
+		self.cdata.launch()
 		self._mode = 1
 		self.object = vertex
 		self.pk = 'vertex_id'
-		self.fcode = tools.fcode_from_id(vertex_id = vertex.vertex_id, desc = desc)
 		if desc:
 			self._mode = 2
 		self.set_state('PROGRESS')
 			
 	def _load_edge(self, edge):
+		self.fcode = tools.fcode_from_id(edge_id = edge.edge_id)
+		try:
+			self.cdata = model.CompilationData.objects.get(fcode = self.fcode)
+		except exceptions.ObjectDoesNotExist:
+			self.error = True
+			return
+		self.cdata.launch()
 		self._mode = 3
 		self.object = edge
 		self.pk = 'edge_id'
-		self.fcode = tools.fcode_from_id(edge_id = edge.edge_id)
+		self.cdata = 
 		self.set_state('PROGRESS')
 	
 	def log_info(self, info, **kwargs):
@@ -287,20 +299,18 @@ class CompilationCore(object):
 		
 	@classmethod
 	def empty_vdesc(cls, vertex_id):
-		outputfile = os.path.join(settings.COMP_DIR, vertex_id + 'desc.txt')
 		try:
 			vertex = model.Vertex.objects.get(vertex_id = vertex_id)
 		except exceptions.ObjectDoesNotExist:
 			return
+		fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = True)
+		outputfile = os.path.join(settings.COMP_DIR, fcode + '.txt')
 		with codecs.open( self.outputfile, 'w+', encoding = 'utf-8') as file:
 			file.truncate()
 		vertex.desc_dir = outputfile
 		vertex.save()
 	
-def compile_v1(cdata = None, vertex_id = None, desc = False, edge_id = None, text = ''):
-	if cdata is None:
-		return
-	cdata.launch()
+def compile_v1(vertex_id = None, desc = False, edge_id = None, text = ''):
 	ccore = CompilationCore(cdata, vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
 	if not ccore.error:
 		ccore.prepare()
