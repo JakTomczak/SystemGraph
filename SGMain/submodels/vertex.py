@@ -136,8 +136,22 @@ class Discipline(models.Model):
 	def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
 		Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
 		
+class Section(models.Model):
+	polish_name = models.CharField(max_length = 60, default = 'Nienazwany dział')
+	discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
+	is_default = models.BooleanField(default = False)
+	
+	@classmethod
+	def FIRST_TIME_RUN_ADD_DEFAULT_SECTION(cls):
+		Section(
+			polish_name = 'Brak działu', 
+			discipline = Discipline.objects.get(is_default = True), 
+			is_default = True
+		).save()
+		
 class Subject(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany temat')
+	section = models.ForeignKey(Section, on_delete = models.CASCADE)
 	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
@@ -145,7 +159,11 @@ class Subject(models.Model):
 	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT(cls):
-		Subject(polish_name = 'Brak tematu', is_default = True).save()
+		Subject(
+			polish_name = 'Brak tematu', 
+			section = Section.objects.get(is_default = True, discipline__is_default = True), 
+			is_default = True
+		).save()
 
 class Vertex(models.Model):
 	vertex_id = models.CharField(max_length = 10, primary_key = True, default = 'VAAAAAAAAA')
@@ -207,6 +225,11 @@ class Vertex(models.Model):
 	def get_successors(self):
 		from . import edge as edge_models
 		return edge_models.Edge.objects.filter(predecessor = self)
+			
+	def save_from_dict(self, dict):
+		for key in dict:
+			setattr(self, key, dict[key])
+		self.save()
 
 	'''
 	Note there are two desc and content dirs: 

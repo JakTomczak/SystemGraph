@@ -68,69 +68,58 @@ class CompilationCore(object):
 	end_document_file = settings.ENDTEX_FILE
 	errortext = b''
 	pk = 'pk'
-#	state = 'IDLE'
 	_mode = 0
 	
 	def __init__(self, text = None, vertex_id = None, desc = False, edge_id = None):
 		self.output = ''
 		self.error = False
-		if self.check_text(text):
-			self.text = text
-		else:
-			return
-		if vertex_id and edge_id:
-			raise Exception('One compilation at a time please.')
-		elif vertex_id:
-			try:
-				vertex = model.Vertex.objects.get(vertex_id = vertex_id)
-			except exceptions.ObjectDoesNotExist:
-				return
+		self.cdata = None
+		self.object = None
+		if text is not None:
+			self.load_text(text)
+		if vertex_id or edge_id:
+			self.fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = desc, edge_id = edge_id)
+			if vertex_id:
+				self.load_vertex(vertex_id, desc)
 			else:
-				self._load_vertex(vertex, desc)
-		elif edge_id:
-			try:
-				edge = model.Edge.objects.get(edge_id = edge_id)
-			except exceptions.ObjectDoesNotExist:
-				return
-			else:
-				self._load_edge(edge)
-		else:
-			return
+				self.load_edge(edge_id)
 		
+	def load_text(self, text):
+		if CompilationCore.check_text(text):
+			self.text = text
+	
 	# to do
-	def check_text(self, text):
+	@classmethod
+	def check_text(cls, text):
 		return True
-			
-	def _load_vertex(self, vertex, desc):
-		self.fcode = tools.fcode_from_id(vertex_id = vertex.vertex_id, desc = desc)
+		
+	def load_vertex(self, vertex_id, desc):
 		try:
+			self.object = model.Vertex.objects.get(vertex_id = vertex_id)
 			self.cdata = model.CompilationData.objects.get(fcode = self.fcode)
 		except exceptions.ObjectDoesNotExist:
 			self.error = True
 			return
 		self.cdata.launch()
 		self._mode = 1
-		self.object = vertex
 		self.pk = 'vertex_id'
 		if desc:
 			self._mode = 2
 		self.set_state('PROGRESS')
 			
-	def _load_edge(self, edge):
-		self.fcode = tools.fcode_from_id(edge_id = edge.edge_id)
+	def load_edge(self, edge_id):
 		try:
+			self.object = model.Edge.objects.get(edge_id = edge_id)
 			self.cdata = model.CompilationData.objects.get(fcode = self.fcode)
 		except exceptions.ObjectDoesNotExist:
 			self.error = True
 			return
 		self.cdata.launch()
 		self._mode = 3
-		self.object = edge
 		self.pk = 'edge_id'
-		self.cdata = 
 		self.set_state('PROGRESS')
 	
-	def log_info(self, info, **kwargs):
+	def _log_info(self, info, **kwargs):
 		print(info, **kwargs)
 	
 	def _log_progress(self, step, state, m):
@@ -189,7 +178,7 @@ class CompilationCore(object):
 				for line in temp:
 					file.write(line)
 			for line in self.text.splitlines():
-				# log_info(line)
+				# self._log_info(line)
 				file.write(line)
 				file.write('\n')
 			with open( self.end_document_file, 'r') as temp:
@@ -238,7 +227,7 @@ class CompilationCore(object):
 		i = 0
 		STILL = False
 		for line in iter(self.process.stdout.readline, b''):
-			#self.log_info('got line: {0}'.format(line.decode('cp1252')), end='')
+			#self._log_info('got line: {0}'.format(line.decode('cp1252')), end='')
 			if not self.error and line.startswith(b'!'):
 				self.error = True
 				STILL = True
@@ -251,7 +240,7 @@ class CompilationCore(object):
 		
 	def _make4ht(self):
 		self.command = 'make4ht -uc mathjax.cfg -e config.mk4 ' + self.texfilename
-		self.log_info(self.command)
+		self._log_info(self.command)
 		command_list = self.command.split(' ')
 		self.process = subprocess.Popen(command_list, cwd = self.cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		
@@ -285,7 +274,7 @@ class CompilationCore(object):
 		self.set_state('PROGRESS')
 		for filename in glob.glob( os.path.join(self.cwd, self.fcode) + '.*' ):
 			if not filename.endswith('txt'):
-				# log_info(filename)
+				# self._log_info(filename)
 				os.remove(filename)
 		if self._mode == 1:
 			self.object.content_dir = self.outputfile

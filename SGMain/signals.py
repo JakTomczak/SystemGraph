@@ -46,8 +46,6 @@ def delete_vertex_files (sender, instance, using, **kwargs):
 		
 @receiver(post_save, sender = Vertex)
 def add_vertex_compilation_objects (sender, instance, created, **kwargs):
-	print('abba')
-	print(created)
 	if created:
 		instance.create_pre_dirs()
 		cd1 = CompilationData(fcode = instance.vertex_id)

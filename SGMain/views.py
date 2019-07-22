@@ -47,15 +47,10 @@ def edit_vertex(request, vertex_id):
 			request.session['pred'] = this_vertex.vertex_id
 			return redirect('new_edge')
 		if 'save' in action and form.is_valid():
-			this_vertex.vertex_class = form.cleaned_data['vertex_class']
-			this_vertex.preamble = form.cleaned_data['preamble']
-			this_vertex.discipline = form.cleaned_data['discipline']
-			this_vertex.subject = form.cleaned_data['subject']
-			this_vertex.title = form.cleaned_data['title']
-			this_vertex.shorttitle = form.cleaned_data['shorttitle']
-			this_vertex.save()
-			this_vertex.write_pre_content( form.cleaned_data['content'] )
-			this_vertex.write_pre_desc( form.cleaned_data['description'] )
+			this_vertex.save_from_dict(form.cleaned_data)
+			form.fields['subject'].queryset = model.Subject.objects.filter(is_default = True)
+			#this_vertex.write_pre_content( form.cleaned_data['content'] )
+			#this_vertex.write_pre_desc( form.cleaned_data['description'] )
 			messages.add_message(request, messages.SUCCESS, "Właściwości wierzchołka zostały zapisane.")
 	else:
 		form = forms.Edit_Vertex_Form(vertex = this_vertex)
