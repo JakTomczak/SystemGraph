@@ -6,6 +6,11 @@ from django import forms
 
 from .models import *
 
+Discipline_Form = forms.modelform_factory(Discipline, fields=('polish_name', ))
+Section_Form = forms.modelform_factory(Section, fields=('polish_name', ))
+Section_Form_Full = forms.modelform_factory(Section, fields=('polish_name', 'discipline'))
+Subject_Form = forms.modelform_factory(Subject, fields=('polish_name', ))
+
 class Add_New_Vertex_Form(forms.ModelForm):
 	preamble = forms.ModelChoiceField( queryset = Preamble.objects.none(), empty_label = None )
 	vertex_class = forms.ModelChoiceField( queryset = Vertex_Class.objects.all(), empty_label = None )
@@ -28,6 +33,7 @@ class Edit_Vertex_Form (forms.Form):
 	vertex_class = forms.ModelChoiceField( queryset = Vertex_Class.objects.all(), empty_label = None )
 	discipline = forms.ModelChoiceField( queryset = Discipline.objects.all(), empty_label = None )
 	subject = forms.ModelChoiceField( queryset = Subject.objects.all(), empty_label = None )
+	section = forms.ModelChoiceField( queryset = Section.objects.all(), empty_label = None )
 	description = forms.CharField(widget = forms.Textarea, required = False)
 	content = forms.CharField(widget = forms.Textarea, required = False)
 	shorttitle = forms.CharField(max_length = 40, required = False)

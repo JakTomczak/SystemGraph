@@ -9,7 +9,7 @@ from datetime import datetime
 
 from . import tasks
 from . import compilation
-from .models import Vertex, Path, CompilationData
+from .models import Vertex, Path, CompilationData, Subject
 
 def user_is_NOT_valid(request, vertex_id = None, edge_id = None):
 	if int(vertex_id is not None) + int(edge_id is not None) != 1:
@@ -96,6 +96,16 @@ def delete_vertex_from_path(request):
 	else:
 		P.delete_one(which)
 	return JsonResponse({})
+
+@csrf_exempt
+def get_subject_from_pk(request):
+	pk = int( request.POST.get('pk', '') )
+	try:
+		S = Subject.objects.get(pk = pk)
+	except exceptions.ObjectDoesNotExist:
+		S = Subject.get_default()
+	context = {'subject': S.ajax()}
+	return JsonResponse(context)
 
 @csrf_exempt
 def get_vertex_from_id(request):

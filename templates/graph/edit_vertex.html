@@ -7,6 +7,7 @@
 {% block content %}
 <div class="maindiv smallpadd">
 {% include "common/compilation_modal.html" %}
+{% include "common/dss_choosing.html" with query=subjects %}
 	<form method="post" id="edit-vertex-form">
 	{% csrf_token %}
 		<input type="hidden" id="hidden_action" value="" name="action">
@@ -19,25 +20,138 @@
 					<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń wierzchołek</button>
 				</div>
 				<div class="distinctarea border border-primary rounded big-margin">
+{% include 'common/DSS_in_choosing.html' with this_subject=this_subject %}
+				</div>
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
 					<h6 for="{{ form.discipline.id_for_label }}">Dyscyplina</h6>
 					{% render_field form.discipline class="form-control" style="width:100%; min-width:70px" placeholder=form.discipline.label %}
 					{% for error in form.discipline.errors %}
 						<span class="help-block">{{ error }}</span>
 					{% endfor %}
 					<a href="{% url 'new_discipline' %}">Utworzyć nową?</a>
+					<h6 for="{{ form.section.id_for_label }}">Dział</h6>
+					{% render_field form.section class="form-control" style="width:100%; min-width:70px" placeholder=form.section.label %}
+					{% for error in form.section.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_discipline' %}">Utworzyć nową?</a>
+					<h6 for="{{ form.subject.id_for_label }}">Temat</h6>
+					{% render_field form.subject class="form-control" style="width:100%; min-width:70px" placeholder=form.subject.label %}
+					{% for error in form.subject.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_subject' %}">Utworzyć nowy?</a>
+				</div>
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
+					<h5 for="{{ form.title.id_for_label }}" style="text-align: left">Tytuł </h5>
+					{% render_field form.title class="form-control" style="width:100%; min-width:150px; margin-bottom: 8px;" placeholder=form.title.label %}
+					{% for error in form.title.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<div style="width: auto">
+						<label for="{{ form.ifshorttitle.id_for_label }}" class="inline_desc" style="float: left; margin-right: 10px; padding-top: 7px;">Krótki tytuł</label>
+						<div style="overflow: hidden;">{% render_field form.shorttitle class="form-control box-block-100" style="width:100%; min-width:150px" placeholder=form.shorttitle.label %}</div>
+						{% for error in form.shorttitle.errors %}
+							<span class="help-block">{{ error }}</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
+					<h5 for="{{ form.vertex_class.id_for_label }}" style="text-align: left">Rodzaj wierzchoła</h5>
+					{% render_field form.vertex_class class="form-control" style="width:100%; min-width:70px" placeholder=form.vertex_class.label %}
+					{% for error in form.vertex_class.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
 				</div>
 			</div>
 			<div style="flex: 2">
-				<div class="distinctarea border border-primary rounded small-margin">
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
 					<h5>Czy krawędź musi mieć początek?</h5>
 					{% include "FAQ/does_edge_have_to_have_start_pl.html" %}
 				</div>
-				<div class="distinctarea border border-primary rounded small-margin">
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
 					<h5>Co to jest krawędź bez sukcesora?</h5>
 					{% include "FAQ/what_is_edge_without_successor_pl.html" %}
 				</div>
 			</div>
 		</div>
+		<div class="distinctarea border border-primary rounded big-margin">
+			<div class="h5withbuttons">
+				<h5>Wychodzące krawędzie</h5>
+				<button type="submit" name="newedge" class="btn btn-secondary btn-sm">Utwórz nową</button>
+			</div>
+			{% if outgoing_edges %}
+			<div style="background: #cacaca;">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">ID krawędzi:</th>
+							<th scope="col">Wierzchołek docelowy:</th>
+							<th scope="col">Opis (nadpisany opis wierzchołka docelowego)</th>
+							<th scope="col"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for edge in outgoing_edges %}
+						<tr>
+							<td>{{ edge.edge_id }}</td>
+							<td><a href="{{ edge.get_successor_url }}" class="fancy-a">{{ edge.successor.title }}</a></td>
+							<td>{{ edge.get_content|safe }}</td>
+							<td><a  class="btn btn-secondary btn-sm" href="{% url 'edit_edge' edge_id=edge.edge_id %}" role="button">Edytuj</a></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% else %}
+				<small>(brak)</small>
+			{% endif %}
+		</div>
+		<div class="div-column">
+			<div style="flex: 4">
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
+					<h6 for="{{ form.preamble.id_for_label }}">Preambuła <small>(<a href="#">edytuj</a>)</small></h6>
+					{% render_field form.preamble class="form-control" style="width:100%; min-width:70px" placeholder=form.preamble.label %}
+					{% for error in form.preamble.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+					<a href="{% url 'new_preamble' %}">Utworzyć nową?</a>
+				</div>
+				<div class="distinctarea border border-primary rounded big-margin">
+					<div class="h5withbuttons">
+						<h5 for="{{ form.content.id_for_label }}">Treść</h5>
+						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()">Zapisz</button>
+						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_cont()">Zapisz i kompiluj</button>
+					</div>
+					{% render_field form.content class="form-control" rows="7" style="width:100%; min-width:150px" placeholder=form.content.label %}
+					{% for error in form.content.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				</div>
+				<div class="distinctarea border border-primary rounded big-margin">
+					<div class="h5withbuttons">
+						<h5 for="{{ form.description.id_for_label }}">Skrócona forma lub opis</h5>
+						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()">Zapisz</button>
+						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_desc()">Zapisz i kompiluj</button>
+					</div>
+					{% render_field form.description class="form-control" rows="3" style="width:100%; min-width:150px" placeholder=form.description.label %}
+					{% for error in form.description.errors %}
+						<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				</div>
+			</div>
+			<div style="flex: 2">
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
+					<h5>Czy krawędź musi mieć początek?</h5>
+					{% include "FAQ/does_edge_have_to_have_start_pl.html" %}
+				</div>
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
+					<h5>Co to jest krawędź bez sukcesora?</h5>
+					{% include "FAQ/what_is_edge_without_successor_pl.html" %}
+				</div>
+			</div>
+		</div>
+		<!--
 		<div style="display: flex;">
 			<div style="width: 60%">
 				<div class="internal-menu space-between sidepadd">
@@ -49,7 +163,7 @@
 				{% for hidden in form.hidden_fields %}
 					{{ hidden }}
 				{% endfor %}
-				<div class="distinctarea border border-primary rounded medium-margin">
+				<div class="distinctarea paddtop border border-primary rounded medium-margin">
 					<ul class="internal-menu">
 						<li>
 							<h6 for="{{ form.preamble.id_for_label }}">Preambuła <small>(<a href="#">edytuj</a>)</small></h6>
@@ -87,7 +201,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="distinctarea border border-primary rounded medium-margin">
+				<div class="distinctarea paddtop border border-primary rounded medium-margin">
 					<div>
 						<h5 for="{{ form.title.id_for_label }}" style="text-align: left">Tytuł </h5>
 						{% render_field form.title class="form-control" style="min-width:150px" placeholder=form.title.label %}
@@ -104,14 +218,14 @@
 					</div>
 				</div>
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin medium-margin" style="flex-grow: 1;">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin medium-margin" style="flex-grow: 1;">
 				<span style="text-align: center;">Log kompilacji</span>
 				<div style="width: 100%; height: 100%;">
 					<textarea readonly id="js_comms" style="width: 100%; height: 100%;"></textarea>
 				</div>
 			</div>
 		</div>
-		<div class="distinctarea border border-primary rounded big-margin">
+		<div class="distinctarea paddtop border border-primary rounded big-margin">
 			<div class="flexonwidth nowrap" style="justify-content: inherit">
 				<h5 for="{{ form.description.id_for_label }}" style="text-align: left; align-self:center;">Skrócona forma lub opis</h5>
 				<button type="button" class="btn btn-secondary sgbutton" style="margin-left: 20px;" onclick="save_cont_and_desc()">Zapisz</button>
@@ -122,7 +236,7 @@
 				<span class="help-block">{{ error }}</span>
 			{% endfor %}
 		</div>
-		<div class="distinctarea border border-primary rounded big-margin">
+		<div class="distinctarea paddtop border border-primary rounded big-margin">
 			<div class="internal-menu" style="justify-content:normal;">
 				<h5 style="text-align: left">Wychodzące krawędzie</h5>
 				<button type="submit" name="newedge" class="btn btn-secondary btn-sm" style="margin-left:15px;">Utwórz nową</button>
@@ -154,7 +268,7 @@
 				<small>(brak)</small>
 			{% endif %}
 		</div>
-		<div class="distinctarea border border-primary rounded big-margin">
+		<div class="distinctarea paddtop border border-primary rounded big-margin">
 			<div class="flexonwidth nowrap" style="justify-content: inherit">
 				<h4 for="{{ form.content.id_for_label }}" style="text-align: left; align-self:center;">Treść</h4>
 				<button type="button" class="btn btn-secondary sgbutton" style="margin-left: 20px;" onclick="save_cont_and_desc()">Zapisz</button>
@@ -165,6 +279,7 @@
 				<span class="help-block">{{ error }}</span>
 			{% endfor %}
 		</div>
+		-->
 	</form>
 </div>
 {% endblock %}

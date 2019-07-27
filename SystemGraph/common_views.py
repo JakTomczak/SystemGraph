@@ -63,6 +63,7 @@ def I_HAVE_NEW_DATABASE():
 	model.Preamble.FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES( I_GUESS_YOU_ARE_ADMIN )
 	model.Vertex_Class.FIRST_TIME_RUN_ADD_DEFAULT_VCLASS()
 	model.Discipline.FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE()
+	model.Section.FIRST_TIME_RUN_ADD_DEFAULT_SECTION()
 	model.Subject.FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT()
 	model.Vertex.FIRST_TIME_RUN_ADD_DEFAULT_VERTEX( I_GUESS_YOU_ARE_ADMIN )
 	model.Edge_Class.FIRST_TIME_RUN_ADD_DEFAULT_ECLASS()
@@ -71,6 +72,11 @@ def I_HAVE_NEW_DATABASE():
 		FIRST_TIME_RUN_ADD_MATH_VCLASSES()
 		
 def FIRST_TIME_RUN_ADD_MATH_VCLASSES():
+	mat = model.Discipline(polish_name = 'Matematyka')
+	mat.save()
+	top = model.Section(polish_name = 'Topologia', discipline = mat)
+	top.save()
+	model.Subject(polish_name = 'Podstawy topologii', section = top).save()
 	definition = model.Vertex_Class( polish_name = 'Definicja', polish_name_plural = 'Definicje' )
 	definition.save()
 	example = model.Vertex_Class( polish_name = 'Przykład', polish_name_plural = 'Przykłady' )

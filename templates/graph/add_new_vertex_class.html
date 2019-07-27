@@ -15,7 +15,7 @@
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
 			{% endfor %}
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.polish_name.id_for_label }}">Nazwa polska</h5>
 				<span>Liczba pojedyncza</span>
 				{% render_field form.polish_name class="form-control SGformwidget" placeholder=form.polish_name.label %}
@@ -28,7 +28,7 @@
 					<span class="help-block">{{ error }}</span>
 				{% endfor %}
 			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5>Połączenia z innymi rodzajami wierzchołków</h5>
 				<span>Widoczne u góry</span>
 				{% render_field form.top class="form-control SGformwidget" placeholder=form.top.label %}
@@ -51,7 +51,7 @@
 					<span class="help-block">{{ error }}</span>
 				{% endfor %}
 			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.info.id_for_label }}">Dodatkowe zastrzeżenia</h5>
 				{% render_field form.info class="form-control SGformwidget" placeholder=form.info.label %}
 				{% for error in form.info.errors %}

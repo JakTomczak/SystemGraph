@@ -1,0 +1,8 @@
+<div class="innerdistinctarea border border-warning rounded small-margin" style="display: flex;">
+	<div style="flex: 1;">
+		<a href="{% url 'view_section' pk=this_sec.pk %}" class="fancy-a">{{ this_sec }}</a>
+	</div>
+	{% if edit_yes %}<div>
+		<a href="{% url 'edit_section' pk=this_sec.pk %}">edytuj</a>
+	</div>{% endif %}
+</div>

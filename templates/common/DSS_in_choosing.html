@@ -1,0 +1,20 @@
+<div class="h5withbuttons">
+	<h5>Dyscyplina, dział i temat</h5>
+	<button type="button" id="choose_dss_button" class="btn btn-secondary sgbutton" onclick="choose_dss()">Wybierz</button>
+	<button type="button" id="new_dss_button" class="btn btn-secondary sgbutton" onclick="new_dss()">Dodaj nowy</button>
+</div>
+<div class="innerdistinctarea border border-warning rounded small-margin">
+	<span id="dss_span">{{ this_subject.big_str }}</span><a id="edit_dss_a" style="float: right" href="#">edytuj</a>
+</div>
+<script>
+var CHOSEN_VID = {{ this_subject.pk }};
+function display_chosen_dss(subject_json) {
+	CHOSEN_VID = subject_json.pk;
+	document.getElementById("dss_span").innerHTML = subject_json.big_str;
+	document.getElementById("edit_dss_a").href = subject_json.edit_url;
+}
+function choose_dss() {
+	DSS_DISPLAY_FUN = display_chosen_dss;
+	DSS_MODAL_SHOW();
+}
+</script>

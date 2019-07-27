@@ -1,0 +1,10 @@
+<div class="innerdistinctarea border border-warning rounded small-margin" style="display: flex;">
+	<div style="flex: 1;">
+		<span>{{ this_sub }}</span>
+	</div>
+	{% if edit_yes %}<div>
+		<a href="{% url 'edit_subject' pk=this_sub.pk %}">edytuj</a>
+		<br>
+		<a href="{% url 'new_vertex' subject_pk=this_sub.pk %}">utwórz wierzchołek</a>
+	</div>{% endif %}
+</div>

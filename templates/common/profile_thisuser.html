@@ -8,8 +8,8 @@
 	<h2 style="padding: 10px;">Profil użytkownika</h2>
 	<div style="display:flex; justify-content: space-around;">
 		<div style="flex: 3;">
-			<div class="distinctarea border border-primary rounded medium-margin" >
-				<div class="internal-menu" style="justify-content: inherit;">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
+				<div class="h5withbuttons" style="justify-content: inherit;">
 					<h5>Nieopublikowane wierzchołki</h5>
 					<a href="{% url 'new_vertex' %}" class="btn btn-primary" role="button" style="margin-left: 20px;">Utwórz nowy wierzchołek</a>
 				</div>
@@ -28,7 +28,7 @@
 					<small>(brak)</small>
 				{% endif %}
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h5 style="padding-top: 7px;">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
 				{% if verts %}
 				{% for vert in verts %}
@@ -38,7 +38,7 @@
 				<small>(brak)</small>
 				{% endif %}
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin" >
+			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
 				<div class="internal-menu" style="justify-content: inherit;">
 					<h5>Własne preambuły</h5>
 					<a href="{% url 'new_preamble' %}" class="btn btn-primary" role="button" style="margin-left: 25px;">Utwórz nową preambułę</a>
@@ -57,11 +57,11 @@
 					<small>(brak)</small>
 				{% endif %}
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin" >
+			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
 				{% include 'common/paths_list.html' with my_profile=1 %}
 			</div>
 		</div>
-		<div class="distinctarea border border-primary rounded medium-margin" style="flex: 2; height: min-content;">
+		<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex: 2; height: min-content;">
 			<div class="internal-menu" style="justify-content: inherit;">
 				<h5>Dane użytkownika</h5>
 				<a href="{% url 'edit_profile' username=this_user %}" class="btn btn-secondary" role="button" style="margin-left: 25px;">Edytuj</a>

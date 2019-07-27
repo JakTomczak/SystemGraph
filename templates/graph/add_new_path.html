@@ -19,26 +19,26 @@
 		{% endfor %}
 		<div class="div-column">
 			<div style="flex: 2">
-				<div class="distinctarea border border-primary rounded big-margin">
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
 					<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
 					{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
 					{% for error in form.name.errors %}
 						<span class="help-block">{{ error }}</span>
 					{% endfor %}
 				</div>
-				<div class="distinctarea border border-primary rounded big-margin">
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
 					<h5 for="{{ form.description.id_for_label }}">Opis</h5>
 					{% render_field form.description rows="3" class="form-control SGformwidget" placeholder=form.description.label %}
 					{% for error in form.description.errors %}
 						<span class="help-block">{{ error }}</span>
 					{% endfor %}
 				</div>
-				<div class="distinctarea border border-primary rounded big-margin">
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
 					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=dummy my_id="first" header="Pierwszy wierzchołek" %}
 				</div>
 			</div>
 			<div style="flex: 1">
-				<div class="distinctarea border border-primary rounded small-margin">
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
 					<h5>Co to jest ścieżka?</h5>
 					{% include "FAQ/what_is_path_pl.html" %}
 				</div>

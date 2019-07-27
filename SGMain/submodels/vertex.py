@@ -37,20 +37,12 @@ class Vertex_Class(models.Model):
 	so I created this method for users to easily propose new VC to me.
 	'''
 	@classmethod
-	def make_proposal(cls, user, form):
-		message = str(datetime.datetime.now()) + '\n'
+	def make_proposal(cls, user, data_dict):
+		message = str(datetime.datetime.now()) + '\nNew Vertex_Class\n'
 		message += 'user: ' + user.username + '\n'
-		message += 'polska pojedyncza: ' + form.cleaned_data['polish_name'] + '\n'
-		message += 'polska mnoga: ' + form.cleaned_data['polish_name_plural'] + '\n'
-#		message += 'angielska pojedyncza: ' + form.cleaned_data['english_name'] + '\n'
-#		message += 'angielska mnoga: ' + form.cleaned_data['english_name_plural'] + '\n'
-		message += 'top: ' + form.cleaned_data['top'] + '\n'
-		message += 'left: ' + form.cleaned_data['left'] + '\n'
-		message += 'right: ' + form.cleaned_data['right'] + '\n'
-		message += 'bottom: ' + form.cleaned_data['bottom'] + '\n'
-		message += 'info: \n' + form.cleaned_data['info']
-		with open( os.path.join(settings.PROPOSALS_DIR, datetime.datetime.now().strftime('%Y %m %d godz %H.%M.%S') + '.txt'), 'w+' ) as file:
-			file.write(message)
+		for key in data_dict:
+			message += key + ': ' + data_dict[key] + '\n'
+		tools.userproposal(message)
 		
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VCLASS(cls):
@@ -117,12 +109,12 @@ class Preamble(models.Model):
 	def FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES(cls, admin):
 		A = Preamble(preamble_id = 'AAAAAAAAAA', user = admin, is_default = True)
 		A.title = 'Default preamble'
-		A.desciption = 'It works with english planar text and math formulas.'
+		A.description = 'It works with plain english text and math formulas.'
 		A.save()
 		B = Preamble(preamble_id = 'AAAAAAAAAB', user = admin, is_default = True)
 		B.directory = os.path.join( settings.COMP_DIR, 'AAAAAAAAAB.tex' )
 		B.title = 'Domyślna preambuła'
-		B.desciption = 'Działa z tekstem polskim i matematycznymi formułami.'
+		B.description = 'Działa z tekstem polskim i matematycznymi formułami.'
 		B.save()
 	
 class Discipline(models.Model):
@@ -132,6 +124,27 @@ class Discipline(models.Model):
 	def __str__(self):
 		return self.polish_name
 	
+	def perms(self, user):
+		perms_dict = user.is_authorized('discipline')
+		empty = len( Vertex.objects.filter(discipline = self) ) < 1
+		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
+		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
+		return delete_p, edit_p
+		
+	def propose_deletion(self, user):
+		message = str(datetime.datetime.now()) + '\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'delete discipline\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		tools.userproposal(message)
+	
+	def propose_change(self, user, data_dict):
+		message = str(datetime.datetime.now()) + '\nDiscipline change\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'discipline str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		for key in data_dict:
+			message += key + ': ' + data_dict[key] + '\n'
+		tools.userproposal(message)
+	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
 		Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
@@ -140,6 +153,30 @@ class Section(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany dział')
 	discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
 	is_default = models.BooleanField(default = False)
+	
+	def __str__(self):
+		return self.polish_name
+	
+	def perms(self, user):
+		perms_dict = user.is_authorized('section')
+		empty = len( Vertex.objects.filter(section = self) ) < 1
+		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
+		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
+		return delete_p, edit_p
+		
+	def propose_deletion(self, user):
+		message = str(datetime.datetime.now()) + '\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'delete section\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		tools.userproposal(message)
+	
+	def propose_change(self, user, data_dict):
+		message = str(datetime.datetime.now()) + '\nSection change\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'section str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		for key in data_dict:
+			message += key + ': ' + data_dict[key] + '\n'
+		tools.userproposal(message)
 	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_SECTION(cls):
@@ -152,16 +189,59 @@ class Section(models.Model):
 class Subject(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany temat')
 	section = models.ForeignKey(Section, on_delete = models.CASCADE)
+	discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
 	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return self.polish_name
 	
+	def big_str(self):
+		return str(self.discipline) + ' --> ' + str(self.section) + ' --> ' + str(self)
+		
+	def ajax(self):
+		return {
+			'big_str': self.big_str(), 
+			'pk': self.pk, 
+			'edit_url': self.get_edit_url() 
+		}
+	
+	def get_edit_url(self):
+		return reverse('edit_subject', kwargs={'pk': self.pk})
+	
+	@classmethod
+	def get_default(cls):
+		try:
+			return Subject.objects.get(is_default = True)
+		except exceptions.ObjectDoesNotExist:
+			return Subject.objects.all()[0]
+	
+	def perms(self, user):
+		perms_dict = user.is_authorized('subject')
+		empty = len( Vertex.objects.filter(subject = self) ) < 1
+		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
+		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
+		return delete_p, edit_p
+		
+	def propose_deletion(self, user):
+		message = str(datetime.datetime.now()) + '\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'delete subject\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		tools.userproposal(message)
+	
+	def propose_change(self, user, data_dict):
+		message = str(datetime.datetime.now()) + '\nSubject change\n'
+		message += 'user: ' + user.username + '\n'
+		message += 'subject str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		for key in data_dict:
+			message += key + ': ' + data_dict[key] + '\n'
+		tools.userproposal(message)
+	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT(cls):
 		Subject(
 			polish_name = 'Brak tematu', 
-			section = Section.objects.get(is_default = True, discipline__is_default = True), 
+			discipline = Discipline.objects.get(is_default = True), 
+			section = Section.objects.get(is_default = True, discipline = discipline),
 			is_default = True
 		).save()
 
@@ -171,9 +251,10 @@ class Vertex(models.Model):
 	preamble = models.ForeignKey(Preamble, on_delete = models.SET_DEFAULT, default = settings.DEFAULT_PREAMBLE_ID)
 	user = models.ForeignKey(user_model.CustomUser, on_delete = models.CASCADE)
 	discipline = models.ForeignKey(Discipline, on_delete = models.SET_DEFAULT, default = 1)
+	section = models.ForeignKey(Section, on_delete = models.SET_DEFAULT, default = 1)
 	subject = models.ForeignKey(Subject, on_delete = models.SET_DEFAULT, default = 1)
 	date = models.DateTimeField(auto_now = True)
-	title = models.CharField(max_length = 120, default = 'default title')
+	title = models.CharField(max_length = 120, default = 'no title')
 	shorttitle = models.CharField(max_length = 40, null = True, blank = True)
 	submitted = models.BooleanField(default = False)
 	desc_dir = models.CharField(max_length = 200, null = True)

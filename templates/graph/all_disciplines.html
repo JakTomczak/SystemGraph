@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}wszystkie dyscypliny{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="maindiv smallpadd">
+	<div class="div-column">
+		<div style="flex: 2">
+			<div class="flexonwidth sidepadd paddtop"> 
+				<h4>Wszystkie dostępne dyscypliny</h4>
+				<a href="{% url 'new_discipline' %}" class="btn btn-primary" role="button">Utwórz nową dyscyplinę</a>
+			</div>
+			<div class="distinctarea paddtop border border-primary rounded big-margin">
+{% for disc in disciplines %}
+{% include 'common/discipline_singleframe.html' with this_disc=disc edit_yes=user %}
+{% endfor %}
+			</div>
+		</div>
+		<div style="flex: 1">
+			<br>
+			<div class="distinctarea paddtop border border-primary rounded big-margin">
+				<h5>test</h5>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

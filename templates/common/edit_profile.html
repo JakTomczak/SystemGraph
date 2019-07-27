@@ -16,14 +16,14 @@
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
 			{% endfor %}
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.email.id_for_label }}">Email</h5>
 				{% render_field form.email class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.email.label %}
 				{% for error in form.email.errors %}
 					<span class="help-block">{{ error }}</span>
 				{% endfor %}
 			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.email.id_for_label }}">Hasło</h5>
 				<a href="{% url 'password_change' %}" class="btn btn-secondary" role="button" style="margin-left: 25px; width: max-content;">Zmień hasło</a>
 			</div>

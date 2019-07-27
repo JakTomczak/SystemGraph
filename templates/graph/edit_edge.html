@@ -20,15 +20,15 @@
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}
 		{% endfor %}
-		<div class="distinctarea border border-primary rounded medium-margin">
+		<div class="distinctarea paddtop border border-primary rounded medium-margin">
 			<h5>Początek (wierzchołek wyjściowy)</h5>
 			{% include 'common/vertex_singleframe.html' with this_vertex=predecessor %}
 		</div>
-		<div class="distinctarea border border-primary rounded medium-margin">
+		<div class="distinctarea paddtop border border-primary rounded medium-margin">
 			{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
 		</div>
 		<div class="flexonwidth" style="width: 100%;">
-			<div class="distinctarea border border-primary rounded medium-margin" style="flex:1; flex-grow: 3;">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex:1; flex-grow: 3;">
 				<div class="form-group" style="display: block;">
 					<h5 for="{{ form.preamble.id_for_label }}" style="text-align: left">Preambuła: </h5>
 					{% render_field form.preamble class="form-control" style="min-width:150px" placeholder=form.preamble.label %}
@@ -45,7 +45,7 @@
 					{% endfor %}
 				</div>
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin" style="flex-grow: 1;">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex-grow: 1;">
 				<span style="text-align: center;">Log kompilacji</span>
 				<div style="width: 100%; height: 100%;">
 					<textarea readonly id="js_comms" style="width: 100%; height: 100%;"></textarea>

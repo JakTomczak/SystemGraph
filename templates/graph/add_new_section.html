@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}nowa dyscyplina{% endblock %}
+{% block title %}nowy dział{% endblock %}
 
 {% load widget_tweaks %}
 
 {% block content %}
 <div class="maindiv mediumpadd">
-	<form method="post">
+	<form method="post" id="edit-path-form">
 		{% csrf_token %}
 		<div class="internal-menu sidepadd">
-			<h4>Tworzenie nowej dyscypliny</h4>
+			<h4>Tworzenie nowego działu</h4>
 			<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
 		</div>
 		{% for hidden in form.hidden_fields %}

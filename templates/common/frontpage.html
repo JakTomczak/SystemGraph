@@ -9,7 +9,7 @@
 	<h2 style="margin-left: 3%; margin-bottom: 15px;">SystemGraph - <span style="font-size: 87%;">napisz swój system teoretyczny w formie grafu.<span></h2>
 	<div style="display:flex; justify-content: space-around;">
 		<div style="flex: 1;">
-			<div class="distinctarea border border-primary rounded medium-margin">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h4>Innowacyjny sposób przeglądania i pisania treści</h4>
 				<p>
 				Tradycyjnie, pisząc treści naukowe i dydaktyczne, jeżeli pomiędzy dwoma zagadnieniami istnieje zależność, którą wartoby nakreślić, jesteśmy skazani na poświęcenie zdania lub całego paragrafu na zwrócenie uwagi na ową zależność. W ten sposób możemy zaplątać się w gęstwinie odniesień do poprzednich zagadnień. Ale nie w SystemGraph!
@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<div style="flex: 1; height: min-content;">
-			<div class="distinctarea border border-primary rounded medium-margin" style="margin-top: 20px;">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin" style="margin-top: 20px;">
 				<h4>Platforma do dzielenia się wiedzą</h4>
 				<p>
 				SystemGraph w swoim założeniu jest aplikacją zwiększającą komunikatywność na płaszczyznach profesor - student oraz profesor - hobbysta. Niemniej, każdy może publikować własne treści.
@@ -34,7 +34,7 @@
 	</div>
 	<div style="display:flex; justify-content: space-around;">
 		<div style="flex: 1;">
-			<div class="distinctarea border border-primary rounded medium-margin">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h4>Treść jako wierzchołki, zależności jako krawędzie</h4>
 				<p>
 				W SystemGraph pewną wybraną przez ciebie (autora) porcję wiedzy nazywamy wierzchołkiem. Może to być na przykład pojedyncza definicja lub jeden przykład. Pomiędzy swoim wierzchołkiem, a dowolnym innym wierzchołkiem możesz stworzyć krawędź, czyli zaawansowane hiperłącze. Krawędzie mogą nakreślać zależność pomiędzy łączącymi je wierzchołkami i nie tylko. <a href="#" class="fancy-a">Przeczytaj o wszystkich ich zastosowaniach.</a>
@@ -42,7 +42,7 @@
 				<!-- Matematyka na tle innych nauk jest wyjątkowo uporząkowana i  -->
 				</p>
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h4>Skierowany do kadry naukowej</h4>
 				<p>
 				<!-- Zwykle, jeśli profesor w ogóle udostępnia materiały naukowe dla studentów -->
@@ -50,7 +50,7 @@
 			</div>
 		</div>
 		<div style="flex: 1; height: min-content;">
-			<!-- <div class="distinctarea border border-primary rounded medium-margin">
+			<!-- <div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h4>Czytelność przede wszystkim</h4>
 				<p>
 				
@@ -58,13 +58,13 @@
 				<!-- Współcześnie, mimo iż nauki wyższe są tworzone w tak szybkim tempie, łączenie wyników badań dwóch naukowców w jedną całość jest wyjątkowo mozolne (jeśli w ogóle występuje). Być może SystemGraph 
 				</p>
 			</div>  -->
-			<div class="distinctarea border border-primary rounded medium-margin">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h4>Dodaj własne wierzchołki</h4>
 				<p>
 					{% if user.is_authenticated %}{% if already %}{{ user.username }}, jesteś już aktywnym autorem w SystemGraph! Wspaniale. <a class="fancy-a" href="{% url 'new_vertex' %}">Dodaj kolejny wierzchołek</a> lub wjedź na swój profil (link w prawym górnym rogu), aby utworzyć inne części grafu.{% else %}{{ user.username }}, nie masz jeszcze swoich wierzchołków. Zainteresowany <a class="fancy-a" href="{% url 'new_vertex' %}">dodaniem swojego pierwszego</a>? Pamiętaj, że w SystemGraph twój <a class="fancy-a" href="{% url 'profile' username=user.username %}">profil</a> jest twoim panelem sterowania. {% endif %}{% else %}Po <a class="fancy-a" href="{% url 'login' %}">zalogowaniu się</a> będziesz mógł dodawać swoje wierzchoki, krawędzie i ścieżki. Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się.</a>{% endif %}
 				</p>
 			</div>
-			<div class="distinctarea border border-primary rounded medium-margin">
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
 				<h4>Ścieżki w grafie, czyli kursy</h4>
 				<p>
 					Jeśli chcesz aby twoi czytelnicy (np. studenci) przeglądali wierzchołki SystemGraph w określonej kolejności, możesz stworzyć <a class="fancy-a" href="#">ścieżkę</a>. Możesz stworzyć tyle ścieżek ile chcesz i dzielić się linkami bezpośrednio do nich.

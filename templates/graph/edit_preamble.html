@@ -17,21 +17,21 @@
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
 			{% endfor %}
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.title.id_for_label }}">Tytuł:</h5>
 				{% render_field form.title class="form-control SGformwidget" placeholder=form.title.label %}
 				{% for error in form.title.errors %}
 					<span class="help-block">{{ error }}</span>
 				{% endfor %}
 			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.description.id_for_label }}" style="text-align: left">Opis (ułatwiający rozpoznanie):</h5>
 				{% render_field form.description class="form-control SGformwidget" rows="3" placeholder=form.description.label %}
 				{% for error in form.description.errors %}
 					<span class="help-block">{{ error }}</span>
 				{% endfor %}
 			</div>
-			<div class="distinctarea border border-primary rounded big-margin" style="max-width: 625px;">
+			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
 				<h5 for="{{ form.content.id_for_label }}" style="text-align: left">Treść</h5>
 				{% render_field form.content class="form-control SGformwidget" rows="18" placeholder=form.content.label %}
 				{% for error in form.content.errors %}

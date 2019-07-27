@@ -1,15 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}lololol{% endblock %}
+{% block title %}zakładanie konta{% endblock %}
 
 {% load widget_tweaks %}
 
 {% block content %}
-    <div style="padding-left: 5%; padding-right: 5%;">
-        <form method="POST">
-			{% csrf_token %}
-			{{ form }}
-<tr><td></td><td><input type="submit" value="Send activation email" /></td>
-        </form>
-    </div>
+<div class="maindiv mediumpadd">
+	<form method="POST">
+		{% csrf_token %}
+		<div class="internal-menu sidepadd">
+			<h4>Utwórz nowe konto</h4>
+			<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
+		</div>
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
+			<h5 for="{{ form.username.id_for_label }}">Nazwa użytkownika</h5>
+			{% render_field form.username class="form-control SGformwidget" placeholder=form.username.label %}
+			{% for error in form.username.errors %}
+				<span class="help-block">{{ error }}</span>
+			{% endfor %}
+		</div>
+	</form>
+</div>
 {% endblock %}

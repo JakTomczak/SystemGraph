@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ this_section }} - tematy{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="maindiv smallpadd">
+	<h4>{{ this_section }}, {{ this_section.discipline }}</h4>
+	<div class="div-column">
+		<div style="flex: 2">
+			<div class="flexonwidth sidepadd paddtop"> 
+				<h4>Wszystkie dostępne tematy</h4>
+				<a href="{% url 'new_subject' parent_pk=this_section.pk %}" class="btn btn-primary" role="button">Utwórz nowy temat</a>
+			</div>
+			<div class="distinctarea paddtop border border-primary rounded big-margin">
+{% for sub in subjects %}
+{% include 'common/subject_singleframe.html' with this_sub=sub edit_yes=user %}
+{% endfor %}
+			</div>
+		</div>
+		<div style="flex: 1">
+			<div class="distinctarea paddtop border border-primary rounded big-margin">
+				<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+				<br>
+				<a href="{% url 'view_discipline' pk=this_section.discipline.pk %}">{{ this_section.discipline }}: wszystkie dostępne działy</a>
+				<br>
+				<a href="{% url 'edit_section' pk=this_section.pk %}">Edytuj ten dział</a>
+			</div>
+			<br>
+			<div class="distinctarea paddtop border border-primary rounded big-margin">
+				<h5>test</h5>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

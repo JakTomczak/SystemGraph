@@ -11,7 +11,7 @@
 				<h4>Tworzenie nowego wierzchołka</h4>
 				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz nowy wierzchołek</button>
 			</div>
-			<div class="distinctarea border border-primary rounded big-margin">
+			<div class="distinctarea paddtop border border-primary rounded big-margin">
 				{% csrf_token %}
 				{% for hidden in form.hidden_fields %}
 					{{ hidden }}

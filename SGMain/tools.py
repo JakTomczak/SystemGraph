@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
+import os
 import string
 import subprocess
 import random
+from datetime import datetime
 from operator import itemgetter
+
+from django.conf import settings
 
 from . import models
 
@@ -29,6 +32,10 @@ def fcode_from_id(vertex_id = None, desc = False, edge_id = None):
 def rreplace(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)
 	return new.join(li)
+
+def userproposal(message):
+	with open( os.path.join(settings.PROPOSALS_DIR, datetime.now().strftime('%Y %m %d godz %H.%M.%S') + '.txt'), 'w+' ) as file:
+		file.write(message)
 		
 def weighting (thevertex, queryset):
 	default_weight = 1

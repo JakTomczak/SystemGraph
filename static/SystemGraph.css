@@ -1,6 +1,10 @@
 :root {
-	--primary-one: #c9ddd7; /* main background color - pale green-ish? */
+	--primary-one: #c9ddd7; /* main background color - pale green-ish? */ 
 	--secondary-one: #c8cece; /* background color of distict areas - light grey */
+	/* --secondary-one: #d0d9d4; /* background color of distict areas - light green-ish grey */
+	/* --secondary-one: #BEE5D5; /* background color of distict areas - light olive */
+	/* --primary-one: #EAE4B2; /* main background color - cream */
+	/* --secondary-one: #f7edd0; /* background color of distict areas - beige */
 	--ternary-one: #333333; /* background color of menu bars - graphite */
 	--primary-two: #ffe6ff; /* background color of vertex in viewing vertex - light pink */
 	--secondary-two: #e1edf2; /* background color of everything else in viewing vertex - very light blue */
@@ -286,7 +290,7 @@ li h6 {
 	width: 50%;
 }
 
-.internal-menu.sidepadd {
+.sidepadd {
 	padding-left: 26px;
 	padding-right: 26px;
 }
@@ -319,18 +323,18 @@ li.form-group a {
    background-color: #E8F7F7;
 }
 
-div.distinctarea {
+.distinctarea {
 	display: flex;
 	flex-direction: column;
 	padding-bottom: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
-	padding-top: 7px;
 	background-color: var(--secondary-one);
 }
 
 .distinctarea h5 {
 	padding-bottom: 7px;
+	margin-left: 6px;
 }
 
 .distinctarea ul li {
@@ -338,6 +342,10 @@ div.distinctarea {
 	padding-bottom: 5px;
 	padding-left: 15px;
 	padding-right: 10px;
+}
+
+.paddtop {
+	padding-top: 7px;
 }
 
 div.flexonwidth {
@@ -494,9 +502,21 @@ a:not([href]) {
 }
 
 .h5withbuttons h5 {
-	padding-top: 8px;
+	margin-top: 14px;
 }
 
 .h5withbuttons button {
 	margin-left: 20px;
+}
+
+.h5withbuttons a {
+	margin-left: 20px;
+}
+
+.box-block-100 {
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block
 }

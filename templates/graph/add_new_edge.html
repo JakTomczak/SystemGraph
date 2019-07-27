@@ -17,19 +17,19 @@
 		<input type="hidden" id="hidden_action" value="" name="action">
 		<div class="div-column">
 			<div style="flex: 4">
-				<div class="distinctarea border border-primary rounded big-margin">
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
 					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" header="Początek (wierzchołek wyjściowy)" %}
 				</div>
-				<div class="distinctarea border border-primary rounded big-margin">
+				<div class="distinctarea paddtop border border-primary rounded big-margin">
 					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
 				</div>
 			</div>
 			<div style="flex: 2">
-				<div class="distinctarea border border-primary rounded small-margin">
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
 					<h5>Czy krawędź musi mieć początek?</h5>
 					{% include "FAQ/does_edge_have_to_have_start_pl.html" %}
 				</div>
-				<div class="distinctarea border border-primary rounded small-margin">
+				<div class="distinctarea paddtop border border-primary rounded small-margin">
 					<h5>Co to jest krawędź bez sukcesora?</h5>
 					{% include "FAQ/what_is_edge_without_successor_pl.html" %}
 				</div>
