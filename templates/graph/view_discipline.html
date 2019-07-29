@@ -1,35 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_mediumpadd.html' %}
 
 {% block title %}{{ this_discipline }} - działy{% endblock %}
 
-{% load widget_tweaks %}
-
-{% block content %}
-<div class="maindiv smallpadd">
-	<h4>{{ this_discipline }}</h4>
-	<div class="div-column">
-		<div style="flex: 2">
-			<div class="flexonwidth sidepadd paddtop"> 
-				<h4>Wszystkie dostępne działy</h4>
-				<a href="{% url 'new_section' parent_pk=this_discipline.pk %}" class="btn btn-primary" role="button">Utwórz nowy dział</a>
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded big-margin">
+{% block main_content %}
+<h4>{{ this_discipline }}</h4>
+{% url 'new_section' parent_pk=this_discipline.pk as href %}
+{% include "includes/simple_header_with_a.html" with text="Wszystkie dostępne działy" atext="Utwórz nowy dział" %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
 {% for sec in sections %}
-{% include 'common/section_singleframe.html' with this_sec=sec edit_yes=user %}
+{% include 'includes/singleframe/section.html' with this_sec=sec edit_yes=user.is_authenticated %}
 {% endfor %}
-			</div>
-		</div>
-		<div style="flex: 1">
-			<div class="distinctarea paddtop border border-primary rounded big-margin">
-				<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
-				<br>
-				<a href="{% url 'edit_discipline' pk=this_discipline.pk %}">Edytuj tę dyscyplinę</a>
-			</div>
-			<br>
-			<div class="distinctarea paddtop border border-primary rounded big-margin">
-				<h5>test</h5>
-			</div>
-		</div>
-	</div>
+</div>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+	<br>
+	<a href="{% url 'edit_discipline' pk=this_discipline.pk %}">Edytuj tę dyscyplinę</a>
+	<br>
+	<a href="{% url 'new_vertex_class' %}">Zaproponuj nowy rodzaj wierzchołka</a>
 </div>
 {% endblock %}

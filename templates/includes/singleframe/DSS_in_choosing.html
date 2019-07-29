@@ -1,15 +1,17 @@
 <div class="h5withbuttons">
 	<h5>Dyscyplina, dział i temat</h5>
 	<button type="button" id="choose_dss_button" class="btn btn-secondary sgbutton" onclick="choose_dss()">Wybierz</button>
-	<button type="button" id="new_dss_button" class="btn btn-secondary sgbutton" onclick="new_dss()">Dodaj nowy</button>
+	<a role="button" id="new_dss_button" class="btn btn-secondary sgbutton" href="{% url 'new_subject' parent_pk=this_subject.section.pk %}">Dodaj nowy</a>
 </div>
 <div class="innerdistinctarea border border-warning rounded small-margin">
-	<span id="dss_span">{{ this_subject.big_str }}</span><a id="edit_dss_a" style="float: right" href="#">edytuj</a>
+	<span id="dss_span">{{ this_subject.big_str }}</span><a id="edit_dss_a" style="float: right" href="{{ this_subject.get_edit_url }}">edytuj</a>
 </div>
+<input type="hidden" id="dss_pk" value="{{ this_subject.pk }}" name="dss_pk">
 <script>
-var CHOSEN_VID = {{ this_subject.pk }};
+//var CHOSEN_DSS = 1;
 function display_chosen_dss(subject_json) {
-	CHOSEN_VID = subject_json.pk;
+//	CHOSEN_DSS = subject_json.pk;
+	document.getElementById("dss_pk").value = subject_json.pk;
 	document.getElementById("dss_span").innerHTML = subject_json.big_str;
 	document.getElementById("edit_dss_a").href = subject_json.edit_url;
 }

@@ -1,53 +1,48 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_mediumpadd.html' %}
 
 {% block title %}edycja dyscypliny{% endblock %}
 
 {% load widget_tweaks %}
-
-{% block content %}
-<div class="maindiv smallpadd">
-	<div class="div-column">
-		<div style="flex: 2">
-		<form method="post" id="edit-discipline-form">
-			{% csrf_token %}
-			<input type="hidden" id="hidden_action" value="" name="action">
-			<div class="flexonwidth sidepadd paddtop"> 
-				<h4>Edycja dyscypliny</h4>{% if edit %}
-				<button type="submit" name="save" class="btn btn-primary sgbutton">Zapisz</button>{% endif %}{% if delete %}
-				<button type="submit" name="delete" class="btn btn-warning sgbutton">Usuń</button>{% endif %}
-			</div>{% if edit %}
-			<div class="distinctarea paddtop border border-primary rounded big-margin">
-				<h5 for="{{ form.polish_name.id_for_label }}">Nazwa</h5>
-				{% render_field form.polish_name class="form-control SGformwidget" placeholder=form.polish_name.label %}
-				{% for error in form.polish_name.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>{% else %}
-			<div class="distinctarea paddtop border border-primary rounded big-margin">
-				{% render_field form.polish_name class="form-control SGformwidget" placeholder=form.polish_name.label %}
-				{% for error in form.polish_name.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-				<button type="button" class="btn btn-secondary sgbutton" onclick="propose_change()">Zaproponuj zmianę</button>
-			</div>{% endif %}{% if not delete %}
-			<div class="distinctarea paddtop border border-primary rounded big-margin">
-				<button type="button" class="btn btn-warning sgbutton" onclick="propose_delete()">Zaproponuj usunięcie</button>
-			</div>{% endif %}
-		</form>
-		</div>
-		<div style="flex: 1">
-			<br>
-		</div>
-	</div>
+{% block main_content %}
+<form method="post" id="edit-discipline-form">
+	{% csrf_token %}
+	<input type="hidden" id="hidden_action" value="" name="action">
+	<div class="flexonwidth sidepadd paddtop"> 
+		<h4>Edycja dyscypliny</h4>{% if edit %}
+		<button type="submit" name="save" class="btn btn-primary sgbutton">Zapisz</button>{% endif %}{% if delete %}
+		<button type="submit" name="delete" class="btn btn-warning sgbutton">Usuń</button>{% endif %}
+	</div>{% if edit %}
+{% include "includes/widget.html" with widget=form.polish_name margin="big" header="Nazwa" %}{% else %}
+	<div class="distinctarea paddtop border border-primary rounded big-margin">
+		{% render_field form.polish_name class="form-control SGformwidget" placeholder=form.polish_name.label %}
+		{% for error in form.polish_name.errors %}
+			<span class="help-block">{{ error }}</span>
+		{% endfor %}
+		<button type="button" class="btn btn-secondary sgbutton" onclick="propose_change()">Zaproponuj zmianę</button>
+	</div>{% endif %}{% if not delete %}
+	<div class="distinctarea paddtop border border-primary rounded big-margin">
+		<button type="button" class="btn btn-warning sgbutton" onclick="propose_delete()">Zaproponuj usunięcie</button>
+	</div>{% endif %}
+</form>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'view_discipline' pk=this_pk %}">Wszystkie działy tej dyscypliny</a>
+	<br>
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+	<br>
+	<a href="{% url 'new_section' parent_pk=this_pk %}">Nowy dział w tej dyscyplinie</a>
 </div>
-<script>
+{% endblock %}
+{% block javascript %}
+<script>{% if not edit %}
 function propose_change() {
 	document.getElementById("hidden_action").value += ',prop_change';
 	document.getElementById("edit-discipline-form").submit();
-}
+}{% endif %}{% if not delete %}
 function propose_delete() {
 	document.getElementById("hidden_action").value += ',prop_delete';
 	document.getElementById("edit-discipline-form").submit();
-}
+}{% endif %}
 </script>
 {% endblock %}

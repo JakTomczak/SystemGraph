@@ -1,42 +1,27 @@
-﻿{% extends 'base.html' %}
+﻿{% extends 'base_2cols_mediumpadd.html' %}
 
-{% block title %}zaloguj się{% endblock %}
+{% block title %}logowanie{% endblock %}
 
-{% load widget_tweaks %}
-
-{% block content %}
-<div class="maindiv mediumpadd">
-	<form method="POST">
-		{% csrf_token %}
-		<div class="internal-menu sidepadd">
-			<h4>Zaloguj się</h4>
-			<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zaloguj</button>
-		</div>
-		{% for hidden in form.hidden_fields %}
-			{{ hidden }}
-		{% endfor %}
-		<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-			<h5 for="{{ form.username.id_for_label }}">Nazwa użytkownika</h5>
-			{% render_field form.username class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.username.label %}
-			{% for error in form.username.errors %}
-				<span class="help-block">{{ error }}</span>
-			{% endfor %}
-			<h5 for="{{ form.password.id_for_label }}" style="margin-top: 20px;">Hasło</h5>
-			{% render_field form.password class="form-control" style="width:100%; min-width:150px; max-width: 600px;" placeholder=form.password.label %}
-			{% for error in form.password.errors %}
-				<span class="help-block">{{ error }}</span>
-			{% endfor %}
-		</div>
-	</form>
-	<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-		<small>
-			<a class="fancy-a" href="{% url 'password_reset' %}">Zapominiałeś hasła?</a>
-		</small>
-	</div>
-	<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-		<small>
-			Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się</a>
-		</small>
-	</div>
+{% block main_content %}
+<form method="POST">
+	{% csrf_token %}
+{% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Zaloguj się" button="Zaloguj" %}
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+	{% include "includes/widget.html" with widget=form.username margin="big" header="Nazwa użytkownika" %}
+	{% include "includes/widget.html" with widget=form.password margin="big" header="Hasło" %}
+</form>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<small>
+		<a class="fancy-a" href="{% url 'password_reset' %}">Zapominiałeś hasła?</a>
+	</small>
+</div>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<small>
+		Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się</a>
+	</small>
 </div>
 {% endblock %}

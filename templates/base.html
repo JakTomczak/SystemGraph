@@ -40,8 +40,7 @@
 			{% block content %}
 			{% endblock %}
 		</div>
-	</main>
-	{% if edges %}
+	</main>{% if edges %}
 	<script>
 	$(document).ready(function() {
 		{% for edge in edges %}
@@ -51,8 +50,7 @@
 		{% endif %}
 		{% endfor %}
 	});
-	</script>
-	{% endif %}
-	{% block javascript %}{% endblock %}
+	</script>{% endif %}
+{% block javascript %}{% endblock %}
 </body>
 </html>

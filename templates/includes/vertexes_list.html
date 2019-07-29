@@ -10,7 +10,7 @@
 	{% endfor %}
 </ul>-->
 {% for vert in verts %}
-{% include 'common/vertex_singleframe.html' with this_vertex=vert %}
+{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
 {% endfor %}
 {% else %}
 <small>(brak)</small>

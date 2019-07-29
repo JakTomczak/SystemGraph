@@ -10,6 +10,7 @@ Discipline_Form = forms.modelform_factory(Discipline, fields=('polish_name', ))
 Section_Form = forms.modelform_factory(Section, fields=('polish_name', ))
 Section_Form_Full = forms.modelform_factory(Section, fields=('polish_name', 'discipline'))
 Subject_Form = forms.modelform_factory(Subject, fields=('polish_name', ))
+Vertex_Form = forms.modelform_factory(Vertex, fields=('title', 'vertex_class', ))
 
 class Add_New_Vertex_Form(forms.ModelForm):
 	preamble = forms.ModelChoiceField( queryset = Preamble.objects.none(), empty_label = None )
@@ -26,8 +27,26 @@ class Add_New_Vertex_Form(forms.ModelForm):
 		user = kwargs.pop('user', None)
 		super(Add_New_Vertex_Form, self).__init__(*args, **kwargs)
 		self.fields['preamble'].queryset = Preamble.get_user_preambles(user)
+		
+class Edit_Vertex_Form (forms.ModelForm):
+	description = forms.CharField(widget = forms.Textarea, required = False)
+	content = forms.CharField(widget = forms.Textarea, required = False)
+	
+	class Meta:
+		model = Vertex
+		fields = ('preamble', 'vertex_class', 'title', 'shorttitle', 'content', 'description')
+	
+	def __init__(self, *args, **kwargs):
+		super(Edit_Vertex_Form, self).__init__(*args, **kwargs)
+		vertex = kwargs.pop('instance', None)
+		self.fields['preamble'].queryset = Preamble.get_user_preambles(vertex.user)
+		self.initial['preamble'] = vertex.preamble
+		with codecs.open( vertex.get_pre_content_dir(), 'r', encoding = 'utf-8') as file:
+			self.initial['content'] = file.read()
+		with codecs.open( vertex.get_pre_desc_dir(), 'r', encoding = 'utf-8') as file:
+			self.initial['description'] = file.read()
 			
-class Edit_Vertex_Form (forms.Form):
+class Edit_Vertex_Form_2 (forms.Form):
 	title = forms.CharField(max_length = 120)
 	preamble = forms.ModelChoiceField( queryset = Preamble.objects.none(), empty_label = None )
 	vertex_class = forms.ModelChoiceField( queryset = Vertex_Class.objects.all(), empty_label = None )

@@ -1,8 +1,10 @@
 <div class="innerdistinctarea border border-warning rounded small-margin" style="display: flex;">
 	<div style="flex: 1;">
 		<a href="{% url 'view_discipline' pk=this_disc.pk %}" class="fancy-a">{{ this_disc }}</a>
-	</div>
-	{% if edit_yes %}<div>
+	</div>{% if edit_yes %}
+	<div>
 		<a href="{% url 'edit_discipline' pk=this_disc.pk %}">edytuj</a>
+		<br>
+		<a href="{% url 'new_section' parent_pk=this_disc.pk %}">nowy dział</a>
 	</div>{% endif %}
 </div>

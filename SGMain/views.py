@@ -25,29 +25,45 @@ def new_discipline(request):
 	return render(request, 'graph/add_new_discipline.html', context)
 
 def new_section(request, parent_pk):
+	try:
+		discipline = model.Discipline.objects.get(pk = parent_pk)
+	except exceptions.ObjectDoesNotExist:
+		if parent_pk != 1:
+			return redirect('new_section', parent_pk = 1)
+		else:
+			return render(request, 'errors/404.html')
 	if not request.user or request.user.is_anonymous:
 		return render(request, 'errors/401.html')
 	if request.method == 'POST':
 		form = forms.Section_Form(request.POST)
 		if 'save' in request.POST and form.is_valid():
 			section = form.save(commit = False)
-			section.discipline = model.Discipline.objects.get(pk = parent_pk)
+			section.discipline = discipline
 			section.save()
 			messages.add_message(request, messages.SUCCESS, 'Nowy dział został dodany.')
 			return redirect('view_discipline', pk = parent_pk)
 	else:
 		form = forms.Section_Form(initial={'polish_name': ''})
-	context = {'form': form}
+	context = {
+		'this_discipline': discipline,
+		'form': form,
+	}
 	return render(request, 'graph/add_new_section.html', context)
 
 def new_subject(request, parent_pk):
+	try:
+		section = model.Section.objects.get(pk = parent_pk)
+	except exceptions.ObjectDoesNotExist:
+		if parent_pk != 1:
+			return redirect('new_subject', parent_pk = 1)
+		else:
+			return render(request, 'errors/404.html')
 	if not request.user or request.user.is_anonymous:
 		return render(request, 'errors/401.html')
 	if request.method == 'POST':
 		form = forms.Subject_Form(request.POST)
 		if 'save' in request.POST and form.is_valid():
 			subject = form.save(commit = False)
-			section = model.Section.objects.get(pk = parent_pk)
 			subject.section = section
 			subject.discipline = section.discipline
 			subject.save()
@@ -55,13 +71,15 @@ def new_subject(request, parent_pk):
 			return redirect('view_section', pk = parent_pk)
 	else:
 		form = forms.Subject_Form(initial={'polish_name': ''})
-	context = {'form': form}
+	context = {
+		'this_section': section,
+		'form': form,
+	}
 	return render(request, 'graph/add_new_subject.html', context)
 
 def all_disciplines(request):
 	context = {
 		'disciplines': model.Discipline.objects.all(), 
-		'user': bool(request.user.is_authenticated)
 	}
 	return render(request, 'graph/all_disciplines.html', context)
 
@@ -73,7 +91,6 @@ def view_discipline(request, pk):
 	context = {
 		'this_discipline': discipline, 
 		'sections': model.Section.objects.filter(discipline = discipline),
-		'user': bool(request.user.is_authenticated)
 	}
 	return render(request, 'graph/view_discipline.html', context)
 
@@ -85,9 +102,19 @@ def view_section(request, pk):
 	context = {
 		'this_section': section, 
 		'subjects': model.Subject.objects.filter(section = section),
-		'user': bool(request.user.is_authenticated)
 	}
 	return render(request, 'graph/view_section.html', context)
+
+def view_subject(request, pk):
+	try:
+		subject = model.Subject.objects.get(pk = pk)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	context = {
+		'this_subject': subject, 
+		'vertices': model.Vertex.objects.filter(subject = subject),
+	}
+	return render(request, 'graph/view_subject.html', context)
 
 def edit_discipline(request, pk):
 	try:
@@ -120,6 +147,7 @@ def edit_discipline(request, pk):
 	else:
 		form = forms.Discipline_Form(instance = discipline)
 	context = {
+		'this_pk': pk,
 		'form': form,
 		'delete': can_delete,
 		'edit': can_edit,
@@ -158,6 +186,7 @@ def edit_section(request, pk):
 	else:
 		form = forms.Section_Form(instance = section)
 	context = {
+		'this_section': section,
 		'form': form,
 		'delete': can_delete,
 		'edit': can_edit,
@@ -196,17 +225,25 @@ def edit_subject(request, pk):
 	else:
 		form = forms.Subject_Form(instance = subject)
 	context = {
+		'this_subject': subject,
 		'form': form,
 		'delete': can_delete,
 		'edit': can_edit,
 	}
 	return render(request, 'graph/edit_subject.html', context)
 
-def new_vertex_from_subject(request, subject_pk):
+def new_vertex(request, subject_pk):
 	if not request.user or request.user.is_anonymous:
 		return render(request, 'errors/401.html')
+	try:
+		subject = model.Subject.objects.get(pk = subject_pk)
+	except exceptions.ObjectDoesNotExist:
+		if subject_pk != 1:
+			return redirect('new_vertex', subject_pk = 1)
+		else:
+			return render(request, 'errors/404.html')
 	if request.method == 'POST':
-		form = forms.Add_New_Vertex_Form(request.POST, user = request.user)
+		form = forms.Vertex_Form(request.POST)
 		if 'save' in request.POST and form.is_valid():
 			vertex = form.save(commit = False)
 			vertex.user = request.user
@@ -215,25 +252,12 @@ def new_vertex_from_subject(request, subject_pk):
 			messages.add_message(request, messages.SUCCESS, 'Nowy wierzchołek został dodany.')
 			return redirect('edit_vertex', vertex_id = vertex.vertex_id)
 	else:
-		form = forms.Add_New_Vertex_Form(user = request.user)
-	context = {'form': form}
-	return render(request, 'graph/add_new_vertex.html', context)
-
-def new_vertex(request):
-	if not request.user or request.user.is_anonymous:
-		return render(request, 'errors/401.html')
-	if request.method == 'POST':
-		form = forms.Add_New_Vertex_Form(request.POST, user = request.user)
-		if 'save' in request.POST and form.is_valid():
-			vertex = form.save(commit = False)
-			vertex.user = request.user
-			vertex.vertex_id = model.Vertex.new_id()
-			vertex.save()
-			messages.add_message(request, messages.SUCCESS, 'Nowy wierzchołek został dodany.')
-			return redirect('edit_vertex', vertex_id = vertex.vertex_id)
-	else:
-		form = forms.Add_New_Vertex_Form(user = request.user)
-	context = {'form': form}
+		form = forms.Vertex_Form(initial={'title': ''})
+	context = {
+		'form': form,
+		'subjects': model.Subject.objects.all(),
+		'initial_subject': subject,
+	}
 	return render(request, 'graph/add_new_vertex.html', context)
 
 def edit_vertex(request, vertex_id):
@@ -245,7 +269,7 @@ def edit_vertex(request, vertex_id):
 		return render(request, 'errors/403.html')
 	outgoing_edges = this_vertex.get_successors()
 	if request.method == 'POST':
-		form = forms.Edit_Vertex_Form(request.POST, vertex = this_vertex)
+		form = forms.Edit_Vertex_Form(request.POST, instance = this_vertex)
 		action = request.POST['action'].split(',')
 		if 'delete' in action:
 			user = this_vertex.user
@@ -256,13 +280,12 @@ def edit_vertex(request, vertex_id):
 			request.session['pred'] = this_vertex.vertex_id
 			return redirect('new_edge')
 		if 'save' in action and form.is_valid():
+			subject_pk = request.POST['dss_pk'] or '1'
+			this_vertex.change_dss_from_pk( int(subject_pk) )
 			this_vertex.save_from_dict(form.cleaned_data)
-			form.fields['subject'].queryset = model.Subject.objects.filter(is_default = True)
-			#this_vertex.write_pre_content( form.cleaned_data['content'] )
-			#this_vertex.write_pre_desc( form.cleaned_data['description'] )
 			messages.add_message(request, messages.SUCCESS, "Właściwości wierzchołka zostały zapisane.")
 	else:
-		form = forms.Edit_Vertex_Form(vertex = this_vertex)
+		form = forms.Edit_Vertex_Form(instance = this_vertex)
 	context = {
 		'form': form, 
 		'vertex_id': this_vertex.vertex_id, 
@@ -270,7 +293,7 @@ def edit_vertex(request, vertex_id):
 		'outgoing_edges': outgoing_edges,
 		'subjects': model.Subject.objects.all(),
 		'this_subject': this_vertex.subject
-		}
+	}
 	return render(request, 'graph/edit_vertex.html', context)
 
 def view_vertex(request, vertex_id): # Needs big enhancements
@@ -382,7 +405,7 @@ def new_edge(request):
 		'succ_is_chosen': False,
 		'successor': model.Vertex.get_default(), 
 		'vertices': model.Vertex.objects.filter(user = request.user)
-		}
+	}
 	return render(request, 'graph/add_new_edge.html', context)
 
 def edit_edge(request, edge_id):
@@ -422,7 +445,7 @@ def edit_edge(request, edge_id):
 		'predecessor': this_edge.predecessor, 
 		'edge_id': edge_id, 
 		'vertices': model.Vertex.objects.filter(user = request.user)
-		}
+	}
 	if this_edge.successor:
 		context['successor'] = this_edge.successor
 		context['is_chosen'] = True
@@ -453,7 +476,7 @@ def new_path(request):
 		'form': form, 
 		'vertices': model.Vertex.objects.all(),
 		'dummy': model.Vertex.get_default()
-		}
+	}
 	return render(request, 'graph/add_new_path.html', context)
 
 def edit_path(request, path_id):
@@ -484,7 +507,7 @@ def edit_path(request, path_id):
 		'first': this_path.first, 
 		'the_rest': this_path.read_verticies()[1:], 
 		'vertices': model.Vertex.objects.all()
-		}
+	}
 	if this_path.length < 2:
 		context['last_one'] = True
 	return render(request, 'graph/edit_path.html', context)

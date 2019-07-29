@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="maindiv mediumpadd">
-{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
+{% include "includes/modal/vertex_choosing.html" with plen=8 query=vertices %}
 	<form method="post" id="edit-edge-form">
 		<input type="hidden" id="hidden_action" value="" name="action">
 		<div class="internal-menu space-between sidepadd">
@@ -22,10 +22,10 @@
 		{% endfor %}
 		<div class="distinctarea paddtop border border-primary rounded medium-margin">
 			<h5>Początek (wierzchołek wyjściowy)</h5>
-			{% include 'common/vertex_singleframe.html' with this_vertex=predecessor %}
+			{% include 'includes/singleframe/vertex.html' with this_vertex=predecessor %}
 		</div>
 		<div class="distinctarea paddtop border border-primary rounded medium-margin">
-			{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
+			{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
 		</div>
 		<div class="flexonwidth" style="width: 100%;">
 			<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex:1; flex-grow: 3;">

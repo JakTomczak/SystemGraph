@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="maindiv smallpadd">
-{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
+{% include "includes/modal/vertex_choosing.html" with plen=8 query=vertices %}
 	<form id="add-new-path-form" method="post">
 		{% csrf_token %}
 		<input type="hidden" id="hidden_action" value="" name="action">
@@ -34,7 +34,7 @@
 					{% endfor %}
 				</div>
 				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=dummy my_id="first" header="Pierwszy wierzchołek" %}
+					{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=dummy my_id="first" header="Pierwszy wierzchołek" %}
 				</div>
 			</div>
 			<div style="flex: 1">

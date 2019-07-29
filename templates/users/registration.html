@@ -1,0 +1,26 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}zakładanie konta{% endblock %}
+
+{% block main_content %}
+<form method="POST">
+	{% csrf_token %}
+{% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Utwórz nowe konto" button="Utwórz" %}
+{% include "includes/widget.html" with widget=form.username margin="big" header="Nazwa użytkownika" %}
+{% include "includes/widget.html" with widget=form.email margin="big" header="Adres email" %}
+{% include "includes/widget.html" with widget=form.password1 margin="big" header="Hasło" %}
+{% include "includes/widget.html" with widget=form.password2 margin="big" header="Powtórz hasło" %}
+</form>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<small>
+		 <a class="fancy-a" href="{% url 'login' %}">Masz już konto?</a>
+	</small>
+</div>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<small>
+		<a class="fancy-a" href="{% url 'password_reset' %}">Zapominiałeś hasła?</a>
+	</small>
+</div>
+{% endblock %}

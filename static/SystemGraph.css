@@ -266,6 +266,10 @@ li h6 {
 	justify-content: space-between;
 }
 
+.internal-menu button.sgbutton {
+	margin-left: 25px;
+}
+
 .internal-menu h5 {
 	padding-top: 8px;
 }
@@ -323,9 +327,13 @@ li.form-group a {
    background-color: #E8F7F7;
 }
 
+.form-control {
+	min-width: 150px;
+}
+
 .distinctarea {
-	display: flex;
-	flex-direction: column;
+	/* display: flex; */
+	/* flex-direction: column; */
 	padding-bottom: 5px;
 	padding-left: 10px;
 	padding-right: 10px;

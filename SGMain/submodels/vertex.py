@@ -306,6 +306,12 @@ class Vertex(models.Model):
 	def get_successors(self):
 		from . import edge as edge_models
 		return edge_models.Edge.objects.filter(predecessor = self)
+	
+	def change_dss_from_pk(self, subject_pk):
+		subject = Subject.objects.get(pk = subject_pk)
+		self.subject = subject
+		self.section = subject.section
+		self.discipline = subject.discipline
 			
 	def save_from_dict(self, dict):
 		for key in dict:

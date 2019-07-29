@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="maindiv smallpadd">
-{% include "common/vertex_choosing.html" with plen=8 query=vertices %}
+{% include "includes/modal/vertex_choosing.html" with plen=8 query=vertices %}
 	<form id="add-new-edge-form" method="post">
 		{% csrf_token %}
 		<div class="internal-menu sidepadd">
@@ -18,10 +18,10 @@
 		<div class="div-column">
 			<div style="flex: 4">
 				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" header="Początek (wierzchołek wyjściowy)" %}
+					{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" header="Początek (wierzchołek wyjściowy)" %}
 				</div>
 				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					{% include 'common/vertex_singleframe_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
+					{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
 				</div>
 			</div>
 			<div style="flex: 2">

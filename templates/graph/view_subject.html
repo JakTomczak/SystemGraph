@@ -1,0 +1,31 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}{{ this_subject }} - tematy{% endblock %}
+
+{% block main_content %}
+<h4>{{ this_subject.section.discipline }}, {{ this_subject.section }}, {{ this_subject }}</h4>
+{% url 'new_vertex' subject_pk=this_subject.pk as href %}
+{% include "includes/simple_header_with_a.html" with text="Wszystkie dostępne wierzchołki" atext="Utwórz nowy wierzchołek" %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+{% for vert in vertices %}
+{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
+{% endfor %}
+</div>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+	<br>
+	<a href="{% url 'view_discipline' pk=this_subject.section.discipline.pk %}">Wszystkie działy tej dyscypliny</a>
+	<br>
+	<a href="{% url 'edit_discipline' pk=this_subject.section.discipline.pk %}">Edytuj tę dyscyplinę</a>
+	<br>
+	<a href="{% url 'view_section' pk=this_subject.section.pk %}">Wszystkie tematy tego działu</a>
+	<br>
+	<a href="{% url 'edit_section' pk=this_subject.section.pk %}">Edytuj ten dział</a>
+	<br>
+	<a href="{% url 'edit_subject' pk=this_subject.pk %}">Edytuj ten temat</a>
+	<br>
+	<a href="{% url 'new_vertex_class' %}">Zaproponuj nowy rodzaj wierzchołka</a>
+</div>
+{% endblock %}

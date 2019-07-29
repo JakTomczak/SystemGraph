@@ -11,7 +11,7 @@ class SG_RegistrationForm(RegistrationForm):
 		model = CustomUser
 		
 	def save(self, commit = True):
-		user = super(CustomRegistrationForm, self).save(commit = False)
+		user = super(SG_RegistrationForm, self).save(commit = False)
 		user.get_folder(save = commit)
 		return user
 		

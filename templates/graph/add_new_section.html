@@ -1,27 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_mediumpadd.html' %}
 
 {% block title %}nowy dział{% endblock %}
 
-{% load widget_tweaks %}
-
-{% block content %}
-<div class="maindiv mediumpadd">
-	<form method="post" id="edit-path-form">
-		{% csrf_token %}
-		<div class="internal-menu sidepadd">
-			<h4>Tworzenie nowego działu</h4>
-			<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
-		</div>
-		{% for hidden in form.hidden_fields %}
-			{{ hidden }}
-		{% endfor %}
-		<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-			<h5 for="{{ form.polish_name.id_for_label }}">Nazwa polska</h5>
-			{% render_field form.polish_name class="form-control SGformwidget" placeholder=form.polish_name.label %}
-			{% for error in form.polish_name.errors %}
-				<span class="help-block">{{ error }}</span>
-			{% endfor %}
-		</div>
-	</form>
+{% block main_content %}
+<h4>{{ this_discipline }}</h4>
+<form method="post" id="edit-path-form">
+	{% csrf_token %}
+{% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Tworzenie nowego działu" button="Utwórz" %}
+{% include "includes/widget.html" with widget=form.polish_name margin="big" header="Nazwa polska" %}
+</form>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+	<br>
+	<a href="{% url 'view_discipline' pk=this_discipline.pk %}">Wszystkie działy tej dyscypliny</a>
+	<br>
+	<a href="{% url 'edit_discipline' pk=this_discipline.pk %}">Edytuj tę dyscyplinę</a>
 </div>
 {% endblock %}

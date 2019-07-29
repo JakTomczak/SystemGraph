@@ -1,90 +1,81 @@
 {% extends 'base.html' %}
 
-{% block title %}profil użytkownika{% endblock %}
-
-{% load widget_tweaks %}
+{% block title %}twój profil{% endblock %}
 
 {% block content %}
-	<h2 style="padding: 10px;">Profil użytkownika</h2>
-	<div style="display:flex; justify-content: space-around;">
-		<div style="flex: 3;">
-			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
-				<div class="h5withbuttons" style="justify-content: inherit;">
-					<h5>Nieopublikowane wierzchołki</h5>
-					<a href="{% url 'new_vertex' %}" class="btn btn-primary" role="button" style="margin-left: 20px;">Utwórz nowy wierzchołek</a>
-				</div>
-				{% if projects %}
-				{% for vert in projects %}
-				{% include 'common/vertex_singleframe.html' with this_vertex=vert %}
-				{% endfor %}
-					<!--<ul id="open_projects">
-						{% for pro in projects %}
-							<li class="open_project_wrapper">
-								<a href="{% url 'edit_vertex' vertex_id=pro.vertex_id %}">{{ pro.title }}</a>
-							</li>
-						{% endfor %}
-					</ul>-->
-				{% else %}
-					<small>(brak)</small>
-				{% endif %}
+<h2 style="padding: 10px;">Profil użytkownika</h2>
+<div style="display:flex; justify-content: space-around;">
+	<div style="flex: 3;">
+		<div class="distinctarea paddtop border border-primary rounded medium-margin" >
+			<div class="h5withbuttons" style="justify-content: inherit;">
+				<h5>Nieopublikowane wierzchołki</h5>
+				<a href="{% url 'new_vertex' %}" class="btn btn-primary" role="button" style="margin-left: 20px;">Utwórz nowy wierzchołek</a>
 			</div>
-			<div class="distinctarea paddtop border border-primary rounded medium-margin">
-				<h5 style="padding-top: 7px;">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
-				{% if verts %}
-				{% for vert in verts %}
-				{% include 'common/vertex_singleframe.html' with this_vertex=vert %}
-				{% endfor %}
-				{% else %}
+			{% if projects %}
+			{% for vert in projects %}
+			{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
+			{% endfor %}
+			{% else %}
 				<small>(brak)</small>
-				{% endif %}
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
-				<div class="internal-menu" style="justify-content: inherit;">
-					<h5>Własne preambuły</h5>
-					<a href="{% url 'new_preamble' %}" class="btn btn-primary" role="button" style="margin-left: 25px;">Utwórz nową preambułę</a>
-				</div>
-				{% if preambles %}
-					<ul id="preambles">
-						{% for pam in preambles %}
-							<li class="border border-warning rounded small-margin">
-								<a href="{% url 'edit_preamble' preamble_id=pam.preamble_id %}" class="fancy-a">{{ pam.title }}</a>
-								<br>
-								<span>{{ pam.description }}</span>
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<small>(brak)</small>
-				{% endif %}
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
-				{% include 'common/paths_list.html' with my_profile=1 %}
-			</div>
+			{% endif %}
 		</div>
-		<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex: 2; height: min-content;">
+		<div class="distinctarea paddtop border border-primary rounded medium-margin">
+			<h5 style="padding-top: 7px;">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
+			{% if verts %}
+			{% for vert in verts %}
+			{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
+			{% endfor %}
+			{% else %}
+			<small>(brak)</small>
+			{% endif %}
+		</div>
+		<div class="distinctarea paddtop border border-primary rounded medium-margin" >
 			<div class="internal-menu" style="justify-content: inherit;">
-				<h5>Dane użytkownika</h5>
-				<a href="{% url 'edit_profile' username=this_user %}" class="btn btn-secondary" role="button" style="margin-left: 25px;">Edytuj</a>
+				<h5>Własne preambuły</h5>
+				<a href="{% url 'new_preamble' %}" class="btn btn-primary" role="button" style="margin-left: 25px;">Utwórz nową preambułę</a>
 			</div>
-			<hr>
-			<div>
-				<div style="display:flex; justify-content: space-around;">
-					<div style="flex: 1;">
-						Nazwa użytkownika:
-					</div>
-					<div style="flex: 2;">
-						{{ this_user.username }}
-					</div>
+			{% if preambles %}
+				<ul id="preambles">
+					{% for pam in preambles %}
+						<li class="border border-warning rounded small-margin">
+							<a href="{% url 'edit_preamble' preamble_id=pam.preamble_id %}" class="fancy-a">{{ pam.title }}</a>
+							<br>
+							<span>{{ pam.description }}</span>
+						</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<small>(brak)</small>
+			{% endif %}
+		</div>
+		<div class="distinctarea paddtop border border-primary rounded medium-margin" >
+			{% include 'includes/paths_list.html' with my_profile=1 %}
+		</div>
+	</div>
+	<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex: 2; height: min-content;">
+		<div class="internal-menu" style="justify-content: inherit;">
+			<h5>Dane użytkownika</h5>
+			<a href="{% url 'edit_profile' username=this_user %}" class="btn btn-secondary" role="button" style="margin-left: 25px;">Edytuj</a>
+		</div>
+		<hr>
+		<div>
+			<div style="display:flex; justify-content: space-around;">
+				<div style="flex: 1;">
+					Nazwa użytkownika:
 				</div>
-				<div style="display:flex; justify-content: space-around;">
-					<div style="flex: 1;">
-						Email:
-					</div>
-					<div style="flex: 2;">
-						{{ this_user.email }}
-					</div>
+				<div style="flex: 2;">
+					{{ this_user.username }}
+				</div>
+			</div>
+			<div style="display:flex; justify-content: space-around;">
+				<div style="flex: 1;">
+					Email:
+				</div>
+				<div style="flex: 2;">
+					{{ this_user.email }}
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 {% endblock %}

@@ -4,5 +4,7 @@
 	</div>
 	{% if edit_yes %}<div>
 		<a href="{% url 'edit_section' pk=this_sec.pk %}">edytuj</a>
+		<br>
+		<a href="{% url 'new_subject' parent_pk=this_sec.pk %}">nowy temat</a>
 	</div>{% endif %}
 </div>

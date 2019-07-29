@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="maindiv mediumpadd">
+	<div class="div-column">
+		<div style="flex: 2">
+			{% block main_content %}{% endblock %}
+		</div>
+		<div style="flex: 1">
+			<br>
+			{% block side_content %}{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
