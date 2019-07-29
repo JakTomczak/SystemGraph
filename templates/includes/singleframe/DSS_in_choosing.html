@@ -1,19 +1,35 @@
 <div class="h5withbuttons">
 	<h5>Dyscyplina, dział i temat</h5>
 	<button type="button" id="choose_dss_button" class="btn btn-secondary sgbutton" onclick="choose_dss()">Wybierz</button>
-	<a role="button" id="new_dss_button" class="btn btn-secondary sgbutton" href="{% url 'new_subject' parent_pk=this_subject.section.pk %}">Dodaj nowy</a>
 </div>
-<div class="innerdistinctarea border border-warning rounded small-margin">
-	<span id="dss_span">{{ this_subject.big_str }}</span><a id="edit_dss_a" style="float: right" href="{{ this_subject.get_edit_url }}">edytuj</a>
+<div class="innerdistinctarea">
+	<a type="button" class="btn btn-outline-dark" id="dss_a_discipline" href="{{ this_subject.discipline.get_url }}">{{ this_subject.discipline }}</a>
+	<mo stretchy="true">&xrarr;</mo>
+	<a type="button" class="btn btn-outline-dark" id="dss_a_section" href="{{ this_subject.section.get_url }}">{{ this_subject.section }}</a>
+	<mo stretchy="true">&xrarr;</mo>
+	<a type="button" class="btn btn-outline-dark" id="dss_a_subject" href="{{ this_subject.get_url }}">{{ this_subject }}</a>
+	<a id="edit_dss_a" style="float: right" href="{{ this_subject.get_edit_url }}">edytuj</a>
 </div>
 <input type="hidden" id="dss_pk" value="{{ this_subject.pk }}" name="dss_pk">
+<div style="display: flex; justify-content: space-between; margin-top: 14px;">
+	<a role="button" id="dss_button_new_discipline" class="btn btn-secondary sgbutton" href="{% url 'new_discipline' %}">Nowa dyscyplina</a>
+	<a role="button" id="dss_button_new_section" class="btn btn-secondary sgbutton" href="{% url 'new_section' parent_pk=this_subject.discipline.pk %}">Nowy dział</a>
+	<a id="dss_button_new_subject" class="btn btn-secondary sgbutton" href="{% url 'new_subject' parent_pk=this_subject.section.pk %}">Nowy temat</a>
+</div>
 <script>
 //var CHOSEN_DSS = 1;
 function display_chosen_dss(subject_json) {
-//	CHOSEN_DSS = subject_json.pk;
+//	CHOSEN_DSS = subject_json.pk;subject_url
 	document.getElementById("dss_pk").value = subject_json.pk;
-	document.getElementById("dss_span").innerHTML = subject_json.big_str;
+	document.getElementById("dss_a_discipline").innerHTML = subject_json.discipline_str;
+	document.getElementById("dss_a_discipline").href = subject_json.discipline_url;
+	document.getElementById("dss_a_section").innerHTML = subject_json.section_str;
+	document.getElementById("dss_a_section").href = subject_json.section_url;
+	document.getElementById("dss_a_subject").innerHTML = subject_json.subject_str;
+	document.getElementById("dss_a_subject").href = subject_json.subject_url;
 	document.getElementById("edit_dss_a").href = subject_json.edit_url;
+	document.getElementById("dss_button_new_section").href = subject_json.new_section_url;
+	document.getElementById("dss_button_new_subject").href = subject_json.new_subject_url;
 }
 function choose_dss() {
 	DSS_DISPLAY_FUN = display_chosen_dss;

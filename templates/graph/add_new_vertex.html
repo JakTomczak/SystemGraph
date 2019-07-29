@@ -1,30 +1,17 @@
-{% extends 'base_2cols_mediumpadd.html' %}
+{% extends 'base_2cols_smallpadd.html' %}
 
 {% block title %}nowy wierzchołek{% endblock %}
 
 {% load widget_tweaks %}
-
 {% block main_content %}
 {% include "includes/modal/dss_choosing.html" with query=subjects %}
 <form method="post">
 	{% csrf_token %}
-	<div class="internal-menu sidepadd" >
-		<h4>Tworzenie nowego wierzchołka</h4>
-		<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
-	</div>
-	{% for hidden in form.hidden_fields %}
-		{{ hidden }}
-	{% endfor %}
+{% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Tworzenie nowego wierzchołka" button="Utwórz" %}
 	<div class="distinctarea border border-primary rounded big-margin">
 {% include 'includes/singleframe/DSS_in_choosing.html' with this_subject=initial_subject %}
 	</div>
-	<div class="distinctarea paddtop border border-primary rounded big-margin">
-		<h5 for="{{ form.title.id_for_label }}">Tytuł (nazwa)</h5>
-		{% render_field form.title class="form-control" style="min-width:150px" placeholder=form.title.label %}
-		{% for error in form.title.errors %}
-			<span class="help-block">{{ error }}</span>
-		{% endfor %}
-	</div>
+{% include "includes/widget.html" with widget=form.title margin="big" header="Tytuł (nazwa)" %}
 	<div class="distinctarea paddtop border border-primary rounded big-margin">
 		<h5 for="{{ form.vertex_class.id_for_label }}">Rodzaj wierzchołka </h5>
 		{% render_field form.vertex_class class="form-control" style="min-width:150px" placeholder=form.vertex_class.label %}
@@ -34,4 +21,16 @@
 		Możesz zaproponować <a href="{% url 'new_vertex_class' %}">utworzenie nowego</a>.
 	</div>
 </form>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+</div>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<h5>Co to jest rodzaj wierzchołka?</h5>
+	{% include "FAQ/what_is_vertex_class_pl.html" %}
+</div>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<span>Aby poprawnie wyświetlać treści w SystemGraph, twoja przeglądarka musi współpracować ze znacznikami MathML. Z popularnych przeglądarek obecnie jedynie Firefox posiada taką funkcjonalność natywnie, tj. bez instalowania pluginów.</span>
+</div>
 {% endblock %}

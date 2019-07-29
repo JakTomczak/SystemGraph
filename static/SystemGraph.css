@@ -266,6 +266,10 @@ li h6 {
 	justify-content: space-between;
 }
 
+.around {
+	justify-content: space-around;
+}
+
 .internal-menu button.sgbutton {
 	margin-left: 25px;
 }
@@ -361,7 +365,7 @@ div.flexonwidth {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: stretch;
 	margin-bottom: 4px;
 	margin-top: 4px;

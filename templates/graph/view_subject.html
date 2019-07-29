@@ -8,7 +8,7 @@
 {% include "includes/simple_header_with_a.html" with text="Wszystkie dostępne wierzchołki" atext="Utwórz nowy wierzchołek" %}
 <div class="distinctarea paddtop border border-primary rounded big-margin">
 {% for vert in vertices %}
-{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
+{% include 'includes/singleframe/vertex.html' with this_vertex=vert smallstr="1" %}
 {% endfor %}
 </div>
 {% endblock %}

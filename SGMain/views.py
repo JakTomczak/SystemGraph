@@ -112,7 +112,7 @@ def view_subject(request, pk):
 		return render(request, 'errors/404.html')
 	context = {
 		'this_subject': subject, 
-		'vertices': model.Vertex.objects.filter(subject = subject),
+		'vertices': model.Vertex.objects.filter(subject = subject, submitted = True),
 	}
 	return render(request, 'graph/view_subject.html', context)
 

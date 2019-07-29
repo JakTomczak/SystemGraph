@@ -124,6 +124,15 @@ class Discipline(models.Model):
 	def __str__(self):
 		return self.polish_name
 	
+	def get_url(self):
+		return reverse('view_discipline', kwargs={'pk': self.pk})
+	
+	def get_edit_url(self):
+		return reverse('edit_discipline', kwargs={'pk': self.pk})
+	
+	def get_add_new_section_url(self):
+		return reverse('new_section', kwargs={'parent_pk': self.pk})
+	
 	def perms(self, user):
 		perms_dict = user.is_authorized('discipline')
 		empty = len( Vertex.objects.filter(discipline = self) ) < 1
@@ -156,6 +165,15 @@ class Section(models.Model):
 	
 	def __str__(self):
 		return self.polish_name
+	
+	def get_url(self):
+		return reverse('view_section', kwargs={'pk': self.pk})
+	
+	def get_edit_url(self):
+		return reverse('edit_section', kwargs={'pk': self.pk})
+	
+	def get_add_new_subject_url(self):
+		return reverse('new_subject', kwargs={'parent_pk': self.pk})
 	
 	def perms(self, user):
 		perms_dict = user.is_authorized('section')
@@ -200,10 +218,20 @@ class Subject(models.Model):
 		
 	def ajax(self):
 		return {
-			'big_str': self.big_str(), 
+			'subject_str': str(self), 
+			'section_str': str(self.section), 
+			'discipline_str': str(self.discipline), 
+			'subject_url': self.get_url(),
+			'section_url': self.section.get_url(),
+			'discipline_url': self.discipline.get_url(),
 			'pk': self.pk, 
-			'edit_url': self.get_edit_url() 
+			'edit_url': self.get_edit_url(),
+			'new_section_url': self.discipline.get_add_new_section_url(),
+			'new_subject_url': self.section.get_add_new_subject_url(),
 		}
+	
+	def get_url(self):
+		return reverse('view_subject', kwargs={'pk': self.pk})
 	
 	def get_edit_url(self):
 		return reverse('edit_subject', kwargs={'pk': self.pk})
@@ -269,6 +297,9 @@ class Vertex(models.Model):
 	
 	def str2(self):
 		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
+	
+	def small_str(self):
+		return self.title
 		
 	def ajax(self):
 		return { 'str': str(self), 'vid': self.vertex_id, 'description': self.description(), 'view_url': self.get_url(), 'edit_url': self.get_edit_url() }
