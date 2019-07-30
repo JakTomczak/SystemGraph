@@ -246,6 +246,8 @@ def new_vertex(request, subject_pk):
 		form = forms.Vertex_Form(request.POST)
 		if 'save' in request.POST and form.is_valid():
 			vertex = form.save(commit = False)
+			subject_pk = request.POST['dss_pk'] or '1'
+			vertex.change_dss_from_pk( int(subject_pk) )
 			vertex.user = request.user
 			vertex.vertex_id = model.Vertex.new_id()
 			vertex.save()
@@ -335,7 +337,7 @@ def new_preamble(request):
 			messages.add_message(request, messages.SUCCESS, 'Nowa preambuła została dodana.')
 			return redirect('profile', username = request.user.username)
 	else:
-		form = forms.Add_New_Preamble_Form()
+		form = forms.Add_New_Preamble_Form(initial={'title': ''})
 	context = {'form': form}
 	return render(request, 'graph/add_new_preamble.html', context)
 
@@ -347,20 +349,18 @@ def edit_preamble(request, preamble_id):
 	if not request.user == this_preamble.user:
 		return render(request, 'errors/403.html')
 	if request.method == 'POST':
-		form = forms.Edit_Preamble_Form(request.POST, preamble = this_preamble)
+		form = forms.Edit_Preamble_Form(request.POST, instance = this_preamble)
 		action = request.POST['action'].split(',')
 		if 'save' in request.POST and form.is_valid():
-			this_preamble.title = form.cleaned_data['title']
-			this_preamble.description = form.cleaned_data['description']
 			this_preamble.write( form.cleaned_data['content'] )
-			this_preamble.save()
+			this_preamble = form.save(commit = True)
 			messages.add_message(request, messages.SUCCESS, 'Zmiany w preambule zostały zapisane.')
 		if 'delete' in action:
 			this_preamble.delete()
 			messages.add_message(request, messages.SUCCESS, 'Preambuła została usunięta.')
 			return redirect('profile', username = request.user.username)
 	else:
-		form = forms.Edit_Preamble_Form(preamble = this_preamble)
+		form = forms.Edit_Preamble_Form(instance = this_preamble)
 	context = {'form': form}
 	return render(request, 'graph/edit_preamble.html', context)
 
@@ -387,9 +387,7 @@ def new_edge(request):
 			i = action.index('save')
 			pred = action[i+1]
 			succ = action[i+2]
-			edge = model.Edge()
-			edge.user = request.user
-			edge.edge_id = model.Edge.new_id()
+			edge = model.Edge( user = request.user, edge_id = model.Edge.new_id() )
 			edge.predecessor = model.Vertex.objects.get(vertex_id = pred)
 			if succ.startswith('V'):
 				edge.successor = model.Vertex.objects.get(vertex_id = succ)
@@ -404,7 +402,7 @@ def new_edge(request):
 		'predecessor': model.Vertex.objects.get( vertex_id = request.session.get('pred') ), 
 		'succ_is_chosen': False,
 		'successor': model.Vertex.get_default(), 
-		'vertices': model.Vertex.objects.filter(user = request.user)
+		'vertices': model.Vertex.objects.filter(user = request.user, submitted = True)
 	}
 	return render(request, 'graph/add_new_edge.html', context)
 
@@ -413,23 +411,11 @@ def edit_edge(request, edge_id):
 		this_edge = model.Edge.objects.get(edge_id = edge_id)
 	except exceptions.ObjectDoesNotExist:
 		return render(request, 'errors/404.html')
-	user = request.user
-	if user != this_edge.user:
+	if request.user != this_edge.user:
 		return render(request, 'errors/403.html')
 	if request.method == 'POST':
-		form = forms.Edit_Edge_Form(request.POST, edge = this_edge)
+		form = forms.Edit_Edge_Form(request.POST, instance = this_edge)
 		action = request.POST['action'].split(',')
-		if 'save' in action and form.is_valid():
-			this_edge.preamble = form.cleaned_data['preamble']
-			i = action.index('save')
-			successor_id = action[i+1]
-			if successor_id.startswith('V'):
-				this_edge.successor = model.Vertex.objects.get(vertex_id = successor_id)
-			else:
-				this_edge.successor = None
-			this_edge.write_pre_dir( form.cleaned_data['content'] )
-			this_edge.save()
-			messages.add_message(request, messages.INFO, 'Zmiany w krawędzi zostały zapisane.')
 		if 'delete' in action:
 			pred = this_edge.predecessor
 			this_edge.delete()
@@ -438,13 +424,24 @@ def edit_edge(request, edge_id):
 				return redirect('edit_vertex', vertex_id = pred.vertex_id)
 			else:
 				return redirect('start')
+		if 'save' in action and form.is_valid():
+			form.save(commit = False)
+			i = action.index('save')
+			successor_id = action[i+1]
+			if successor_id.startswith('V'):
+				this_edge.successor = model.Vertex.objects.get(vertex_id = successor_id)
+			else:
+				this_edge.successor = None
+			# this_edge.write_pre_dir( form.cleaned_data['content'] )
+			this_edge.save()
+			messages.add_message(request, messages.INFO, 'Zmiany w krawędzi zostały zapisane.')
 	else:
-		form = forms.Edit_Edge_Form(edge = this_edge)
+		form = forms.Edit_Edge_Form(instance = this_edge)
 	context = {
 		'form': form, 
 		'predecessor': this_edge.predecessor, 
 		'edge_id': edge_id, 
-		'vertices': model.Vertex.objects.filter(user = request.user)
+		'vertices': model.Vertex.objects.filter(user = request.user, submitted = True)
 	}
 	if this_edge.successor:
 		context['successor'] = this_edge.successor
@@ -458,11 +455,11 @@ def new_path(request):
 	if not request.user or request.user.is_anonymous:
 		return render(request, 'errors/401.html')
 	if request.method == 'POST':
-		form = forms.Add_New_Path_Form(request.POST)
+		form = forms.Path_Form(request.POST)
 		action = request.POST['action'].split(',')
 		if 'save' in action and form.is_valid():
-			path = model.Path(user = request.user, name = form.cleaned_data['name'])
-			path.description = form.cleaned_data['description'] or None
+			path = form.save(commit = False)
+			path.user = request.user
 			path.path_id = model.Path.new_id()
 			i = action.index('save')
 			first = model.Vertex.objects.get( vertex_id = action[i+1] )
@@ -471,10 +468,10 @@ def new_path(request):
 			messages.add_message(request, messages.SUCCESS, 'Nowa ścieżka została dodana.')
 			return redirect('edit_path', path_id = path.path_id)
 	else:
-		form = forms.Add_New_Path_Form()
+		form = forms.Path_Form(initial={'name': ''})
 	context = {
 		'form': form, 
-		'vertices': model.Vertex.objects.all(),
+		'vertices': model.Vertex.objects.filter(submitted = True),
 		'dummy': model.Vertex.get_default()
 	}
 	return render(request, 'graph/add_new_path.html', context)
@@ -488,26 +485,23 @@ def edit_path(request, path_id):
 	if user != this_path.user:
 		return render(request, 'errors/403.html')
 	if request.method == 'POST':
-		form = forms.Edit_Path_Form(request.POST, path = this_path)
+		form = forms.Path_Form(request.POST, instance = this_path)
 		action = request.POST['action'].split(',')
 		if 'save' in request.POST and form.is_valid():
-			this_path.name = form.cleaned_data['name']
-			this_path.description = form.cleaned_data['description']
-			this_path.save()
+			form.save()
 			messages.add_message(request, messages.SUCCESS, 'Zmiany w ścieżce zostały zapisane.')
 		if 'delete' in action:
 			this_path.delete()
 			messages.add_message(request, messages.SUCCESS, 'Ścieżka została usunięta.')
 			return redirect('profile', username = user.username)
 	else:
-		form = forms.Edit_Path_Form(path = this_path)
+		form = forms.Path_Form(instance = this_path)
 	context = {
 		'form': form, 
 		'path_id': path_id,
 		'first': this_path.first, 
 		'the_rest': this_path.read_verticies()[1:], 
-		'vertices': model.Vertex.objects.all()
+		'vertices': model.Vertex.objects.filter(submitted = True),
+		'last_one': this_path.length < 2
 	}
-	if this_path.length < 2:
-		context['last_one'] = True
 	return render(request, 'graph/edit_path.html', context)

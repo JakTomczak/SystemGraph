@@ -2,38 +2,16 @@
 
 {% block title %}nowa preambuła{% endblock %}
 
-{% load widget_tweaks %}
-
 {% block main_content %}
 <form method="post">
 	{% csrf_token %}
-	<div class="internal-menu sidepadd">
-		<h4>Tworzenie nowej preambuły</h4>
-		<button type="submit" style="margin-left: 25px;" class="btn btn-primary sgbutton">Utwórz</button>
-	</div>
-	{% for hidden in form.hidden_fields %}
-		{{ hidden }}
-	{% endfor %}
-	<div class="distinctarea paddtop border border-primary rounded big-margin">
-		<h5 for="{{ form.title.id_for_label }}">Tytuł</h5>
-		{% render_field form.title class="form-control SGformwidget" placeholder=form.title.label %}
-		{% for error in form.title.errors %}
-			<span class="help-block">{{ error }}</span>
-		{% endfor %}
-	</div>
-	<div class="distinctarea paddtop border border-primary rounded big-margin">
-		<h5 for="{{ form.description.id_for_label }}">Opis (ułatwiający rozpoznanie)</h5>
-		{% render_field form.description class="form-control SGformwidget" rows="3" placeholder=form.description.label %}
-		{% for error in form.description.errors %}
-			<span class="help-block">{{ error }}</span>
-		{% endfor %}
-	</div>
-	<div class="distinctarea paddtop border border-primary rounded big-margin">
-		<h5 for="{{ form.content.id_for_label }}">Treść</h5>
-		{% render_field form.content class="form-control SGformwidget" rows="18" placeholder=form.content.label %}
-		{% for error in form.content.errors %}
-			<span class="help-block">{{ error }}</span>
-		{% endfor %}
-	</div>
+{% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Tworzenie nowej preambuły" button="Utwórz" %}
+{% include "includes/widget.html" with widget=form.title margin="big" header="Tytuł" %}
+{% include "includes/widget.html" with widget=form.description margin="big" header="Opis" rows=3 %}
+{% include "includes/widget.html" with widget=form.content margin="big" header="Treść" rows=8 %}
 </form>
+{% endblock %}
+{% block side_content %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_preamble_pl.html" header="Co to jest preambuła?" %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/preamble_content_pl.html" header="Zawartość preambuły?" %}
 {% endblock %}

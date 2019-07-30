@@ -294,10 +294,23 @@ class CompilationCore(object):
 			return
 		fcode = tools.fcode_from_id(vertex_id = vertex_id, desc = True)
 		outputfile = os.path.join(settings.COMP_DIR, fcode + '.txt')
-		with codecs.open( self.outputfile, 'w+', encoding = 'utf-8') as file:
+		with codecs.open( outputfile, 'w+', encoding = 'utf-8') as file:
 			file.truncate()
 		vertex.desc_dir = outputfile
 		vertex.save()
+		
+	@classmethod
+	def empty_edge(cls, edge_id):
+		try:
+			edge = model.Edge.objects.get(edge_id = edge_id)
+		except exceptions.ObjectDoesNotExist:
+			return
+		fcode = tools.fcode_from_id(edge_id = edge_id)
+		outputfile = os.path.join(settings.COMP_DIR, fcode + '.txt')
+		with codecs.open( outputfile, 'w+', encoding = 'utf-8') as file:
+			file.truncate()
+		edge.directory = outputfile
+		edge.save()
 	
 def compile_v1(vertex_id = None, desc = False, edge_id = None, text = ''):
 	ccore = CompilationCore(cdata, vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)

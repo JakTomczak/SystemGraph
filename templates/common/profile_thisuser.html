@@ -3,7 +3,7 @@
 {% block title %}twój profil{% endblock %}
 
 {% block content %}
-<h2 style="padding: 10px;">Profil użytkownika</h2>
+<h3 style="padding: 22px 30px 10px;">Profil użytkownika</h3>
 <div style="display:flex; justify-content: space-around;">
 	<div style="flex: 3;">
 		<div class="distinctarea paddtop border border-primary rounded medium-margin" >
@@ -21,35 +21,17 @@
 		</div>
 		<div class="distinctarea paddtop border border-primary rounded medium-margin">
 			<h5 style="padding-top: 7px;">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
-			{% if verts %}
-			{% for vert in verts %}
-			{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
-			{% endfor %}
-			{% else %}
+{% if verts %}{% for vert in verts %}
+{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
+{% endfor %}{% else %}
 			<small>(brak)</small>
 			{% endif %}
 		</div>
 		<div class="distinctarea paddtop border border-primary rounded medium-margin" >
-			<div class="internal-menu" style="justify-content: inherit;">
-				<h5>Własne preambuły</h5>
-				<a href="{% url 'new_preamble' %}" class="btn btn-primary" role="button" style="margin-left: 25px;">Utwórz nową preambułę</a>
-			</div>
-			{% if preambles %}
-				<ul id="preambles">
-					{% for pam in preambles %}
-						<li class="border border-warning rounded small-margin">
-							<a href="{% url 'edit_preamble' preamble_id=pam.preamble_id %}" class="fancy-a">{{ pam.title }}</a>
-							<br>
-							<span>{{ pam.description }}</span>
-						</li>
-					{% endfor %}
-				</ul>
-			{% else %}
-				<small>(brak)</small>
-			{% endif %}
+{% include 'includes/preambles_list.html' with preambles=preambles my_profile=1 %}
 		</div>
 		<div class="distinctarea paddtop border border-primary rounded medium-margin" >
-			{% include 'includes/paths_list.html' with my_profile=1 %}
+{% include 'includes/paths_list.html' with paths=paths my_profile=1 %}
 		</div>
 	</div>
 	<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex: 2; height: min-content;">

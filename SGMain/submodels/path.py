@@ -11,7 +11,7 @@ class Path(models.Model):
 	path_id = models.CharField(max_length = 10, primary_key = True, default = 'PAAAAAAAAA')
 	user = models.ForeignKey(user_model.CustomUser, on_delete = models.CASCADE)
 	name = models.CharField(max_length = 50, default = 'Nienazwana ścieżka')
-	description = models.CharField(max_length = 200, null = True)
+	description = models.CharField(max_length = 200, blank = True)
 	date = models.DateField(auto_now = True)
 	first = models.ForeignKey(vertex_models.Vertex, on_delete = models.SET_NULL, null = True)
 	length = models.IntegerField(default = 0)

@@ -224,8 +224,7 @@ class Subject(models.Model):
 			'subject_url': self.get_url(),
 			'section_url': self.section.get_url(),
 			'discipline_url': self.discipline.get_url(),
-			'pk': self.pk, 
-			'edit_url': self.get_edit_url(),
+			'pk': self.pk,
 			'new_section_url': self.discipline.get_add_new_section_url(),
 			'new_subject_url': self.section.get_add_new_subject_url(),
 		}

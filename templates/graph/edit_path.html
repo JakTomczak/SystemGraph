@@ -1,57 +1,45 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_mediumpadd.html' %}
 
 {% block title %}edycja ścieżki{% endblock %}
 
-{% load widget_tweaks %}
-
-{% block content %}
-<div class="maindiv smallpadd">
+{% block main_content %}
 {% include "includes/modal/vertex_choosing.html" with plen=8 query=vertices add=1 %}
-	<form method="post" id="edit-path-form">
-		{% csrf_token %}
-		<input type="hidden" id="hidden_action" value="" name="action">
-		<div class="internal-menu sidepadd">
-			<h4>Edycja ścieżki</h4>
-			<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zapisz</button>
-			<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń ścieżkę</button>
-		</div>
-		{% for hidden in form.hidden_fields %}
-			{{ hidden }}
-		{% endfor %}
-		<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-			<h5 for="{{ form.name.id_for_label }}">Nazwa</h5>
-			{% render_field form.name class="form-control SGformwidget" placeholder=form.name.label %}
-			{% for error in form.name.errors %}
-				<span class="help-block">{{ error }}</span>
-			{% endfor %}
-		</div>
-		<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-			<h5 for="{{ form.description.id_for_label }}">Opis</h5>
-			{% render_field form.description rows="3" class="form-control SGformwidget" placeholder=form.description.label %}
-			{% for error in form.description.errors %}
-				<span class="help-block">{{ error }}</span>
-			{% endfor %}
-		</div>
-		<h4 class="big-margin">Kolejne wierzchołki ścieżki</h4>
-		<a class="border border-warning rounded big-margin" style="padding: 8px;" onclick="add_new_to_path(0)" href="#">Dodaj na początku</a>
-		<div class="distinctarea paddtop border border-primary rounded big-margin">
+<form method="post" id="edit-path-form">
+	{% csrf_token %}
+	<input type="hidden" id="hidden_action" value="" name="action">
+	<div class="internal-menu sidepadd">
+		<h4>Edycja ścieżki</h4>
+		<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zapisz</button>
+		<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń ścieżkę</button>
+	</div>
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+{% include "includes/widget.html" with widget=form.name margin="big" header="Nazwa" %}
+{% include "includes/widget.html" with widget=form.description margin="big" header="Opis" rows=3 %}
+	<h4 style="margin: 16px 26px 9px;">Kolejne wierzchołki ścieżki</h4>
+	<a type="button" class="btn btn-outline-secondary" style="margin: 7px 40px 0;" onclick="add_new_to_path(0)">Dodaj na początku</a>
+	<div class="distinctarea border border-primary rounded big-margin">
 {% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=first chosen="1" my_id="1" header="Wierzchołek początkowy" mtitle="Zmień wierzchołek nr 1" %}
-		</div>
-		{% for vert in the_rest %}
-		{% with ii=forloop.counter|add:'1'|stringformat:"s" %}
-		{% with head="Wierzchołek nr "|add:ii %}
-		{% with mt="Zmień wierzchołek nr "|add:ii %}
-		<a class="border border-warning rounded big-margin" style="padding: 8px;" onclick="add_new_to_path({{ forloop.counter }})" href="#">Dodaj tutaj</a>
-		<div class="distinctarea paddtop border border-primary rounded big-margin">
-			{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=vert chosen="1" my_id=ii header=head mtitle=mt %}
-		</div>
-		{% endwith %}
-		{% endwith %}
-		{% endwith %}
-		{% endfor %}
-		<a class="border border-warning rounded big-margin" style="padding: 8px;" onclick="add_new_to_path('end')" href="#">Dodaj na końcu</a>
-	</form>
-</div>
+	</div>
+	{% for vert in the_rest %}
+	{% with ii=forloop.counter|add:'1'|stringformat:"s" %}
+	{% with head="Wierzchołek nr "|add:ii %}
+	{% with mt="Zmień wierzchołek nr "|add:ii %}
+	<a type="button" class="btn btn-outline-secondary" style="margin: 7px 40px 0;" onclick="add_new_to_path({{ forloop.counter }})">Dodaj tutaj</a>
+	<div class="distinctarea border border-primary rounded big-margin">
+		{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=vert chosen="1" my_id=ii header=head mtitle=mt %}
+	</div>
+	{% endwith %}
+	{% endwith %}
+	{% endwith %}
+	{% endfor %}
+	<a type="button" class="btn btn-outline-secondary" style="margin: 7px 40px 0;" onclick="add_new_to_path('end')">Dodaj na końcu</a>
+</form>
+{% endblock %}
+{% block side_content %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_path_pl.html" header="Co to jest ścieżka?" %}
+</form>
 {% endblock %}
 {% block javascript %}
 <script>

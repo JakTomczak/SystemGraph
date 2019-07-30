@@ -1,7 +1,8 @@
 {% load widget_tweaks %}
 <div class="distinctarea paddtop border border-primary rounded {{ margin }}-margin">
-	<h5 for="{{ widget.id_for_label }}">{{ header }}</h5>
-	{% render_field widget class="form-control" placeholder=widget.label %}
+	<h5 for="{{ widget.id_for_label }}">{{ header }}</h5>{% if rows %}
+	{% render_field widget class="form-control" placeholder=widget.label rows=rows %}{% else %}
+	{% render_field widget class="form-control" placeholder=widget.label %}{% endif %}
 	{% for error in widget.errors %}
 		<span class="help-block">{{ error }}</span>
 	{% endfor %}

@@ -1,56 +1,38 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_mediumpadd.html' %}
 
 {% block title %}edycja preambuły{% endblock %}
 
-{% load widget_tweaks %}
-
-{% block content %}
-	<div class="maindiv mediumpadd">
-		<form method="post" id="edit-preamble-form">
-			<input type="hidden" id="hidden_action" value="" name="action">
-			<div class="internal-menu sidepadd">
-				<h4>Edycja preambuły</h4>
-				<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zapisz</button>
-				<button type="button" id="delete_preamble" class="btn btn-warning sgbutton">Usuń preambułę</button>
-			</div>
-			{% csrf_token %}
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.title.id_for_label }}">Tytuł:</h5>
-				{% render_field form.title class="form-control SGformwidget" placeholder=form.title.label %}
-				{% for error in form.title.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.description.id_for_label }}" style="text-align: left">Opis (ułatwiający rozpoznanie):</h5>
-				{% render_field form.description class="form-control SGformwidget" rows="3" placeholder=form.description.label %}
-				{% for error in form.description.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded big-margin" style="max-width: 625px;">
-				<h5 for="{{ form.content.id_for_label }}" style="text-align: left">Treść</h5>
-				{% render_field form.content class="form-control SGformwidget" rows="18" placeholder=form.content.label %}
-				{% for error in form.content.errors %}
-					<span class="help-block">{{ error }}</span>
-				{% endfor %}
-			</div>
-		</form>
+{% block main_content %}
+<form method="post" id="edit-preamble-form">
+	{% csrf_token %}
+	<input type="hidden" id="hidden_action" value="" name="action">
+	<div class="internal-menu around sidepadd">
+		<h4>Edycja preambuły</h4>
+		<button type="submit" name="save" style="margin-left: 25px;" class="btn btn-primary sgbutton">Zapisz</button>
+		<button type="button" id="delete_preamble" class="btn btn-warning sgbutton">Usuń preambułę</button>
 	</div>
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+{% include "includes/widget.html" with widget=form.title margin="big" header="Tytuł" %}
+{% include "includes/widget.html" with widget=form.description margin="big" header="Opis" rows=3 %}
+{% include "includes/widget.html" with widget=form.content margin="big" header="Treść" rows=8 %}
+</form>
+{% endblock %}
+{% block side_content %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_preamble_pl.html" header="Co to jest preambuła?" %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/preamble_content_pl.html" header="Zawartość preambuły?" %}
 {% endblock %}
 {% block javascript %}
-	<script>
-	$(document).ready(function() {
-		document.getElementById("delete_preamble").addEventListener('click', function(event) {
-			var choice = confirm('Czy na pewno? \nPreambuła zostanie usunięta na stałe.');
-			if (choice) {
-				document.getElementById("hidden_action").value += ',delete';
-				document.getElementById("edit-preamble-form").submit();
-			}
-		});
-    });
-	</script>
+<script>
+$(document).ready(function() {
+	document.getElementById("delete_preamble").addEventListener('click', function(event) {
+		var choice = confirm('Czy na pewno? \nPreambuła zostanie usunięta na stałe.');
+		if (choice) {
+			document.getElementById("hidden_action").value += ',delete';
+			document.getElementById("edit-preamble-form").submit();
+		}
+	});
+});
+</script>
 {% endblock %}

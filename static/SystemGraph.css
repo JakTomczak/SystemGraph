@@ -5,7 +5,8 @@
 	/* --secondary-one: #BEE5D5; /* background color of distict areas - light olive */
 	/* --primary-one: #EAE4B2; /* main background color - cream */
 	/* --secondary-one: #f7edd0; /* background color of distict areas - beige */
-	--ternary-one: #333333; /* background color of menu bars - graphite */
+	--tertiary-one: #333333; /* background color of menu bars - graphite */
+	--quatertiary-one: #D3F7EC;
 	--primary-two: #ffe6ff; /* background color of vertex in viewing vertex - light pink */
 	--secondary-two: #e1edf2; /* background color of everything else in viewing vertex - very light blue */
 	--white-text: white; /* I once had c++ project with variable int ten = 11; */
@@ -85,7 +86,7 @@ ul {
 /* navbar */
 ul.menu {
     overflow: hidden;
-    background-color: var(--ternary-one);
+    background-color: var(--tertiary-one);
 	margin: 0;
 	display: flex;
 }
@@ -335,6 +336,13 @@ li.form-group a {
 	min-width: 150px;
 }
 
+.d-area {
+	background: var(--quatertiary-one);
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
 .distinctarea {
 	/* display: flex; */
 	/* flex-direction: column; */
@@ -518,11 +526,21 @@ a:not([href]) {
 }
 
 .h5withbuttons button {
-	margin-left: 20px;
+	margin-left: 26px;
 }
 
 .h5withbuttons a {
 	margin-left: 20px;
+}
+
+.buttoninflexdiv {
+	flex: 1;
+	padding-top: 8px;
+}
+
+.buttoninflexdiv button {
+	margin: 0 auto;
+	display: block;
 }
 
 .box-block-100 {

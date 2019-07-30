@@ -1,8 +1,16 @@
 <div class="h5withbuttons">
 	<h5>{{ header }}</h5>
-	<button type="button" id="choose_button_{{ my_id }}" class="btn btn-secondary sgbutton" onclick="choose_from_{{ my_id }}()">Wybierz</button>{% if path_id %}
-	<button type="button" id="delete_button_{{ my_id }}" class="btn btn-warning sgbutton" onclick="delete_from_path_{{ my_id }}()">Usuń ze ścieżki</button>{% else %}
-	<button type="button" id="clear_button_{{ my_id }}" class="btn btn-secondary sgbutton" onclick="clear_choose_{{ my_id }}()">Wyczyść wybór</button>{% endif %}
+	<div class="buttoninflexdiv">
+		<button type="button" id="choose_button_{{ my_id }}" class="btn btn-secondary sgbutton" onclick="choose_from_{{ my_id }}()">
+			Wybierz
+		</button>
+	</div>{% if path_id %}
+	<button type="button" id="delete_button_{{ my_id }}" class="btn btn-warning sgbutton" onclick="delete_from_path_{{ my_id }}()">
+		Usuń ze ścieżki
+	</button>{% else %}
+	<button type="button" id="clear_button_{{ my_id }}" class="btn btn-secondary sgbutton" onclick="clear_choose_{{ my_id }}()">
+		Wyczyść wybór
+	</button>{% endif %}
 </div>
 <span id="not_chosen_span_{{ my_id }}">(nie wybrano)</span>
 <div id="chosen_div_{{ my_id }}" class="innerdistinctarea border border-warning rounded small-margin">

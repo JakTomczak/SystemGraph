@@ -1,0 +1,11 @@
+<div class="h5withbuttons">
+	<h5>Własne preambuły</h5>{% if my_profile %}
+	<a href="{% url 'new_preamble' %}" class="btn btn-primary" role="button">Utwórz nową preambułę</a>{% endif %}
+</div>
+{% if preambles %}
+{% for pre in preambles %}
+{% include 'includes/singleframe/preamble.html' with this_preamble=pre this_user=my_profile %}
+{% endfor %}
+{% else %}
+<small>(brak)</small>
+{% endif %}

@@ -3,17 +3,16 @@
 {% block title %}edycja wierzchołka{% endblock %}
 
 {% load widget_tweaks %}
-
 {% block content %}
 <div class="maindiv smallpadd">
 {% include "includes/modal/compilation_log.html" %}
 {% include "includes/modal/dss_choosing.html" with query=subjects %}
 	<form method="post" id="edit-vertex-form">
-	{% csrf_token %}
+		{% csrf_token %}
 		<input type="hidden" id="hidden_action" value="" name="action">
 		<div class="div-column">
 			<div style="flex: 4">
-				<div class="internal-menu space-between sidepadd">
+				<div class="internal-menu around sidepadd">
 					<h3>Edycja <a id="vertex_view">wierzchołka</a></h3>
 					<button type="button" class="btn btn-secondary sgbutton" onclick="vertex_save_all_dont_compile()">Zapisz wszystko</button>
 					<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_all()">Opublikuj</button>
@@ -36,23 +35,11 @@
 						{% endfor %}
 					</div>
 				</div>
-				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					<h5 for="{{ form.vertex_class.id_for_label }}" style="text-align: left">Rodzaj wierzchołka</h5>
-					{% render_field form.vertex_class class="form-control" style="width:100%; min-width:70px" placeholder=form.vertex_class.label %}
-					{% for error in form.vertex_class.errors %}
-						<span class="help-block">{{ error }}</span>
-					{% endfor %}
-				</div>
+{% include "includes/widget.html" with widget=form.vertex_class margin="big" header="Rodzaj wierzchołka" %}
 			</div>
 			<div style="flex: 2">
-				<div class="distinctarea paddtop border border-primary rounded small-margin">
-					<h5>Czy krawędź musi mieć początek?</h5>
-					{% include "FAQ/does_edge_have_to_have_start_pl.html" %}
-				</div>
-				<div class="distinctarea paddtop border border-primary rounded small-margin">
-					<h5>Co to jest krawędź bez sukcesora?</h5>
-					{% include "FAQ/what_is_edge_without_successor_pl.html" %}
-				</div>
+				<br>
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_submition_pl.html" header="Co to jest publikacja wierzchołka?" %}
 			</div>
 		</div>
 		<div class="distinctarea border border-primary rounded big-margin">
@@ -87,16 +74,10 @@
 				<small>(brak)</small>
 			{% endif %}
 		</div>
+{% include "includes/singleframe/FAQ.html" with in="FAQ/edge_in_compilation_pl.html" header="Czym są krawędzie i jak ich używać?" %}
 		<div class="div-column">
 			<div style="flex: 4">
-				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					<h6 for="{{ form.preamble.id_for_label }}">Preambuła <small>(<a href="#">edytuj</a>)</small></h6>
-					{% render_field form.preamble class="form-control" style="width:100%; min-width:70px" placeholder=form.preamble.label %}
-					{% for error in form.preamble.errors %}
-						<span class="help-block">{{ error }}</span>
-					{% endfor %}
-					<a href="{% url 'new_preamble' %}">Utworzyć nową?</a>
-				</div>
+{% include "includes/widget.html" with widget=form.preamble margin="big" header="Preambuła" %}
 				<div class="distinctarea border border-primary rounded big-margin">
 					<div class="h5withbuttons">
 						<h5 for="{{ form.content.id_for_label }}">Treść</h5>
@@ -121,14 +102,8 @@
 				</div>
 			</div>
 			<div style="flex: 2">
-				<div class="distinctarea paddtop border border-primary rounded small-margin">
-					<h5>Czy krawędź musi mieć początek?</h5>
-					{% include "FAQ/does_edge_have_to_have_start_pl.html" %}
-				</div>
-				<div class="distinctarea paddtop border border-primary rounded small-margin">
-					<h5>Co to jest krawędź bez sukcesora?</h5>
-					{% include "FAQ/what_is_edge_without_successor_pl.html" %}
-				</div>
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_preamble_pl.html" header="Co to jest preambuła?" %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_latex_pl.html" header="Kompilacja i LaTeX" %}
 			</div>
 		</div>
 	</form>

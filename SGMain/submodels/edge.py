@@ -82,7 +82,7 @@ class Edge(models.Model):
 		return os.path.join( self.user.get_folder(), self.edge_id + '.txt' )
 		
 	def create_pre_dir(self):
-		codecs.open( self.get_pre_dir(), 'w', encoding = 'utf-8').close()
+		codecs.open( self.get_pre_dir(), 'w+', encoding = 'utf-8').close()
 		
 	def write_pre_dir(self, text):
 		with codecs.open( self.get_pre_dir(), 'w', encoding = 'utf-8') as file:

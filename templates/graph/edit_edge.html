@@ -1,62 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_smallpadd.html' %}
 
-{% block title %}Edit edge{% endblock %}
+{% block title %}edycja krawędzi{% endblock %}
 
 {% load widget_tweaks %}
 
-{% block content %}
-<div class="maindiv mediumpadd">
+{% block main_content %}
+{% include "includes/modal/compilation_log.html" %}
 {% include "includes/modal/vertex_choosing.html" with plen=8 query=vertices %}
-	<form method="post" id="edit-edge-form">
-		<input type="hidden" id="hidden_action" value="" name="action">
-		<div class="internal-menu space-between sidepadd">
-			<h4>Edycja krawędzi</h4>
-			<button type="button" class="btn btn-secondary sgbutton" onclick="save()">Zapisz&nbspbez kompilacji</button>
-			<button type="button" id="compile_all" name="compile" class="btn btn-primary sgbutton">Zapisz i kompiluj</button>
-			{% if predecessor %}<a role="button" id="return_button" class="btn btn-secondary sgbutton" href="{% url 'edit_vertex' vertex_id=predecessor.vertex_id %}">Powrót</a>{% endif %}
-			<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń krawędź</button>
-		</div>
-		{% csrf_token %}
-		{% for hidden in form.hidden_fields %}
-			{{ hidden }}
-		{% endfor %}
-		<div class="distinctarea paddtop border border-primary rounded medium-margin">
-			<h5>Początek (wierzchołek wyjściowy)</h5>
-			{% include 'includes/singleframe/vertex.html' with this_vertex=predecessor %}
-		</div>
-		<div class="distinctarea paddtop border border-primary rounded medium-margin">
-			{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
-		</div>
-		<div class="flexonwidth" style="width: 100%;">
-			<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex:1; flex-grow: 3;">
-				<div class="form-group" style="display: block;">
-					<h5 for="{{ form.preamble.id_for_label }}" style="text-align: left">Preambuła: </h5>
-					{% render_field form.preamble class="form-control" style="min-width:150px" placeholder=form.preamble.label %}
-					{% for error in form.preamble.errors %}
-						<span class="help-block">{{ error }}</span>
-					{% endfor %}
-					<a href="{% url 'new_preamble' %}">Utworzyć nową?</a>
-				</div>
-				<div class="form-group" style="display: block;">
-					<h5 for="{{ form.content.id_for_label }}" style="text-align: left">Treść (nadpisująca domyślny opis wierzchołka):</h5>
-					{% render_field form.content class="form-control" rows="3" style="min-width:150px" placeholder=form.content.label %}
-					{% for error in form.content.errors %}
-						<span class="help-block">{{ error }}</span>
-					{% endfor %}
-				</div>
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex-grow: 1;">
-				<span style="text-align: center;">Log kompilacji</span>
-				<div style="width: 100%; height: 100%;">
-					<textarea readonly id="js_comms" style="width: 100%; height: 100%;"></textarea>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
+{% include "includes/singleframe/FAQ.html" with in="FAQ/edge_in_compilation_pl.html" header="Czym są krawędzie i jak ich używać?" %}
+<form method="post" id="edit-edge-form">
+	{% csrf_token %}
+	<input type="hidden" id="hidden_action" value="" name="action">
+	<div class="internal-menu space-between sidepadd">
+		<h4>Edycja krawędzi</h4>
+		<button type="button" class="btn btn-secondary sgbutton" onclick="save_dont_compile()">Zapisz&nbspbez kompilacji</button>
+		<button type="button" class="btn btn-primary sgbutton" onclick="save_and_compile()">Zapisz i kompiluj</button>
+		<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń krawędź</button>
+	</div>
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+	<div class="distinctarea paddtop border border-primary rounded medium-margin">
+		<h5>Początek (wierzchołek wyjściowy)</h5>
+		{% include 'includes/singleframe/vertex.html' with this_vertex=predecessor %}
+	</div>
+	<div class="distinctarea border border-primary rounded medium-margin">
+		{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
+	</div>
+{% include "includes/widget.html" with widget=form.preamble margin="medium" header="Preambuła" %}
+{% include "includes/widget.html" with widget=form.content margin="medium" header="Treść nadpisująca opis wierzchołka docelowego" rows=3 %}
+</form>
+{% endblock %}
+{% block side_content %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_edge_without_successor_pl.html" header="Co to jest krawędź bez sukcesora?" %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_preamble_pl.html" header="Co to jest preambuła?" %}
 {% endblock %}
 {% block javascript %}
 <script>
+var edge_id = "{{ edge_id }}";
 function save() {
 	document.getElementById("hidden_action").value += ',save,' + CHOSEN_VID_succ;
 	document.getElementById("edit-edge-form").submit();
@@ -68,62 +49,96 @@ function delete_this() {
 		document.getElementById("edit-edge-form").submit();
 	}
 }
-
-function check_for_messages(what) {
-	document.getElementById("js_comms").value += 'Compilation begun';
-	var still = true;
-	var m = [];
-	var len = 0;
-	var i = 0;
-	while (still) {
-		still = false;
-		$.ajax({
-			url: '{% url "check_compilation" %}',
-			type: 'post',
-			async: false,
-			data: {
-				'object': '{{ edge_id }}',
-				'object_type': 'edge'
-			},
-			dataType: 'json',
-			success: function (data) {
-				still = data.still;
-				for (var j = len; j < data.messages.length; j++) {
-					document.getElementById("js_comms").value += "\n" + data.messages[j];
-					len++;
-				}
-				m = data.messages;
-			},
-			failure: function(data) { 
-				still = false;
-			}
-		});
-	}
-	document.getElementById("js_comms").value += "\n"
-}
-$(document).ready(function() {
-	document.getElementById("compile_all").addEventListener('click', function(event) {
-		$.ajax({
-			url: '{% url "compile_edge" edge_id=edge_id %}',
-			type: 'post',
-			data: {
-				'content': $("#id_content").val()
-			},
-			dataType: 'json'
-		});
-		$.ajax({
-			url: '{% url "save_edge" edge_id=edge_id %}',
-			type: 'post',
-			data: {
-				'content': $("#id_content").val(),
-				'successor': $("#id_successor").val(),
-				'preamble': $("#id_preamble").val(),
-			},
-			dataType: 'json'
-		});
-		check_for_messages();
+function save_content() {
+	$.ajax({
+		url: '{% url "save_edge_content" edge_id=edge_id %}',
+		type: 'post',
+		async: false,
+		data: {
+			'content': document.getElementById("id_content").value,
+		},
+		dataType: 'json'
 	});
-	{% if predecessor %}tippy('#return_button', {content: 'Powrót do edycji wierzchołka',});{% endif %}
-});
+}
+function check_for_messages(mlength) {
+	var still;
+	var error;
+	var m = [];
+	$.ajax({
+		url: '{% url "check_compilation" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'edge_id': edge_id,
+			'mlength': mlength
+		},
+		dataType: 'json',
+		success: function (data) {
+			still = data.still;
+			error = data.error;
+			m = data.messages;
+		},
+		failure: function(data) { 
+			still = false;
+			error = true;
+		}
+	});
+	return [still, error, m];
+}
+function update_compilation() {
+	var still = true;
+	var error = false;
+	var messages = [];
+	var mlength = 0;
+	while (still) {
+		[still, error, messages] = check_for_messages(mlength);
+		if (messages) {
+			COMP_MODAL_SHOW();
+			LOG_MESSAGES(messages);
+		}
+		mlength += messages.length;
+	}
+	return error;
+}
+function run_compilation() {
+	var ok;
+	var error_message = '';
+	$.ajax({
+		url: '{% url "start_edge_compilation" edge_id=edge_id %}',
+		type: 'post',
+		async: false,
+		data: {
+			'content': document.getElementById("id_content").value
+		},
+		dataType: 'json',
+		success: function (data) {
+			ok = data.ok;
+			error_message = data.error_message;
+		},
+		failure: function(data) { 
+			ok = false;
+		}
+	});
+	if (error_message) {
+		alert(error_message);
+		return true;
+	}
+	else if (ok) {
+		COMP_MODAL_SHOW();
+		return update_compilation();
+	}
+	return true;
+}
+function save_dont_compile() {
+	save_content();
+	save();
+}
+function save_and_compile() {
+	save_content();
+	var error = run_compilation();
+	if (!error) {
+		save();
+	}
+}
 </script>
 {% endblock %}

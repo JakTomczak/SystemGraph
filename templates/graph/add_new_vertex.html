@@ -26,10 +26,7 @@
 <div class="distinctarea paddtop border border-primary rounded big-margin">
 	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
 </div>
-<div class="distinctarea paddtop border border-primary rounded big-margin">
-	<h5>Co to jest rodzaj wierzchołka?</h5>
-	{% include "FAQ/what_is_vertex_class_pl.html" %}
-</div>
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_vertex_class_pl.html" header="Co to jest rodzaj wierzchołka?" %}
 <div class="distinctarea paddtop border border-primary rounded big-margin">
 	<span>Aby poprawnie wyświetlać treści w SystemGraph, twoja przeglądarka musi współpracować ze znacznikami MathML. Z popularnych przeglądarek obecnie jedynie Firefox posiada taką funkcjonalność natywnie, tj. bez instalowania pluginów.</span>
 </div>

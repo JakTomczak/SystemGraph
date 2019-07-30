@@ -9,9 +9,9 @@ from datetime import datetime
 
 from . import tasks
 from . import compilation
-from .models import Vertex, Path, CompilationData, Subject
+from .models import Vertex, Path, CompilationData, Subject, Edge
 
-def user_is_NOT_valid(request, vertex_id = None, edge_id = None):
+def request_is_NOT_valid(request, vertex_id = None, edge_id = None):
 	if int(vertex_id is not None) + int(edge_id is not None) != 1:
 		return True
 	object = None
@@ -118,22 +118,7 @@ def get_vertex_from_id(request):
 	return JsonResponse(context)
 	
 @csrf_exempt
-def vertex_save(request, vertex_id):
-	return JsonResponse({})
-	
-@csrf_exempt
 def save_vertex_cd(request, vertex_id):
-	vertex = Vertex.objects.get(vertex_id = vertex_id)
-	if vertex.user != request.user:
-		return JsonResponse({})
-	content = request.POST.get('content', '')
-	vertex.write_pre_content(content)
-	description = request.POST.get('description', '')
-	vertex.write_pre_desc(description)
-	return JsonResponse({})
-	
-@csrf_exempt
-def save_vertex_props(request, vertex_id):
 	vertex = Vertex.objects.get(vertex_id = vertex_id)
 	if vertex.user != request.user:
 		return JsonResponse({})
@@ -146,7 +131,7 @@ def save_vertex_props(request, vertex_id):
 @csrf_exempt
 def start_vertex_cont_compilation(request, vertex_id):
 	context = {'ok': False, 'error_message': ''}
-	if user_is_NOT_valid(request, vertex_id = vertex_id):
+	if request_is_NOT_valid(request, vertex_id = vertex_id):
 		return JsonResponse(context)
 	content = request.POST.get('content', '')
 	if content:
@@ -162,7 +147,7 @@ def start_vertex_cont_compilation(request, vertex_id):
 @csrf_exempt
 def start_vertex_desc_compilation(request, vertex_id):
 	context = {'ok': False, 'error_message': ''}
-	if user_is_NOT_valid(request, vertex_id = vertex_id):
+	if request_is_NOT_valid(request, vertex_id = vertex_id):
 		return JsonResponse(context)
 	description = request.POST.get('description', '')
 	if description:
@@ -179,7 +164,7 @@ def start_vertex_desc_compilation(request, vertex_id):
 def update_compilation_status(request):
 	vertex_id = request.POST.get('vertex_id', None)
 	edge_id = request.POST.get('edge_id', None)
-	if user_is_NOT_valid(request, vertex_id = vertex_id, edge_id = edge_id):
+	if request_is_NOT_valid(request, vertex_id = vertex_id, edge_id = edge_id):
 		return JsonResponse({'still': False, 'error': True, 'messages': []})
 	
 	desc = (request.POST.get('desc', None) == 'true')
@@ -193,25 +178,28 @@ def update_compilation_status(request):
 			messages = [messages, ]
 	context = {'still': running, 'error': error, 'messages': messages}
 	return JsonResponse(context)
-
+	
 @csrf_exempt
-def start_compilation(request, vertex_id):
+def save_edge_content(request, edge_id):
+	edge = Edge.objects.get(edge_id = edge_id)
+	if edge.user != request.user:
+		return JsonResponse({})
 	content = request.POST.get('content', '')
-	description = request.POST.get('description', '')
-	v = Vertex.objects.get(vertex_id = vertex_id)
-	if content is not None:
-		v.save_pre_content(content)
-		tasks.nocompiler (v, False)
-	if description is not None:
-		v.save_pre_desc(content)
-		tasks.nocompiler (v, True)
+	edge.write_pre_dir(content)
 	return JsonResponse({})
 	
 @csrf_exempt
 def start_edge_compilation(request, edge_id):
-	return JsonResponse({})
-	
-@csrf_exempt
-def edge_save(request, edge_id):
-	time.sleep(3);
-	return JsonResponse({})
+	context = {'ok': False, 'error_message': ''}
+	if request_is_NOT_valid(request, edge_id = edge_id):
+		return JsonResponse(context)
+	content = request.POST.get('content', '')
+	if content:
+		context['error_message'] = CompilationData.check_if_idle(edge_id = edge_id)
+		if context['error_message'] == '':
+			context['ok'] = True
+			tasks.start_compilation.delay(edge_id = edge_id, text = content)
+			time.sleep(1)
+	else:
+		compilation.CompilationCore.empty_edge(edge_id)
+	return JsonResponse(context)

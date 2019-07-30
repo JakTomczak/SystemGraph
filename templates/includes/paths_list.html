@@ -1,21 +1,11 @@
-<div class="internal-menu" style="justify-content: inherit;">
-	<h5>Utworzone ścieżki</h5>
-	{% if my_profile %}<a href="{% url 'new_path' %}" class="btn btn-primary" role="button" style="margin-left: 25px;">Utwórz nową ścieżkę</a>{% endif %}
+<div class="h5withbuttons">
+	<h5>Utworzone ścieżki</h5>{% if my_profile %}
+	<a href="{% url 'new_path' %}" class="btn btn-primary" role="button">Utwórz nową ścieżkę</a>{% endif %}
 </div>
 {% if paths %}
-	<ul id="paths">
-		{% for path in paths %}
-			<li class="open_project_wrapper border border-warning rounded small-margin">
-				<span>Nazwa: </span><a href="{% url 'edit_path' path_id=path.path_id %}" class="fancy-a">{{ path.name }}</a>
-				<br>
-				<span>Opis: {{ path.description }}</span>
-				<br>
-				<span>Liczba wierzchołków: {{ path.length }}</span>
-				<br>
-				<span>Początek: </span><a href="path.get_first_url" class="fancy-a">{{ path.get_first_str }}</a>
-			</li>
-		{% endfor %}
-	</ul>
+{% for path in paths %}
+{% include 'includes/singleframe/path.html' with this_path=path this_user=my_profile %}
+{% endfor %}
 {% else %}
-	<small>(brak)</small>
+<small>(brak)</small>
 {% endif %}

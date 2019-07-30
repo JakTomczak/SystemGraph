@@ -1,42 +1,24 @@
-{% extends 'base.html' %}
+{% extends 'base_2cols_smallpadd.html' %}
 
 {% block title %}nowa krawędź{% endblock %}
 
-{% load widget_tweaks %}
-
-{% block content %}
-<div class="maindiv smallpadd">
+{% block main_content %}
 {% include "includes/modal/vertex_choosing.html" with plen=8 query=vertices %}
-	<form id="add-new-edge-form" method="post">
-		{% csrf_token %}
-		<div class="internal-menu sidepadd">
-			<h4>Tworzenie nowej krawędzi</h4>
-			<button type="button" class="btn btn-primary sgbutton" style="margin-left: 25px;" onclick="save()">Utwórz</button>
-			{% if pred_is_chosen %}<a role="button" id="return_button" class="btn btn-secondary sgbutton" href="{% url 'edit_vertex' vertex_id=predecessor.vertex_id %}" style="margin-left: 15px;">Powrót</a>{% endif %}
-		</div>
-		<input type="hidden" id="hidden_action" value="" name="action">
-		<div class="div-column">
-			<div style="flex: 4">
-				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" header="Początek (wierzchołek wyjściowy)" %}
-				</div>
-				<div class="distinctarea paddtop border border-primary rounded big-margin">
-					{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
-				</div>
-			</div>
-			<div style="flex: 2">
-				<div class="distinctarea paddtop border border-primary rounded small-margin">
-					<h5>Czy krawędź musi mieć początek?</h5>
-					{% include "FAQ/does_edge_have_to_have_start_pl.html" %}
-				</div>
-				<div class="distinctarea paddtop border border-primary rounded small-margin">
-					<h5>Co to jest krawędź bez sukcesora?</h5>
-					{% include "FAQ/what_is_edge_without_successor_pl.html" %}
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
+<form id="add-new-edge-form" method="post">
+	{% csrf_token %}
+{% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Tworzenie nowej krawędzi" button="Utwórz" function="save()" %}
+	<input type="hidden" id="hidden_action" value="" name="action">
+	<div class="distinctarea border border-primary rounded big-margin">
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" header="Początek (wierzchołek wyjściowy)" %}
+	</div>
+	<div class="distinctarea border border-primary rounded big-margin">
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
+	</div>
+</form>
+{% endblock %}
+{% block side_content %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/does_edge_have_to_have_start_pl.html" header="Czy krawędź musi mieć początek?" %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_edge_without_successor_pl.html" header="Co to jest krawędź bez sukcesora?" %}
 {% endblock %}
 {% block javascript %}
 <script>
@@ -49,8 +31,5 @@ function save() {
 		alert('Wierzchołek początkowy musi być wybrany.');
 	}
 }
-$(document).ready(function() {
-	{% if pred_is_chosen %}tippy('#return_button', {content: 'Powrót do edycji wierzchołka',});{% endif %}
-});
 </script>
 {% endblock %}
