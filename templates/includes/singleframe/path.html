@@ -7,7 +7,7 @@
 		<span>Liczba wierzchołków: {{ this_path.length }}</span>
 		<br>
 		<span>Początek: </span><a href="{{ path.get_first_url }}" class="fancy-a">{{ this_path.get_first_str }}</a>
-	</div>{% if this_user %}
+	</div>{% if user == this_path.user %}
 	<div>
 		<a href="{% url 'edit_path' path_id=this_path.path_id %}">edytuj</a>
 	</div>{% endif %}

@@ -1,0 +1,9 @@
+<div class="internal-menu around">
+	<h5>Dane użytkownika</h5>{% if edit_yes %}
+	<a href="{% url 'edit_profile' username=this_user.username %}" class="btn btn-secondary" role="button" style="margin-left: 25px;">Edytuj</a>{% endif %}
+</div>
+<hr>
+<div>
+{% include 'includes/singleframe/profile_info.html' with entry="Nazwa użytkownika:" value=this_user.username %}
+{% include 'includes/singleframe/profile_info.html' with entry="Email:" value=this_user.email %}
+</div>

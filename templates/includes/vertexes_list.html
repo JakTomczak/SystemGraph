@@ -1,8 +1,0 @@
-<h5 class="paddtop">Ostatnio opublikowane wierzchołki{% if verts %} <small style="margin-left:10px;"><a href="{% url 'all_user_verticies' username=this_user.username %}" style="font-size: 85%;">(pokaż wszystkie)</a></small>{% endif %}</h5>
-{% if verts %}
-{% for vert in verts %}
-{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}
-{% endfor %}
-{% else %}
-<small>(brak)</small>
-{% endif %}

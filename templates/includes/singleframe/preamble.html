@@ -3,7 +3,7 @@
 		<span>{{ this_preamble.title }}</span>
 		<br>
 		<span>{{ this_preamble.description }}</span>
-	</div>{% if this_user %}
+	</div>{% if user == this_preamble.user %}
 	<div>
 		<a href="{% url 'edit_preamble' preamble_id=this_preamble.preamble_id %}">edytuj</a>
 	</div>{% endif %}

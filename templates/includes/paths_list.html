@@ -1,11 +1,9 @@
-<div class="h5withbuttons">
-	<h5>Utworzone ścieżki</h5>{% if my_profile %}
-	<a href="{% url 'new_path' %}" class="btn btn-primary" role="button">Utwórz nową ścieżkę</a>{% endif %}
-</div>
-{% if paths %}
-{% for path in paths %}
-{% include 'includes/singleframe/path.html' with this_path=path this_user=my_profile %}
-{% endfor %}
-{% else %}
+<div class="list_header_container">
+	<div class="header"><h5>{{ header }}</h5></div>
+	<div class="buttons">{% if add_new %}
+		<a href="{% url 'new_path' %}" class="btn btn-primary" role="button">Utwórz nową ścieżkę</a>{% endif %}
+	</div>
+</div>{% if paths %}{% for path in paths %}
+{% include 'includes/singleframe/path.html' with this_path=path %}{% endfor %}{% else %}
 <small>(brak)</small>
 {% endif %}

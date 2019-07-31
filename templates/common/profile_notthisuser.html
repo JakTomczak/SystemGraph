@@ -2,42 +2,21 @@
 
 {% block title %}profil użytkownika{% endblock %}
 
-{% load widget_tweaks %}
-
 {% block content %}
-	<h2 style="padding: 10px;">Profil użytkownika</h2>
-	<div style="display:flex; justify-content: space-around;">
-		<div style="flex: 3;">
-			<div class="distinctarea paddtop border border-primary rounded medium-margin">
-				{% include 'includes/vertexes_list.html' %}
-			</div>
-			<div class="distinctarea paddtop border border-primary rounded medium-margin" >
-				{% include 'includes/paths_list.html' %}
-			</div>
+<h3 style="padding: 22px 32px 10px;">Profil użytkownika {{ this_user.username }}</h3>
+<div style="display:flex;" class="small-margin">
+	<div style="flex: 3;">
+		<div class="distinctarea border border-primary rounded big-margin">
+{% include 'includes/vertices_list.html' with vertices=verts show_all=1 this_user=this_user header="Ostatnio opublikowane wierzchołki" %}
 		</div>
-		<div class="distinctarea paddtop border border-primary rounded medium-margin" style="flex: 2; height: min-content;">
-			<div class="internal-menu" style="justify-content: inherit;">
-				<h5>Dane użytkownika</h5>
-			</div>
-			<hr>
-			<div>
-				<div style="display:flex; justify-content: space-around;">
-					<div style="flex: 1;">
-						Nazwa użytkownika:
-					</div>
-					<div style="flex: 2;">
-						{{ this_user.username }}
-					</div>
-				</div>
-				<div style="display:flex; justify-content: space-around;">
-					<div style="flex: 1;">
-						Email:
-					</div>
-					<div style="flex: 2;">
-						{{ this_user.email }}
-					</div>
-				</div>
-			</div>
+		<div class="distinctarea border border-primary rounded big-margin">
+{% include 'includes/paths_list.html' with paths=paths header="Utworzone ścieżki" %}
 		</div>
 	</div>
+	<div style="flex: 2;">
+		<div class="distinctarea paddtop border border-primary rounded big-margin">
+{% include 'includes/profile_info.html' with this_user=this_user %}
+		</div>
+	</div>
+</div>
 {% endblock %}

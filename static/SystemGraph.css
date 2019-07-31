@@ -276,7 +276,7 @@ li h6 {
 }
 
 .internal-menu h5 {
-	padding-top: 8px;
+	padding-top: 14px;
 }
 
 .internal-menu h4 {
@@ -352,7 +352,7 @@ li.form-group a {
 	background-color: var(--secondary-one);
 }
 
-.distinctarea h5 {
+.distinctarea :not(.internal-menu) h5 {
 	padding-bottom: 7px;
 	margin-left: 6px;
 }
@@ -522,7 +522,7 @@ a:not([href]) {
 }
 
 .h5withbuttons h5 {
-	margin-top: 14px;
+	margin-top: 9px;
 }
 
 .h5withbuttons button {
@@ -549,4 +549,20 @@ a:not([href]) {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     display: block
+}
+
+.list_header_container {
+	overflow: auto;
+}
+
+.list_header_container .header {
+	float: left;
+	margin-top: 14px;
+}
+
+.list_header_container .buttons {
+	float: right;
+	margin-top: 9px;
+	display: flex;
+	flex-direction: column;
 }
