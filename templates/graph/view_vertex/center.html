@@ -1,0 +1,17 @@
+{% include "graph/view_vertex/navigation.html" with this_vertex=thisvertex %}
+<button id="upper_showhide" onclick="Upper_Show_Hide()" class="vertex-button topbottom top">
+	<div>
+		{{ thisvertex.vertex_class.top.polish_name_plural }}
+	</div>
+</button>
+<div class="vv_small_midrow_frame" >
+	<div class="vv_the_central_frame" id="the_central_frame">
+		<h5>{{ thisvertex.title }}</h5>
+{{ thisvertexcontent|safe }}
+	</div>
+</div>
+<button id="lower_showhide" onclick="Lower_Show_Hide()" class="vertex-button topbottom bottom">
+	<div>
+		{{ thisvertex.vertex_class.bottom.polish_name_plural }}
+	</div>
+</button>

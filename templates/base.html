@@ -7,14 +7,15 @@
 	<link rel="stylesheet" type="text/css" href="{% static '/dependencies/jquery.dataTables.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static '/dependencies/bootstrap.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static '/SystemGraph.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static '/TeX_figures.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/TeX_figures.css' %}">{% if vertex_view %}
+	<link rel="stylesheet" type="text/css" href="{% static '/Vertex.css' %}">{% endif %}
 	
 	<script type="text/javascript" src="{% static '/dependencies/jquery-3.4.1.js' %}"></script>
 	<script type="text/javascript" src="{% static '/dependencies/popper.min.js' %}"></script>
 	<script type="text/javascript" src="{% static '/dependencies/tippy.index.all.min.js' %}"></script>
 	<script type="text/javascript" src="{% static '/dependencies/jquery.dataTables.min.js' %}"></script>
-	
-	<script type="text/javascript" src="{% static '/Vertex.js' %}" ></script>
+	{% if vertex_view %}
+	<script type="text/javascript" src="{% static '/Vertex.js' %}" ></script>{% endif %}
 	<script type="text/javascript" src="{% static '/SystemGraph.js' %}" ></script>
 	<script type="text/javascript">
 		window.MathJax = {
@@ -29,7 +30,7 @@
 <body>
 	<main>
 		{% include "navbar.html" %}
-		<div class="{% if float %}contentfloat{% else %}content{% endif %}">
+		<div class="{% if vertex_view %}contentfloat{% else %}content{% endif %}">
 			{% if messages %}
 			<ul class="SG_messages">
 				{% for message in messages %}

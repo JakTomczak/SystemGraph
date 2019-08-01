@@ -56,16 +56,6 @@ ul {
 	padding-bottom: 20px;
 }
 
-/* in base */
-/* the same div as higher, but everything's flexing, used in viewing vertex */
-.contentfloat {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	background: var(--secondary-two);
-}
-
 /* in basically everything in templates/graph/ except for view_vertex */
 /* div directly in content div (higher) for holding forms */
 .maindiv {
@@ -100,9 +90,17 @@ ul.menu li a {
     display: block;
     color: var(--white-text);
     text-align: center;
-    padding: 16px;
+    
     text-decoration: none;
     white-space: nowrap;
+}
+
+#the_navbar a {
+	padding: 16px;
+}
+
+#the_vertex_navbar a {
+	padding: 7px;
 }
 
 ul.menu li a:hover {
@@ -117,118 +115,8 @@ ul.menu li a:hover {
 	max-width: 800px;
 }
 
-.vertbuttonholder {
-	display: flex;
-}
-
-.sidebar {
-	width: 20%;
-	max-width: 200px;
-	min-width: 50px;
-	/* background-color: var(--secondary-two); */
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.vertsidebar {
-	height: 15%;
-	max-height: 150px;
-	/* min-height: 70px; */
-	/* background-color: var(--secondary-two); */
-	display: flex;
-	align-items: center;
-	flex: 0;
-}
-
-/* .vertex-button { */
-	/* background-image: linear-gradient(var(--fancy-a-one), var(--fancy-a-two)); */
-/* } */
-
-button.topbottom {
-	/* width: 100%; */
-	width: max-content;
-	align-self: center;
-	height: 26px;
-	padding-top: 0;
-	padding-bottom: 0;
-	margin: 0;
-}
-
-button.rightleft {
-	/* height: 100%; */
-	height: max-content;
-	align-self: center;
-	width: 26px;
-	padding-left: 0;
-	padding-right: 0;
-	margin: 0;
-}
-
-button.top {
-	background-image: linear-gradient(var(--secondary-two), var(--primary-two));
-}
-
-button.bottom {
-	background-image: linear-gradient(to top, var(--secondary-two), var(--primary-two));
-}
-
-button.left {
-	background-image: linear-gradient(to right, var(--secondary-two), var(--primary-two));
-}
-
-button.right {
-	background-image: linear-gradient(to left, var(--secondary-two), var(--primary-two));
-}
-
-button.rightleft div {
-	writing-mode: vertical-rl;
-	text-orientation: upright;
-}
-
-.innerframe {
-	display: flex;
-	flex: 1;
-	/* max-height: 300px; */
-}
-
-.veryinnerframe {
-	flex: 1;
-	position: relative;
-	overflow-y: scroll;
-	background-color: var(--primary-two);
-	padding: 6px;
-	/* border-width: 30px; */
-	border: 1.5px solid #007bff;
-	border-radius: 0.5rem;
-}
-
-.vertbar_element {
-	float: left;
-	width: 20%;
-	height: 100%;
-	text-align: center;
-	flex: 1;
-	border-left: 2px solid;
-}
-
-.sidebar_element {
-	float: top;
-	width: 100%;
-	height: 20%;
-	text-align: center;
-	flex: 1;
-	border-bottom: 2px solid;
-}
-
 .verysmall {
 	font-size: 70%;
-}
-
-.optionsdiv {
-	position: absolute;
-	bottom: 0;
-	right: 0;
 }
 
 /* div.title { */

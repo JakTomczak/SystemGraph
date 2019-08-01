@@ -313,6 +313,19 @@ class Vertex(models.Model):
 	@classmethod
 	def get_submitted(cls):
 		return Vertex.objects.filter( submitted = True )
+	
+	def content(self):
+		if self.submitted:
+			try:
+				f = codecs.open( self.content_dir, 'r', encoding = 'utf-8')
+			except (TypeError, IOError):
+				return ''
+			else:
+				t = f.read()
+				f.close()
+				return t
+		else:
+			return ''
 		
 	def description (self):
 		if self.submitted:

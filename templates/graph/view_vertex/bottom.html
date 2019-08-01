@@ -1,0 +1,9 @@
+<div id="lower_sidebar" class="vertsidebar">
+{% for vertdict in list %}
+	<div class="vertbar_element">
+		<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
+		<br>
+		<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
+	</div>
+{% endfor %}
+</div>

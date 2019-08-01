@@ -1,0 +1,16 @@
+<div class="vertbuttonholder">
+	<button id="right_showhide" onclick="Right_Show_Hide()" class="vertex-button rightleft right">
+		<div>
+			{{ thisvertex.vertex_class.right.polish_name_plural }}
+		</div>
+	</button>
+</div>
+<div id="right_sidebar" class="sidebar" style="border-top: 1px dashed;">
+{% for vertdict in list %}
+	<div class="sidebar_element">
+		<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
+		<br>
+		<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
+	</div>
+{% endfor %}
+</div>

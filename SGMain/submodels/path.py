@@ -57,6 +57,19 @@ class Path(models.Model):
 		else:
 			return '#'
 	
+	def get_neighbours(self, index):
+		if index > 1:
+			try:
+				previous = Path_Entry.objects.get(path = self, index = index - 1).vertex
+			except exceptions.ObjectDoesNotExist:
+				previous = None
+		if index < this_path.length:
+			try:
+				next = Path_Entry.objects.get(path = self, index = index + 1).vertex
+			except exceptions.ObjectDoesNotExist:
+				next = None
+		return previous, next
+	
 	def write_and_save(self, vertexes):
 		for entry in Path_Entry.objects.filter(path = self):
 			entry.delete() 

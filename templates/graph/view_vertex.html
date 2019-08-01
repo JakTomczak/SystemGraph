@@ -1,77 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Wierzchołek{% endblock %}
+{% block title %}wierzchołek{% endblock %}
 
 {% block content %}
-	<div id="upper_sidebar" class="vertsidebar" style="border-bottom: 1px solid;">
-	{% for vertdict in top %}
-		<div class="vertbar_element">
-			<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
-			<br>
-			<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
-		</div>
-	{% endfor %}
+{% include "graph/view_vertex/top.html" with list=top %}
+<div class="vv_big_midrow_frame" id="the_innerframe">
+{% include "graph/view_vertex/left.html" with list=left %}
+	<div class="vv_big_centcol_frame" >
+{% include "graph/view_vertex/center.html" %}
 	</div>
-	<button id="upper_showhide" onclick="Upper_Show_Hide()" class="vertex-button topbottom top">
-		<div>
-			{{ thisvertex.vertex_class.top.polish_name_plural }}
-		</div>
-	</button>
-	<div class="innerframe" id="the_innerframe">
-		<div id="left_sidebar" class="sidebar" style="border-right: 1px solid; border-top: 2px solid;">
-		{% for vertdict in left %}
-			<div class="sidebar_element">
-				<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
-				<br>
-				<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
-			</div>
-		{% endfor %}
-		</div>
-
-		<div class="vertbuttonholder">
-			<button id="left_showhide" onclick="Left_Show_Hide()" class="vertex-button rightleft left">
-				<div>
-					{{ thisvertex.vertex_class.left.polish_name_plural }}
-				</div>
-			</button>
-		</div>
-
-		<div class="veryinnerframe" >
-		{% if thisuser %}<div class="optionsdiv"><small><a href="{% url 'edit_vertex' vertex_id=thisvertex.vertex_id %}">(edit)</a></small></div>{% endif %}
-			<h5>{{ thisvertex.title }}</h5>
-{{ thisvertexcontent|safe }}
-		</div>
-
-		<div class="vertbuttonholder">
-			<button id="right_showhide" onclick="Right_Show_Hide()" class="vertex-button rightleft right">
-				<div>
-					{{ thisvertex.vertex_class.right.polish_name_plural }}
-				</div>
-			</button>
-		</div>
-
-		<div id="right_sidebar" class="sidebar" style="border-left: 1px solid; border-top: 2px solid;">
-		{% for vertdict in right %}
-			<div class="sidebar_element">
-				<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
-				<br>
-				<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
-			</div>
-		{% endfor %}
-		</div>
-	</div>
-	<button id="lower_showhide" onclick="Lower_Show_Hide()" class="vertex-button topbottom bottom">
-		<div>
-			{{ thisvertex.vertex_class.bottom.polish_name_plural }}
-		</div>
-	</button>
-	<div id="lower_sidebar" class="vertsidebar" style="border-top: 1px solid;">
-	{% for vertdict in bottom %}
-		<div class="vertbar_element">
-			<small><a href="{% url 'view_vertex' vertex_id=vertdict.vert.vertex_id %}" >{{ vertdict.vtitle|truncatechars:37 }}</a></small>
-			<br>
-			<small class="verysmall">{{ vertdict.vdesc|safe }}</small>
-		</div>
-	{% endfor %}
-	</div>
+{% include "graph/view_vertex/right.html" with list=right %}
+</div>
+{% include "graph/view_vertex/bottom.html" with list=bottom %}
 {% endblock %}

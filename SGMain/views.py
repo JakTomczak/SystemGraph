@@ -298,14 +298,25 @@ def edit_vertex(request, vertex_id):
 	}
 	return render(request, 'graph/edit_vertex.html', context)
 
-def view_vertex(request, vertex_id): # Needs big enhancements
+def view_vertex(request, vertex_id):
 	try:
 		this_vertex = model.Vertex.objects.get(vertex_id = vertex_id, submitted = True)
 	except exceptions.ObjectDoesNotExist:
 		return render(request, 'errors/404.html')
 	edges = this_vertex.get_successors()
-	with codecs.open( this_vertex.content_dir, 'r', encoding = 'utf-8') as file:
-		content = file.read()
+	content = this_vertex.content()
+	try:
+		path_id = request.GET['path']
+		entry = int( request.GET['index'] )
+	except:
+		path = None
+		entry = None
+	if path_id:
+		try:
+			this_path = model.Path.objects.get(path_id = path_id)
+		except exceptions.ObjectDoesNotExist:
+			return render(request, 'errors/404.html')
+	previous, next = this_path.get_neighbours(entry)
 	sglinks = []
 	for e in edges:
 		if e.links:
@@ -320,7 +331,7 @@ def view_vertex(request, vertex_id): # Needs big enhancements
 		thisuser = True
 	else:
 		thisuser = False
-	context = {'float': 1, 'edges': sglinks, 'thisuser': thisuser, 'thisvertex': this_vertex, 'thisvertexcontent': content, 'bottom': bolist, 'left': lelist, 'right': rilist, 'top': tolist}
+	context = {'vertex_view': 1, 'edges': sglinks, 'thisuser': thisuser, 'thisvertex': this_vertex, 'thisvertexcontent': content, 'bottom': bolist, 'left': lelist, 'right': rilist, 'top': tolist}
 	return render(request, 'graph/view_vertex.html', context)
 
 def new_preamble(request):
