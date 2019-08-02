@@ -1,5 +1,5 @@
 <div class="innerdistinctarea border border-warning rounded small-margin">
-	<a href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}" class="fancy-a">{% if smallstr %}{{ this_vertex.small_str }}{% else %}{{ this_vertex }}{% endif %}</a> {% if user == this_vertex.user %}<a style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
+	<a href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}" class="fancy-a">{% if smallstr %}{{ this_vertex.small_str }}{% else %}{% if bigstr %}{{ this_vertex.big_str_no_user }}{% else %}{{ this_vertex }}{% endif %}{% endif %}</a> {% if user == this_vertex.user %}<a style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
 	<br>
 	<span>{{ this_vertex.description|safe }}</span>
 </div>

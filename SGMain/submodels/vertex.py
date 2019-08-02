@@ -300,6 +300,9 @@ class Vertex(models.Model):
 	def big_str(self):
 		return str(self.discipline) + ', ' + str(self.section) + ', ' + str(self.subject) + ': ' + self.title + ' (' + str(self.user) + ')'
 	
+	def big_str_no_user(self):
+		return str(self.discipline) + ', ' + str(self.section) + ', ' + str(self.subject) + ': ' + self.title + ' (' + self.vertex_id + ')'
+	
 	def small_str(self):
 		return self.title
 		

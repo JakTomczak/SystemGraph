@@ -1,10 +1,13 @@
 <div class="list_header_container">
-	<div class="header"><h5>{{ header }}</h5></div>
+	<div class="header">{% if all %}
+		<h4>Wszystkie opublikowane wierzchołki użytkownika <a class="fancy-a" href="{% url 'profile' username=this_user.username %}">{{ this_user.username }}</a></h4>{% else %}
+		<h5>{{ header }}</h5>{% endif %}
+	</div>
 	<div class="buttons">{% if show_all %}
 		<a type="button" class="btn btn-outline-dark" href="{% url 'all_user_verticies' username=this_user.username %}">Pokaż wszystkie</a>{% endif %}{% if add_new %}
 		<a href="{% url 'new_vertex' %}" class="btn btn-primary" role="button">Utwórz nowy wierzchołek</a>{% endif %}
 	</div>
 </div>{% if vertices %}{% for vert in vertices %}
-{% include 'includes/singleframe/vertex.html' with this_vertex=vert %}{% endfor %}{% else %}
+{% include 'includes/singleframe/vertex.html' with this_vertex=vert bigstr=all %}{% endfor %}{% else %}
 <small>(brak)</small>
 {% endif %}

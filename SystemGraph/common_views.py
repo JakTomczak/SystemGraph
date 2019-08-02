@@ -14,21 +14,21 @@ def frontpage(request):
 			already = True
 	context = {
 		'already': already,
-		'Vlist': model.Vertex.get_submitted()
+		'Vertices': model.Vertex.get_submitted()
 	}
 	return render(request, 'common/frontpage.html', context)
 	
 def search_vertices(request):
 	context = {
-		'Vlist': model.Vertex.get_submitted()
+		'Vertices': model.Vertex.get_submitted()
 	}
 	return render(request, 'common/vertex_search.html', context)
 	
 def search_users(request):
 	context = {
-		'Vlist': CustomUser.objects.all()
+		'Users': CustomUser.objects.all()
 	}
-	return render(request, 'common/vertex_search.html', context)
+	return render(request, 'common/user_search.html', context)
 
 '''
 When you didn't change database, but changed base directory of this project,

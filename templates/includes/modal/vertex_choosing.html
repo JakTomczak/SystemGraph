@@ -115,8 +115,8 @@ function MODAL_HIDE() {
 	document.getElementById("SG-modal-choosing").style.display = "none";
 }
 
-var ftext = ['ID', 'tytuł', 'datę', 'autora']
-var idtext = ['id', 'title', 'date', 'author']
+var ftext = ['ID', 'tytuł', 'datę', 'autora'];
+var idtext = ['id', 'title', 'date', 'author'];
 $(document).ready(function() {
 	var modal_ch = document.getElementById("SG-modal-choosing");
 	MODAL_HIDE();
@@ -130,7 +130,7 @@ $(document).ready(function() {
 	}
 	$('#modal_choose_table thead tr').clone(true).appendTo( '#modal_choose_table thead' );
 	$('#modal_choose_table thead tr:eq(1) th').each( function (i) {
-		if (i < 4) {
+		if (i < ftext.length) {
 			var title = $(this).text();
 			$(this).html( '<input type="text" style="width: 100%;" id="input-' + idtext[i] + '" placeholder="filtruj ' + ftext[i] + '" />' );
 

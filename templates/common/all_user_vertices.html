@@ -1,0 +1,14 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}wierzchołki użytkownika{% endblock %}
+
+{% block main_content %}
+{% include 'includes/vertices_list.html' with vertices=Vertices all=1 %}
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+	<br>
+	<a href="{% url 'new_vertex' %}">Utwórz nowy wierzchołek</a>
+</div>
+{% endblock %}

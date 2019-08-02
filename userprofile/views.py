@@ -43,4 +43,12 @@ def edit_profile(request, username):
 	return render(request, 'common/edit_profile.html', context)
 	
 def all_user_verticies(request, username):
-	return render(request, 'common/all_user_verticies.html', {})
+	try:
+		user = CustomUser.objects.get(username = username)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, '404.html')
+	context = {
+		'Vertices': model.Vertex.objects.filter(user = user, submitted = True).order_by('-date'),
+		'this_user': user
+	}
+	return render(request, 'common/all_user_vertices.html', context)

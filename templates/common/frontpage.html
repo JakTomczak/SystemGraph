@@ -37,15 +37,12 @@
 				<p>
 				W wielu miejscach w Internecie można przeczytać mądre rzeczy, ale odczuwamy brak jednego miejsca, w którym naukowcy dzieliliby się swoją wiedzą z czytelnikami. A ponieważ nauka, ze swoimi ścisłymi definicjami, jest dobrze reprezentowana za pomocą grafu, narodziła się idea SystemGraph.
 				</p>
-				<p>
-				Chcesz podzielić się wiedzą w SystemGraph? <a href="{% url 'register' %}" class="fancy-a">Załóż konto</a> lub <a href="#" class="fancy-a">przejdź samouczek</a>!
-				</p>
 			</div>
 		</div>
 	</div>
 	<div class="border border-warning rounded medium-margin" >
 		<h3 class="big-margin">Szukaj wierzchołka</h3>
-		{% include "includes/search_vertexes_core.html" with plen=4 %}
+{% include "includes/search_vertexes_core.html" with results=Vertices plen=4 %}
 	</div>
 	<div style="display:flex;">
 		<div style="flex: 1;">

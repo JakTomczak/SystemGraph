@@ -51,3 +51,7 @@ class CustomUser(AbstractUser):
 		for key in perms:
 			out[key] = self.permissions >= perms[key]
 		return out
+	
+	def how_many_vertices(self):
+		from SGMain.models import Vertex
+		return len( Vertex.objects.filter(user = self, submitted = True) )

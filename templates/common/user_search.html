@@ -1,15 +1,15 @@
 {% extends 'base_2cols_smallpadd.html' %}
 
-{% block title %}wyszukiwanie wierzchołka{% endblock %}
+{% block title %}wyszukiwanie użytkownika{% endblock %}
 
 {% block main_content %}
 <div style="padding-top: 1px;">
-	<h3 class="big-margin">Szukaj wierzchołka</h3>
-{% include "includes/search_vertexes_core.html" with results=Vertices plen=10 %}
+	<h3 class="big-margin">Szukaj użytkownika</h3>
+	{% include "includes/search_users_core.html" with results=Users plen=10 %}
 </div>
 {% endblock %}
 {% block side_content %}
 <div class="distinctarea paddtop border border-primary rounded medium-margin">
-	<a href="{% url 'user_search' %}">Szukaj użytkownika</a>
+	<a href="{% url 'vertex_search' %}">Szukaj wierzchołka</a>
 </div>
 {% endblock %}
