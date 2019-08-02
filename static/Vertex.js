@@ -26,6 +26,12 @@ function calc_cframe_margin() {
 	// var margin = 8;
 	// document.getElementById("the_central_frame").style.marginLeft = (leftnavbarwidth + margin) + 'px';
 	// document.getElementById("the_central_frame").style.marginRight = rightnavbarwidth + 'px';
+	try {
+		document.getElementById("vv_prev_menu_dropdown").style.bottom = document.getElementById("vv_prev_menu_btn").offsetHeight + 'px';
+	}catch {}
+	try {
+		document.getElementById("vv_next_menu_dropdown").style.bottom = document.getElementById("vv_next_menu_btn").offsetHeight + 'px';
+	}catch {}
 }
 
 $(document).ready(function() {

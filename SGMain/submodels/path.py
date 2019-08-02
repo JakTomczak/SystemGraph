@@ -57,17 +57,9 @@ class Path(models.Model):
 		else:
 			return '#'
 	
-	def get_neighbours(self, index):
-		if index > 1:
-			try:
-				previous = Path_Entry.objects.get(path = self, index = index - 1).vertex
-			except exceptions.ObjectDoesNotExist:
-				previous = None
-		if index < this_path.length:
-			try:
-				next = Path_Entry.objects.get(path = self, index = index + 1).vertex
-			except exceptions.ObjectDoesNotExist:
-				next = None
+	def get_others(self, index):
+		previous = Path_Entry.objects.filter(path = self, index__lt = index).order_by('index')
+		next = Path_Entry.objects.filter(path = self, index__gt = index).order_by('-index')
 		return previous, next
 	
 	def write_and_save(self, vertexes):
@@ -154,3 +146,12 @@ class Path_Entry(models.Model):
 	
 	class Meta:
 		verbose_name_plural = "Path Entries"
+		
+	def __str__(self):
+		return str(self.index) + '. ' + self.vertex.small_str()
+		
+	def big_str(self):
+		return str(self.index) + '. ' + self.vertex.str2()
+		
+	def very_big_str(self):
+		return str(self.index) + '. ' + self.vertex.big_str()

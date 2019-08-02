@@ -1,0 +1,27 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}ścieżka{% endblock %}
+
+{% block main_content %}
+<div class="internal-menu around sidepadd">
+	<h4>{{ this_path }}</h4>{% if user == this_path.user %}
+	<a href="{% url 'edit_path' path_id=this_path.path_id %}" role="button" class="btn btn-outline-dark sgbutton">Edytuj</a>{% endif %}
+</div>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<span>{{ this_path.description }}</span>
+</div>
+<h5 style="margin: 16px 30px;">Kolejne wierzchołki</h5>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+{% for entry in path_entries %}
+{% include 'includes/singleframe/entry.html' with this_entry=entry %}
+{% endfor %}
+</div>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+	<br>
+	<a href="{% url 'new_path' %}">Utwórz nową ścieżkę</a>
+</div>
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_path_pl.html" header="Co to jest ścieżka?" %}
+{% endblock %}

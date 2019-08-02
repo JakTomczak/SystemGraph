@@ -1,12 +1,13 @@
-<div class="vv_menu_wrapper">
-<div class="vv_menu">
-  <button class="vv_menu_btn">&#9776;</button>
-  <div class="vv_menu_dropdown">
-    <a href="{% url 'view_discipline' pk=this_vertex.discipline.pk %}">{{ this_vertex.discipline.polish_name }}</a>
-    <a href="{% url 'view_section' pk=this_vertex.section.pk %}">{{ this_vertex.section.polish_name }}</a>
-    <a href="{% url 'view_subject' pk=this_vertex.subject.pk %}">{{ this_vertex.subject.polish_name }}</a>
-		<a href="{% url 'profile' username=this_vertex.user.username %}">{{ this_vertex.user.username }}</a>{% if user == this_vertex.user %}
-		<a href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">Edytuj</a>{% endif %}
-  </div>
-</div>
+<div class="vv_menu_wrapper" id="vv_the_menu_wrapper">
+	<div class="vv_menu">
+		<button class="vv_menu_btn" id="vv_the_menu_btn">&#9776;</button>
+		<div class="vv_menu_dropdown" id="vv_the_menu_dropdown">{% if current_path %}
+			<a href="{% url 'view_path' path_id=current_path.path_id %}">{{ current_path }}</a>{% endif %}
+			<a href="{% url 'view_discipline' pk=this_vertex.discipline.pk %}">{{ this_vertex.discipline.polish_name }}</a>
+			<a href="{% url 'view_section' pk=this_vertex.section.pk %}">{{ this_vertex.section.polish_name }}</a>
+			<a href="{% url 'view_subject' pk=this_vertex.subject.pk %}">{{ this_vertex.subject.polish_name }}</a>
+			<a href="{% url 'profile' username=this_vertex.user.username %}">{{ this_vertex.user.username }}</a>{% if user == this_vertex.user %}
+			<a href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">Edytuj</a>{% endif %}
+		</div>
+	</div>
 </div>

@@ -1,0 +1,10 @@
+{% extends 'base_2cols_smallpadd.html' %}
+
+{% block title %}wyszukiwanie{% endblock %}
+
+{% block main_content %}
+<div style="padding-top: 1px;">
+	<h3 class="big-margin">Szukaj wierzchołka</h3>
+	{% include "includes/search_vertexes_core.html" with plen=10 %}
+</div>
+{% endblock %}

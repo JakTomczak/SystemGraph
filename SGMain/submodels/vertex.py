@@ -297,6 +297,9 @@ class Vertex(models.Model):
 	def str2(self):
 		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
 	
+	def big_str(self):
+		return str(self.discipline) + ', ' + str(self.section) + ', ' + str(self.subject) + ': ' + self.title + ' (' + str(self.user) + ')'
+	
 	def small_str(self):
 		return self.title
 		

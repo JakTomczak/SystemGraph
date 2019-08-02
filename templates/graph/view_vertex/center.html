@@ -1,4 +1,5 @@
 {% include "graph/view_vertex/navigation.html" with this_vertex=thisvertex %}
+{% include "graph/view_vertex/vv_in_path.html" with this_vertex=thisvertex %}
 <button id="upper_showhide" onclick="Upper_Show_Hide()" class="vertex-button topbottom top">
 	<div>
 		{{ thisvertex.vertex_class.top.polish_name_plural }}

@@ -305,18 +305,19 @@ def view_vertex(request, vertex_id):
 		return render(request, 'errors/404.html')
 	edges = this_vertex.get_successors()
 	content = this_vertex.content()
+	this_path, previous, next = None, None, None
 	try:
 		path_id = request.GET['path']
 		entry = int( request.GET['index'] )
 	except:
-		path = None
+		path_id = None
 		entry = None
 	if path_id:
 		try:
 			this_path = model.Path.objects.get(path_id = path_id)
 		except exceptions.ObjectDoesNotExist:
 			return render(request, 'errors/404.html')
-	previous, next = this_path.get_neighbours(entry)
+		previous, next = this_path.get_others(entry)
 	sglinks = []
 	for e in edges:
 		if e.links:
@@ -331,7 +332,20 @@ def view_vertex(request, vertex_id):
 		thisuser = True
 	else:
 		thisuser = False
-	context = {'vertex_view': 1, 'edges': sglinks, 'thisuser': thisuser, 'thisvertex': this_vertex, 'thisvertexcontent': content, 'bottom': bolist, 'left': lelist, 'right': rilist, 'top': tolist}
+	context = {
+		'vertex_view': 1, 
+		'edges': sglinks, 
+		'thisuser': thisuser, 
+		'thisvertex': this_vertex, 
+		'thisvertexcontent': content, 
+		'bottom': bolist, 
+		'left': lelist, 
+		'right': rilist, 
+		'top': tolist, 
+		'current_path': this_path,
+		'prev_entries': previous,
+		'next_entries': next
+	}
 	return render(request, 'graph/view_vertex.html', context)
 
 def new_preamble(request):
@@ -509,10 +523,22 @@ def edit_path(request, path_id):
 		form = forms.Path_Form(instance = this_path)
 	context = {
 		'form': form, 
-		'path_id': path_id,
+		'this_path': this_path,
 		'first': this_path.first, 
 		'the_rest': this_path.read_verticies()[1:], 
 		'vertices': model.Vertex.objects.filter(submitted = True),
 		'last_one': this_path.length < 2
 	}
 	return render(request, 'graph/edit_path.html', context)
+
+def view_path(request, path_id):
+	try:
+		this_path = model.Path.objects.get(path_id = path_id)
+	except exceptions.ObjectDoesNotExist:
+		return render(request, 'errors/404.html')
+	path_entries = this_path.read()
+	context = {
+		'this_path': this_path, 
+		'path_entries': path_entries,
+	}
+	return render(request, 'graph/view_path.html', context)

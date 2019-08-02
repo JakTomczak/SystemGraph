@@ -6,9 +6,13 @@
 		<br>
 		<span>Liczba wierzchołków: {{ this_path.length }}</span>
 		<br>
-		<span>Początek: </span><a href="{{ path.get_first_url }}" class="fancy-a">{{ this_path.get_first_str }}</a>
-	</div>{% if user == this_path.user %}
-	<div>
-		<a href="{% url 'edit_path' path_id=this_path.path_id %}">edytuj</a>
-	</div>{% endif %}
+		<span>Początek: </span><a href="{{ path.get_first_url }}?path={{ path.path_id }}&index=1" class="fancy-a">{{ this_path.get_first_str }}</a>
+	</div>
+	<div style="display: flex; flex-direction: column;">{% if user == this_path.user %}
+		<div>
+			<a href="{% url 'edit_path' path_id=this_path.path_id %}" style="float: right;">edytuj</a>
+		</div>
+		<div style="flex: 1;"></div>{% endif %}
+		<a href="{% url 'view_path' path_id=this_path.path_id %}" role="button" class="btn btn-outline-dark">Cała ścieżka</a>
+	</div>
 </div>
