@@ -18,6 +18,8 @@
 	<br>
 	<a href="{% url 'edit_discipline' pk=this_discipline.pk %}">Edytuj tę dyscyplinę</a>
 	<br>
+	<a href="{{ this_discipline.get_add_new_vertex_url }}">Utwórz nowy wierzchołek</a>
+	<br>
 	<a href="{% url 'new_vertex_class' %}">Zaproponuj nowy rodzaj wierzchołka</a>
 </div>
 {% endblock %}

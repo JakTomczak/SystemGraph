@@ -5,6 +5,7 @@ from .models import *
 admin.site.register(Vertex_Class, admin.ModelAdmin)
 admin.site.register(Preamble, admin.ModelAdmin)
 admin.site.register(Discipline, admin.ModelAdmin)
+admin.site.register(Section, admin.ModelAdmin)
 admin.site.register(Subject, admin.ModelAdmin)
 admin.site.register(Vertex, admin.ModelAdmin)
 admin.site.register(Edge_Class, admin.ModelAdmin)

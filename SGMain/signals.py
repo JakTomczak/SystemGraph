@@ -71,3 +71,15 @@ def add_edge_compilation_objects (sender, instance, created, **kwargs):
 	if created:
 		instance.create_pre_dir()
 		CompilationData(fcode = instance.edge_id).save()
+		
+@receiver(post_save, sender = Discipline)
+@receiver(post_save, sender = Section)
+def create_defaut_section (sender, instance, created, **kwargs):
+	if created:
+		instance.create_default()
+		
+@receiver(pre_delete, sender = Discipline)
+@receiver(pre_delete, sender = Section)
+@receiver(pre_delete, sender = Subject)
+def create_defaut_section (sender, instance, using, **kwargs):
+	instance.change_vertices_predelete()

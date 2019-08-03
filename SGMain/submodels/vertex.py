@@ -119,10 +119,27 @@ class Preamble(models.Model):
 	
 class Discipline(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
+	default = models.ForeignKey('Section', null = True, on_delete = models.SET_NULL, related_name='parent')
 	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return self.polish_name
+	
+	@classmethod
+	def get_default(cls):
+		try:
+			return Discipline.objects.get(is_default = True)
+		except exceptions.ObjectDoesNotExist:
+			return Discipline.objects.all()[0]
+	
+	def create_default(self):
+		self.default = Section(
+			polish_name = 'Brak działu',
+			discipline = self,
+			is_default = True
+		)
+		self.default.save()
+		self.save()
 	
 	def get_url(self):
 		return reverse('view_discipline', kwargs={'pk': self.pk})
@@ -132,6 +149,9 @@ class Discipline(models.Model):
 	
 	def get_add_new_section_url(self):
 		return reverse('new_section', kwargs={'parent_pk': self.pk})
+	
+	def get_add_new_vertex_url(self):
+		return reverse('new_vertex', kwargs={'subject_pk': self.default.default.pk})
 	
 	def perms(self, user):
 		perms_dict = user.is_authorized('discipline')
@@ -154,6 +174,13 @@ class Discipline(models.Model):
 			message += key + ': ' + data_dict[key] + '\n'
 		tools.userproposal(message)
 	
+	def change_vertices_predelete(self):
+		for vertex in Vertex.objects.filter(discipline = self):
+			vertex.discipline = Discipline.get_default()
+			vertex.section = vertex.discipline.default
+			vertex.subject = vertex.section.default
+			vertex.save()
+	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
 		Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
@@ -161,10 +188,20 @@ class Discipline(models.Model):
 class Section(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany dział')
 	discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
+	default = models.ForeignKey('Subject', null = True, on_delete = models.SET_NULL, related_name='parent')
 	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return self.polish_name
+	
+	def create_default(self):
+		self.default = Subject(
+			polish_name = 'Brak tematu',
+			section = self,
+			is_default = True
+		)
+		self.default.save()
+		self.save()
 	
 	def get_url(self):
 		return reverse('view_section', kwargs={'pk': self.pk})
@@ -175,11 +212,14 @@ class Section(models.Model):
 	def get_add_new_subject_url(self):
 		return reverse('new_subject', kwargs={'parent_pk': self.pk})
 	
+	def get_add_new_vertex_url(self):
+		return reverse('new_vertex', kwargs={'subject_pk': self.default.pk})
+	
 	def perms(self, user):
 		perms_dict = user.is_authorized('section')
 		empty = len( Vertex.objects.filter(section = self) ) < 1
-		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
-		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
+		edit_p = ( perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty ) ) and not self.is_default
+		delete_p = ( perms_dict['delete'] or ( perms_dict['empty_delete'] and empty ) ) and not self.is_default
 		return delete_p, edit_p
 		
 	def propose_deletion(self, user):
@@ -196,13 +236,18 @@ class Section(models.Model):
 			message += key + ': ' + data_dict[key] + '\n'
 		tools.userproposal(message)
 	
-	@classmethod
-	def FIRST_TIME_RUN_ADD_DEFAULT_SECTION(cls):
-		Section(
-			polish_name = 'Brak działu', 
-			discipline = Discipline.objects.get(is_default = True), 
-			is_default = True
-		).save()
+	def change_vertices_predelete(self):
+		if self.is_default:
+			for vertex in Vertex.objects.filter(section = self):
+				vertex.discipline = Discipline.get_default()
+				vertex.section = vertex.discipline.default
+				vertex.subject = vertex.section.default
+				vertex.save()
+		else:
+			for vertex in Vertex.objects.filter(section = self):
+				vertex.section = self.discipline.default
+				vertex.subject = vertex.section.default
+				vertex.save()
 		
 class Subject(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany temat')
@@ -238,15 +283,15 @@ class Subject(models.Model):
 	@classmethod
 	def get_default(cls):
 		try:
-			return Subject.objects.get(is_default = True)
+			return Subject.objects.get(pk = 1) # be careful to run I_HAVE_NEW_DATABASE() before adding any subject
 		except exceptions.ObjectDoesNotExist:
 			return Subject.objects.all()[0]
 	
 	def perms(self, user):
 		perms_dict = user.is_authorized('subject')
 		empty = len( Vertex.objects.filter(subject = self) ) < 1
-		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
-		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
+		edit_p = ( perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty ) ) and not self.is_default
+		delete_p = ( perms_dict['delete'] or ( perms_dict['empty_delete'] and empty ) ) and not self.is_default
 		return delete_p, edit_p
 		
 	def propose_deletion(self, user):
@@ -263,14 +308,23 @@ class Subject(models.Model):
 			message += key + ': ' + data_dict[key] + '\n'
 		tools.userproposal(message)
 	
-	@classmethod
-	def FIRST_TIME_RUN_ADD_DEFAULT_SUBJECT(cls):
-		Subject(
-			polish_name = 'Brak tematu', 
-			discipline = Discipline.objects.get(is_default = True), 
-			section = Section.objects.get(is_default = True, discipline = discipline),
-			is_default = True
-		).save()
+	def change_vertices_predelete(self):
+		if self.is_default:
+			if self.is_default:
+				for vertex in Vertex.objects.filter(subject = self):
+					vertex.discipline = Discipline.get_default()
+					vertex.section = vertex.discipline.default
+					vertex.subject = vertex.section.default
+					vertex.save()
+			else:
+				for vertex in Vertex.objects.filter(subject = self):
+					vertex.section = self.discipline.default
+					vertex.subject = vertex.section.default
+					vertex.save()
+		else:
+			for vertex in Vertex.objects.filter(subject = self):
+				vertex.subject = self.section.default
+				vertex.save()
 
 class Vertex(models.Model):
 	vertex_id = models.CharField(max_length = 10, primary_key = True, default = 'VAAAAAAAAA')
