@@ -1,0 +1,14 @@
+<div class="innerdistinctarea border border-warning rounded small-margin" style="display: flex;">
+	<div style="flex: 1;">
+		<span>Zaproponował: </span><a href="{% url 'profile' username=this_proposal.father.username %}" class="fancy-a">{{ this_proposal.father }}</a>
+		<br>
+		<a>Początek: </span><a href="{% url 'view_vertex' vertex_id=this_proposal.predecessor.vertex_id %}" class="fancy-a">{{ this_proposal.predecessor }}</a>
+		<br>
+		<a>Koniec: </span><a href="{% url 'view_vertex' vertex_id=this_proposal.successor.vertex_id %}" class="fancy-a">{{ this_proposal.successor }}</a>
+	</div>
+	<div style="display: flex; flex-direction: column;">
+		<button type="button" class="btn btn-primary sgbutton" onclick='edge_prop_accept("{{ this_proposal.prop_id }}")' style="width: 100%;">Zaakceptuj</button>
+		<div style="min-height: 8px; flex: 1;"></div>
+		<button type="button" class="btn btn-warning sgbutton" onclick='edge_prop_reject("{{ this_proposal.prop_id }}")' style="width: 100%;">Odrzuć</button>
+	</div>
+</div>

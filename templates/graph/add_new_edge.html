@@ -9,10 +9,24 @@
 {% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Tworzenie nowej krawędzi" button="Utwórz" function="save()" %}
 	<input type="hidden" id="hidden_action" value="" name="action">
 	<div class="distinctarea border border-primary rounded big-margin">
-{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" header="Początek (wierzchołek wyjściowy)" %}
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=predecessor chosen=pred_is_chosen my_id="pred" new_edge="1" header="Początek (wierzchołek wyjściowy)" %}
 	</div>
 	<div class="distinctarea border border-primary rounded big-margin">
-{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=succ_is_chosen my_id="succ" new_edge="1" header="Koniec (wierzchołek docelowy)" %}
+	</div>
+	<div class="distinctarea paddtop border border-primary rounded big-margin">
+		<span id="span_outer_to_nothing">
+			Jeśli wierzchołek początkowy nie należy do ciebie, to wierzchołek końcowy nie może być pusty.
+		</span>
+		<span id="span_nothing">
+			Wierzchołek początkowy musi być wybrany.
+		</span>
+		<span id="span_inner">
+			Wszystko w porządku. Po akceptacji tego formularza zostaniesz przekierowany do widoku edycji nowej krawędzi.
+		</span>
+		<span id="span_outer">
+			Ponieważ krawędź nie przebiega pomiędzy twoimi wierzchołkami, jeżel teraz zaakceptujesz ten formularz, zostanie utworzona propozycja krawędzi. Będziesz musiał poczekać na jej akeptację zanim faktyczna krawędź zostanie utworzona.
+		</span>
 	</div>
 </form>
 {% endblock %}
@@ -22,13 +36,40 @@
 {% endblock %}
 {% block javascript %}
 <script>
+outer_to_nothing = document.getElementById("span_outer_to_nothing");
+nothing = document.getElementById("span_nothing");
+inner = document.getElementById("span_inner");
+outer = document.getElementById("span_outer");
 function save() {
-	if (CHOSEN_VID_pred != 'none') {
-		document.getElementById("hidden_action").value += ',save,' + CHOSEN_VID_pred + ',' + CHOSEN_VID_succ;
-		document.getElementById("add-new-edge-form").submit();
+	if (IS_INNER_pred == 'no' && IS_INNER_succ == 'none') {
+		alert('Jeśli wierzchołek początkowy nie należy do ciebie, to wierzchołek końcowy nie może być pusty.');
 	}
 	else {
-		alert('Wierzchołek początkowy musi być wybrany.');
+		if (CHOSEN_VID_pred != 'none') {
+			document.getElementById("hidden_action").value += ',save,' + CHOSEN_VID_pred + ',' + CHOSEN_VID_succ;
+			document.getElementById("add-new-edge-form").submit();
+		}
+		else {
+			alert('Wierzchołek początkowy musi być wybrany.');
+		}
+	}
+}
+function NOW_CHOSEN() {
+	outer_to_nothing.style.display = 'none';
+	nothing.style.display = 'none';
+	inner.style.display = 'none';
+	outer.style.display = 'none';
+	if (IS_INNER_pred == 'none') {
+		nothing.style.display = 'block';
+	}
+	else if (IS_INNER_pred == 'no' && IS_INNER_succ == 'none') {
+		outer_to_nothing.style.display = 'block';
+	}
+	else if (IS_INNER_pred == 'yes' && IS_INNER_succ != 'no') {
+		inner.style.display = 'block';
+	}
+	else {
+		outer.style.display = 'block';
 	}
 }
 </script>

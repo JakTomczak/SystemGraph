@@ -22,10 +22,12 @@
 	{% endfor %}
 	<div class="distinctarea paddtop border border-primary rounded medium-margin">
 		<h5>Początek (wierzchołek wyjściowy)</h5>
-		{% include 'includes/singleframe/vertex.html' with this_vertex=predecessor %}
+{% include 'includes/singleframe/vertex.html' with this_vertex=predecessor %}
 	</div>
-	<div class="distinctarea border border-primary rounded medium-margin">
-		{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}
+	<div class="distinctarea border border-primary rounded medium-margin">{% if frozen %}
+		<h5 class="paddtop">Koniec (wierzchołek docelowy)</h5>
+{% include 'includes/singleframe/vertex.html' with this_vertex=successor %}{% else %}
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}{% endif %}
 	</div>
 {% include "includes/widget.html" with widget=form.preamble margin="medium" header="Preambuła" %}
 {% include "includes/widget.html" with widget=form.content margin="medium" header="Treść nadpisująca opis wierzchołka docelowego" rows=3 %}

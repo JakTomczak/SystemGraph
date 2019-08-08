@@ -9,7 +9,7 @@ from datetime import datetime
 
 from . import tasks
 from . import compilation
-from .models import Vertex, Path, CompilationData, Subject, Edge
+from .models import Vertex, Path, CompilationData, Subject, Edge, Edge_Proposition
 
 def request_is_NOT_valid(request, vertex_id = None, edge_id = None):
 	if int(vertex_id is not None) + int(edge_id is not None) != 1:
@@ -109,12 +109,14 @@ def get_subject_from_pk(request):
 
 @csrf_exempt
 def get_vertex_from_id(request):
+	if request.user.is_anonymous:
+		return JsonResponse({})
 	vid = request.POST.get('vid', '')
 	try:
 		V = Vertex.objects.get(vertex_id = vid)
 	except exceptions.ObjectDoesNotExist:
 		V = Vertex.get_default()
-	context = {'vertex': V.ajax()}
+	context = {'vertex': V.ajax(request.user)}
 	return JsonResponse(context)
 	
 @csrf_exempt
@@ -203,3 +205,19 @@ def start_edge_compilation(request, edge_id):
 	else:
 		compilation.CompilationCore.empty_edge(edge_id)
 	return JsonResponse(context)
+	
+@csrf_exempt
+def reject_eprop(request):
+	prop_id = request.POST.get('prop_id', '')
+	prop = Edge_Proposition.objects.get(prop_id = prop_id)
+	if prop.get_validation_user() == request.user:
+		prop.reject()
+	return JsonResponse({})
+	
+@csrf_exempt
+def accept_eprop(request):
+	prop_id = request.POST.get('prop_id', '')
+	prop = Edge_Proposition.objects.get(prop_id = prop_id)
+	if prop.get_validation_user() == request.user:
+		prop.accept()
+	return JsonResponse({})

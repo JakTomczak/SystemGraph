@@ -1,4 +1,18 @@
+function calc_main_height() {
+	var window_height = window.innerHeight;
+	// alert(window_height);
+	var navbar_height = document.getElementById('the_navbar').offsetHeight;
+	// alert(navbar_height);
+	var footer_height = document.getElementById('the_footer').offsetHeight;
+	// alert(footer_height);
+	var minheight = window_height - footer_height - navbar_height;
+	// alert(minheight);
+	document.getElementById("the_main").style.minHeight = minheight + 'px';
+}
+
 $(document).ready( function() {
+	calc_main_height();
+	
 	$("textarea").keydown(function(e) {
 		if(e.keyCode === 9) { // tab was pressed
 			// get caret position/selection
@@ -19,4 +33,8 @@ $(document).ready( function() {
 			return false;
 		}
 	});
+});
+
+$(window).bind('resize', function () { 
+	calc_main_height();
 });

@@ -151,7 +151,7 @@ class Path_Entry(models.Model):
 		return str(self.index) + '. ' + self.vertex.small_str()
 		
 	def big_str(self):
-		return str(self.index) + '. ' + self.vertex.str2()
+		return str(self.index) + '. ' + str(self.vertex)
 		
 	def very_big_str(self):
 		return str(self.index) + '. ' + self.vertex.big_str()

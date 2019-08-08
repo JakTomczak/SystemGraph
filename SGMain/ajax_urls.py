@@ -19,4 +19,7 @@ urlpatterns = [
 	
 	path('save_edge_content/<edge_id>/', views.save_edge_content, name='save_edge_content'),
 	path('start_edge_compilation/<edge_id>/', views.start_edge_compilation, name='start_edge_compilation'),
+	
+	path('reject_eprop/', views.reject_eprop, name='reject_eprop'),
+	path('accept_eprop/', views.accept_eprop, name='accept_eprop'),
 ]

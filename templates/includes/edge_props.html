@@ -1,0 +1,41 @@
+<div style="display:flex;" class="small-margin">
+	<div style="flex: 2;">
+		<div class="distinctarea border border-primary rounded small-margin" >
+			<h5 class="sidepadd paddtop">Masz oczekujące propozycje krawędzi</h5>{% for proposal in edge_propositions %}
+{% include 'includes/singleframe/edge_proposition.html' with this_proposal=proposal %}{% endfor %}
+		</div>
+	</div>
+	<div style="flex: 2;">
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_edge_proposition_pl.html" header="Co to jest propozycja krawędzi?" %}
+	</div>
+</div>
+<script>
+function edge_prop_accept(prop_id) {
+	$.ajax({
+		url: '{% url "accept_eprop" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'prop_id': prop_id
+		},
+		dataType: 'json',
+		success: function (data) {
+			location.reload(true);
+		}
+	});
+}
+function edge_prop_reject(prop_id) {
+	$.ajax({
+		url: '{% url "reject_eprop" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'prop_id': prop_id
+		},
+		dataType: 'json',
+		success: function (data) {
+			location.reload(true);
+		}
+	});
+}
+</script>

@@ -55,3 +55,23 @@ class CustomUser(AbstractUser):
 	def how_many_vertices(self):
 		from SGMain.models import Vertex
 		return len( Vertex.objects.filter(user = self, submitted = True) )
+
+class Messages(models.Model):
+	user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+	time = models.DateTimeField(auto_now = True)
+	message = models.TextField()
+	shown = models.BooleanField(default = False)
+	
+	@classmethod
+	def add_user_rejected_your_edge_proposal(cls, prop):
+		Messages(
+			user = prop.father,
+			message = 'Twoja propozycja krawędzi z wierzchołka "{}" do wierzchołka "{}" została odrzucona.'.format(prop.predecessor, prop.successor)
+		).save()
+	
+	@classmethod
+	def add_user_accepted_your_edge_proposal(cls, prop):
+		Messages(
+			user = prop.father,
+			message = 'Twoja propozycja krawędzi z wierzchołka "{}" do wierzchołka "{}" została zaakceptowana.'.format(prop.predecessor, prop.successor)
+		).save()

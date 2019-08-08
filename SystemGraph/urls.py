@@ -18,6 +18,10 @@ from django.urls import path, include
 
 from . import common_views
 
+about_patterns = [
+	path('', common_views.about_SystemGraph, name='about'),
+]
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 	path('users/', include('users.urls')),
@@ -25,4 +29,5 @@ urlpatterns = [
     path('graph/', include('SGMain.urls')),
     path('ajax/', include('SGMain.ajax_urls')),
     path('', common_views.frontpage, name='start'),
+	path('about/', include(about_patterns))
 ]

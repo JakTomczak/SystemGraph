@@ -29,8 +29,8 @@
 </head>
 <body>
 	<main>
-		{% include "navbar.html" %}
-		<div class="{% if vertex_view %}contentfloat{% else %}content{% endif %}">
+{% include "navbar.html" %}
+		<div id="the_main" class="{% if vertex_view %}contentfloat{% else %}content{% endif %}">
 			{% if messages %}
 			<ul class="SG_messages">
 				{% for message in messages %}
@@ -41,7 +41,8 @@
 			{% block content %}
 			{% endblock %}
 		</div>
-	</main>{% if edges %}
+{% include "footer.html" %}{% if edges %}
+	</main>
 	<script>
 	$(document).ready(function() {
 		{% for edge in edges %}

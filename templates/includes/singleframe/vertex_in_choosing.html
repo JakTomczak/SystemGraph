@@ -14,23 +14,33 @@
 </div>
 <span id="not_chosen_span_{{ my_id }}">(nie wybrano)</span>
 <div id="chosen_div_{{ my_id }}" class="innerdistinctarea border border-warning rounded small-margin">
-	<a id="chosen_a_{{ my_id }}" href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}{% if path_id %}?path={{ path_id }}&index={{ my_id }}{% endif %}" class="fancy-a">{{ this_vertex }}</a> {% if user == this_vertex.user %}<a id="edit_a_{{ my_id }}" style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
+	<a id="chosen_a_{{ my_id }}" href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}{% if path_id %}?path={{ path_id }}&index={{ my_id }}{% endif %}" class="fancy-a">{{ this_vertex }}</a> {% if user == this_vertex.user or new_edge %}<a id="edit_a_{{ my_id }}" style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
 	<br>
 	<span id="desc_span_{{ my_id }}">{{ this_vertex.description|safe }}</span>
 </div>
 <script>
 var CHOSEN_VID_{{ my_id }} = 'none';
+var IS_INNER_{{ my_id }} = 'none';
 var mtitle_{{ my_id }} = {% if mtitle %}"{{ mtitle }}"{% else %}"Wybór wierzchołka"{% endif %};
 function choose_{{ my_id }}() {
 	document.getElementById("not_chosen_span_{{ my_id }}").style.display = 'none';
-	document.getElementById("chosen_div_{{ my_id }}").style.display = 'block';
+	document.getElementById("chosen_div_{{ my_id }}").style.display = 'block';{% if new_edge %}
+	NOW_CHOSEN();{% endif %}
 }
 function display_chosen_{{ my_id }}(vertex_json) {
 	CHOSEN_VID_{{ my_id }} = vertex_json.vid;
+	IS_INNER_{{ my_id }} = vertex_json.inner;
 	a = document.getElementById("chosen_a_{{ my_id }}");
 	a.href = vertex_json.view_url;
-	a.innerHTML = vertex_json.str;
-	document.getElementById("edit_a_{{ my_id }}").href = vertex_json.edit_url;
+	a.innerHTML = vertex_json.str;{% if not new_edge %}
+	document.getElementById("edit_a_{{ my_id }}").href = vertex_json.edit_url;{% else %}
+	if (IS_INNER_{{ my_id }} == 'yes') {
+		document.getElementById("edit_a_{{ my_id }}").style.display = 'block';
+		document.getElementById("edit_a_{{ my_id }}").href = vertex_json.edit_url;
+	}
+	else {
+		document.getElementById("edit_a_{{ my_id }}").style.display = 'none';
+	}{% endif %}
 	document.getElementById("desc_span_{{ my_id }}").innerHTML = vertex_json.description;
 	choose_{{ my_id }}();
 }
@@ -43,8 +53,10 @@ function choose_from_{{ my_id }}() {
 }
 function clear_choose_{{ my_id }}() {
 	CHOSEN_VID_{{ my_id }} = 'none';
+	IS_INNER_{{ my_id }} = 'none';
 	document.getElementById("not_chosen_span_{{ my_id }}").style.display = 'block';
-	document.getElementById("chosen_div_{{ my_id }}").style.display = 'none';
+	document.getElementById("chosen_div_{{ my_id }}").style.display = 'none';{% if new_edge %}
+	NOW_CHOSEN();{% endif %}
 }{% if path_id %}
 function delete_from_path_{{ my_id }}() { {% if last_one %}
 	alert('Nie możesz usunąć jedynego wierzchołka. Przycisk "Usuń ścieżkę" znajduje się na górze strony.');
@@ -65,6 +77,7 @@ function delete_from_path_{{ my_id }}() { {% if last_one %}
 }{% endif %}
 $(document).ready(function() {
 	{% if chosen %}
+	IS_INNER_{{ my_id }} = "yes";
 	choose_{{ my_id }}();
 	CHOSEN_VID_{{ my_id }} = "{{ this_vertex.vertex_id }}";
 	{% else %}

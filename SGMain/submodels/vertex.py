@@ -346,10 +346,10 @@ class Vertex(models.Model):
 		verbose_name_plural = "Vertices"
 	
 	def __str__(self):
-		return str(self.discipline) + ': ' + self.title + ' (' + self.vertex_id + ')'
+		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
 	
 	def str2(self):
-		return str(self.discipline) + ', ' + str(self.user) + ': ' + self.title
+		return str(self.discipline) + ': ' + self.title + ' (' + self.vertex_id + ')'
 	
 	def big_str(self):
 		return str(self.discipline) + ', ' + str(self.section) + ', ' + str(self.subject) + ': ' + self.title + ' (' + str(self.user) + ')'
@@ -360,8 +360,19 @@ class Vertex(models.Model):
 	def small_str(self):
 		return self.title
 		
-	def ajax(self):
-		return { 'str': str(self), 'vid': self.vertex_id, 'description': self.description(), 'view_url': self.get_url(), 'edit_url': self.get_edit_url() }
+	def ajax(self, user):
+		if self.user == user:
+			inner = 'yes'
+		else:
+			inner = 'no'
+		return {
+			'str': str(self), 
+			'vid': self.vertex_id, 
+			'inner': inner,
+			'description': self.description(), 
+			'view_url': self.get_url(), 
+			'edit_url': self.get_edit_url() 
+		}
 		
 	@classmethod
 	def new_id(cls):

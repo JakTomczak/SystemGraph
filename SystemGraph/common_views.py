@@ -30,6 +30,9 @@ def search_users(request):
 	}
 	return render(request, 'common/user_search.html', context)
 
+def about_SystemGraph(request):
+	return render(request, 'common/about_SystemGraph.html', {})
+
 '''
 When you didn't change database, but changed base directory of this project,
 call this function.
@@ -67,7 +70,7 @@ def I_HAVE_NEW_DATABASE():
 	model.Vertex_Class.FIRST_TIME_RUN_ADD_DEFAULT_VCLASS()
 	model.Discipline.FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE()
 	model.Vertex.FIRST_TIME_RUN_ADD_DEFAULT_VERTEX( I_GUESS_YOU_ARE_ADMIN )
-	model.Edge_Class.FIRST_TIME_RUN_ADD_DEFAULT_ECLASS()
+	model.Edge_Class.FIRST_TIME_RUN_ADD_ECLASSES()
 	i_want_math = True
 	if i_want_math:
 		FIRST_TIME_RUN_ADD_MATH_VCLASSES()

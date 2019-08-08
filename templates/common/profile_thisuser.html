@@ -3,7 +3,8 @@
 {% block title %}twój profil{% endblock %}
 
 {% block content %}
-<h3 style="padding: 22px 32px 10px;">Twój profil użytkownika</h3>
+<h3 style="padding: 22px 32px 10px;">Twój profil użytkownika</h3>{% if edge_propositions %}
+{% include 'includes/edge_props.html' %}{% endif %}
 <div style="display:flex;" class="small-margin">
 	<div style="flex: 3;">
 		<div class="distinctarea border border-primary rounded big-margin">
@@ -25,6 +26,8 @@
 		</div>
 		<div class="distinctarea paddtop border border-primary rounded big-margin">
 			<a href="{% url 'all_disciplines' %}">Wszystkie dostępne dyscypliny</a>
+			<br>
+			<a href="{% url 'user_search' %}">Szukaj użytkownika</a>
 		</div>
 {% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_preamble_pl.html" header="Co to jest preambuła?" %}
 {% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_path_pl.html" header="Co to jest ścieżka?" %}

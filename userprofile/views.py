@@ -18,7 +18,13 @@ def profile(request, username):
 	if request.user == user:
 		projects = model.Vertex.objects.filter(user = user, submitted = False).order_by('-date')
 		preambles = model.Preamble.objects.filter(user = user)
-		context = {'projects': projects, 'verts': verts, 'preambles': preambles, 'paths': paths}
+		context = {
+			'projects': projects, 
+			'verts': verts, 
+			'preambles': preambles, 
+			'paths': paths,
+			'edge_propositions': model.Edge_Proposition.get_user_propositions(user)
+		}
 		return render(request, 'common/profile_thisuser.html', context)
 	else:
 		context = {'this_user': user, 'verts': verts, 'paths': paths}

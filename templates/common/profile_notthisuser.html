@@ -17,6 +17,9 @@
 		<div class="distinctarea paddtop border border-primary rounded big-margin">
 {% include 'includes/profile_info.html' with this_user=this_user %}
 		</div>
+		<div class="distinctarea paddtop border border-primary rounded big-margin">
+			<a href="{% url 'user_search' %}">Szukaj użytkownika</a>
+		</div>
 	</div>
 </div>
 {% endblock %}

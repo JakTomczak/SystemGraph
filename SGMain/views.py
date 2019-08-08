@@ -406,28 +406,50 @@ def new_vertex_class(request):
 def new_edge(request):
 	if not request.user or request.user.is_anonymous:
 		return render(request, '401.html')
+	possible = model.Vertex.objects.filter(user = request.user) | model.Vertex.objects.filter(submitted = True)
 	if request.method == 'POST':
 		action = request.POST['action'].split(',')
 		if 'save' in action:
 			i = action.index('save')
 			pred = action[i+1]
 			succ = action[i+2]
-			edge = model.Edge( user = request.user, edge_id = model.Edge.new_id() )
-			edge.predecessor = model.Vertex.objects.get(vertex_id = pred)
+			try:
+				chosen_pred = possible.get(vertex_id = pred)
+				pred_is_inner = chosen_pred.user == request.user
+			except exceptions.ObjectDoesNotExist:
+				return render(request, 'errors/404.html')
 			if succ.startswith('V'):
-				edge.successor = model.Vertex.objects.get(vertex_id = succ)
+				try:
+					chosen_succ = possible.get(vertex_id = succ)
+					succ_is_inner = chosen_succ.user == request.user
+				except exceptions.ObjectDoesNotExist:
+					return render(request, 'errors/404.html')
 			else:
-				edge.successor = None
-			edge.save()
-			messages.add_message(request, messages.SUCCESS, 'Nowa krawędź została dodana.')
-			del request.session['pred']
-			return redirect('edit_edge', edge_id = edge.edge_id)
+				chosen_succ = None
+				succ_is_inner = True
+			if not pred_is_inner and chosen_succ is None:
+				return render(request, 'errors/404.html')
+			elif pred_is_inner and succ_is_inner:
+				edge = model.Edge( user = request.user, edge_id = model.Edge.new_id() )
+				edge.predecessor = chosen_pred
+				edge.successor = chosen_succ
+				edge.save()
+				messages.add_message(request, messages.SUCCESS, 'Nowa krawędź została dodana.')
+				del request.session['pred']
+				return redirect('edit_edge', edge_id = edge.edge_id)
+			prop, mess = model.Edge_Proposition.make(request.user, chosen_pred, chosen_succ)
+			if mess:
+				messages.add_message(request, messages.SUCCESS, mess)
+			else:
+				messages.add_message(request, messages.SUCCESS, 'Propozycja krawędzi została utworzona.')
+				del request.session['pred']
+				return redirect('profile', username = request.user.username)
 	context = {
 		'pred_is_chosen': True, 
 		'predecessor': model.Vertex.objects.get( vertex_id = request.session.get('pred') ), 
 		'succ_is_chosen': False,
 		'successor': model.Vertex.get_default(), 
-		'vertices': model.Vertex.objects.filter(user = request.user, submitted = True)
+		'vertices': possible
 	}
 	return render(request, 'graph/add_new_edge.html', context)
 
@@ -471,9 +493,11 @@ def edit_edge(request, edge_id):
 	if this_edge.successor:
 		context['successor'] = this_edge.successor
 		context['is_chosen'] = True
+		context['frozen'] = this_edge.frozen
 	else:
 		context['successor'] = model.Vertex.get_default()
 		context['is_chosen'] = False
+		context['frozen'] = False
 	return render(request, 'graph/edit_edge.html', context)
 
 def new_path(request):
