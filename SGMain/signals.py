@@ -74,12 +74,16 @@ def add_edge_compilation_objects (sender, instance, created, **kwargs):
 		
 @receiver(post_save, sender = Discipline)
 @receiver(post_save, sender = Section)
-def create_defaut_section (sender, instance, created, **kwargs):
+def create_defaut_sub (sender, instance, created, **kwargs):
+	if created:
+		instance.create_default()
+
+def create_defaut_subject (sender, instance, created, **kwargs):
 	if created:
 		instance.create_default()
 		
 @receiver(pre_delete, sender = Discipline)
 @receiver(pre_delete, sender = Section)
 @receiver(pre_delete, sender = Subject)
-def create_defaut_section (sender, instance, using, **kwargs):
+def set_verices_default (sender, instance, using, **kwargs):
 	instance.change_vertices_predelete()

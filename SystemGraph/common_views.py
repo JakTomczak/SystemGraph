@@ -12,6 +12,7 @@ def frontpage(request):
 		verts = model.Vertex.objects.filter( user = request.user )
 		if verts:
 			already = True
+	I_HAVE_NEW_DATABASE()
 	context = {
 		'already': already,
 		'Vertices': model.Vertex.get_submitted()
@@ -65,12 +66,12 @@ call this function ONCE.
 def I_HAVE_NEW_DATABASE():
 	#I_GUESS_YOU_ARE_ADMIN = CustomUser.objects.get(username = 'YOUR_USERNAME')
 	I_GUESS_YOU_ARE_ADMIN = CustomUser.objects.get(is_superuser = True)
-	I_GUESS_YOU_ARE_ADMIN.get_folder()
-	model.Preamble.FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES( I_GUESS_YOU_ARE_ADMIN )
-	model.Vertex_Class.FIRST_TIME_RUN_ADD_DEFAULT_VCLASS()
-	model.Discipline.FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE()
-	model.Vertex.FIRST_TIME_RUN_ADD_DEFAULT_VERTEX( I_GUESS_YOU_ARE_ADMIN )
-	model.Edge_Class.FIRST_TIME_RUN_ADD_ECLASSES()
+#	I_GUESS_YOU_ARE_ADMIN.get_folder()
+#	model.Preamble.FIRST_TIME_RUN_ADD_DEFAULT_PREAMBLES( I_GUESS_YOU_ARE_ADMIN )
+#	model.Vertex_Class.FIRST_TIME_RUN_ADD_DEFAULT_VCLASS()
+#	model.Discipline.FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE()
+#	model.Vertex.FIRST_TIME_RUN_ADD_DEFAULT_VERTEX( I_GUESS_YOU_ARE_ADMIN )
+#	model.Edge_Class.FIRST_TIME_RUN_ADD_ECLASSES()
 	i_want_math = True
 	if i_want_math:
 		FIRST_TIME_RUN_ADD_MATH_VCLASSES()
@@ -80,7 +81,7 @@ def FIRST_TIME_RUN_ADD_MATH_VCLASSES():
 	mat.save()
 	top = model.Section(polish_name = 'Topologia', discipline = mat)
 	top.save()
-	model.Subject(polish_name = 'Podstawy topologii', section = top).save()
+	model.Subject(polish_name = 'Podstawy topologii', discipline = mat, section = top).save()
 	definition = model.Vertex_Class( polish_name = 'Definicja', polish_name_plural = 'Definicje' )
 	definition.save()
 	example = model.Vertex_Class( polish_name = 'Przykład', polish_name_plural = 'Przykłady' )

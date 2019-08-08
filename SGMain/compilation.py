@@ -313,7 +313,7 @@ class CompilationCore(object):
 		edge.save()
 	
 def compile_v1(vertex_id = None, desc = False, edge_id = None, text = ''):
-	ccore = CompilationCore(cdata, vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
+	ccore = CompilationCore(vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
 	if not ccore.error:
 		ccore.prepare()
 	if not ccore.error:
@@ -321,4 +321,4 @@ def compile_v1(vertex_id = None, desc = False, edge_id = None, text = ''):
 	if not ccore.error:
 		ccore.clean_up()
 	if not ccore.error:
-		cdata.close()
+		ccore.cdata.close()

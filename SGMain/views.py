@@ -28,8 +28,9 @@ def new_section(request, parent_pk):
 	try:
 		discipline = model.Discipline.objects.get(pk = parent_pk)
 	except exceptions.ObjectDoesNotExist:
-		if parent_pk != 1:
-			return redirect('new_section', parent_pk = 1)
+		default_pk = model.get_default_disc()
+		if parent_pk != default_pk:
+			return redirect('new_section', parent_pk = default_pk)
 		else:
 			return render(request, 'errors/404.html')
 	if not request.user or request.user.is_anonymous:
@@ -54,8 +55,9 @@ def new_subject(request, parent_pk):
 	try:
 		section = model.Section.objects.get(pk = parent_pk)
 	except exceptions.ObjectDoesNotExist:
-		if parent_pk != 1:
-			return redirect('new_subject', parent_pk = 1)
+		default_pk = model.get_default_sec()
+		if parent_pk != default_pk:
+			return redirect('new_subject', parent_pk = default_pk)
 		else:
 			return render(request, 'errors/404.html')
 	if not request.user or request.user.is_anonymous:
@@ -238,8 +240,9 @@ def new_vertex(request, subject_pk):
 	try:
 		subject = model.Subject.objects.get(pk = subject_pk)
 	except exceptions.ObjectDoesNotExist:
-		if subject_pk != 1:
-			return redirect('new_vertex', subject_pk = 1)
+		default_pk = model.get_default_sub()
+		if subject_pk != default_pk:
+			return redirect('new_vertex', subject_pk = default_pk)
 		else:
 			return render(request, 'errors/404.html')
 	if request.method == 'POST':
@@ -318,15 +321,6 @@ def view_vertex(request, vertex_id):
 		except exceptions.ObjectDoesNotExist:
 			return render(request, 'errors/404.html')
 		previous, next = this_path.get_others(entry)
-	sglinks = []
-	for e in edges:
-		if e.links:
-			cont = e.get_true_content()
-			cont = cont.replace('\n', '')
-			cont = cont.replace('\r', '')
-			links = e.links.split(',')
-			for link in links:
-				sglinks.append( {'id': link, 'content': cont, 'successor_id': e.get_successor_id()} )
 	(bolist, lelist, rilist, tolist) = tools.four_directions(this_vertex)
 	if request.user == this_vertex.user:
 		thisuser = True
@@ -334,7 +328,7 @@ def view_vertex(request, vertex_id):
 		thisuser = False
 	context = {
 		'vertex_view': 1, 
-		'edges': sglinks, 
+		'links': this_vertex.read_sglinks(), 
 		'thisuser': thisuser, 
 		'thisvertex': this_vertex, 
 		'thisvertexcontent': content, 

@@ -13,3 +13,10 @@
 </div>
 {% include "graph/view_vertex/bottom.html" with list=bottom %}
 {% endblock %}
+{% block javascript %}
+$(document).ready(function() { 
+	{% for link in links %}
+	tippy('#{{ link.id }}', {content: '{{ link.content|safe }}',});
+	document.getElementById("{{ link.id }}").href="{% url 'vertex' vertex=edge.successor_id %}";{% endfor %}
+});
+{% endblock %}

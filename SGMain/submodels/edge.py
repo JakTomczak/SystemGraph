@@ -68,13 +68,13 @@ class Edge(models.Model):
 			f = codecs.open( self.directory, 'r', encoding = 'utf-8')
 		except (TypeError, IOError):
 			if self.successor:
-				return self.successor.description()
+				return self.successor.description().replace('\n', '').replace('\r', '')
 			else:
 				return ''
 		else:
 			t = f.read()
 			f.close()
-			return t
+			return t.replace('\n', '').replace('\r', '')
 			
 	'''
 	Similar to Vertices, Edges also have their content in pre- and post compilation versions
@@ -120,6 +120,16 @@ class Edge(models.Model):
 			return self.successor.get_url()
 		else:
 			return '#'
+		
+	@classmethod
+	def sglink(cls, edge_id, number):
+		link_id = edge_id + '_' + number
+		edge = Edge.objects.get(edge_id = edge_id)
+		return {
+			'id': link_id,
+			'content': edge.get_true_content(),
+			'succ_url': edge.get_successor_url()
+		}
 
 '''
 There should be edges between vertices.

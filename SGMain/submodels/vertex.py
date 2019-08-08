@@ -133,12 +133,13 @@ class Discipline(models.Model):
 			return Discipline.objects.all()[0]
 	
 	def create_default(self):
-		self.default = Section(
+		obj = Section(
 			polish_name = 'Brak działu',
 			discipline = self,
 			is_default = True
 		)
-		self.default.save()
+		obj.save()
+		self.default = obj
 		self.save()
 	
 	def get_url(self):
@@ -195,12 +196,14 @@ class Section(models.Model):
 		return self.polish_name
 	
 	def create_default(self):
-		self.default = Subject(
+		obj = Subject(
 			polish_name = 'Brak tematu',
+			discipline = self.discipline,
 			section = self,
 			is_default = True
 		)
-		self.default.save()
+		obj.save()
+		self.default = obj
 		self.save()
 	
 	def get_url(self):
@@ -326,14 +329,40 @@ class Subject(models.Model):
 				vertex.subject = self.section.default
 				vertex.save()
 
+def get_default_disc():
+	try:
+		return Discipline.objects.get(is_default = True).pk
+	except exceptions.ObjectDoesNotExist:
+		return '1'
+
+def get_default_sec():
+	try:
+		D = Discipline.objects.get(is_default = True)
+	except exceptions.ObjectDoesNotExist:
+		return '1'
+	else:
+		if D.default:
+			return D.default.pk
+	return '1'
+
+def get_default_sub():
+	try:
+		D = Discipline.objects.get(is_default = True)
+	except exceptions.ObjectDoesNotExist:
+		return '1'
+	else:
+		if D.default and D.default.default:
+			return D.default.default.pk
+	return '1'
+
 class Vertex(models.Model):
 	vertex_id = models.CharField(max_length = 10, primary_key = True, default = 'VAAAAAAAAA')
 	vertex_class = models.ForeignKey(Vertex_Class, on_delete = models.SET_DEFAULT, default = 1)
 	preamble = models.ForeignKey(Preamble, on_delete = models.SET_DEFAULT, default = settings.DEFAULT_PREAMBLE_ID)
 	user = models.ForeignKey(user_model.CustomUser, on_delete = models.CASCADE)
-	discipline = models.ForeignKey(Discipline, on_delete = models.SET_DEFAULT, default = 1)
-	section = models.ForeignKey(Section, on_delete = models.SET_DEFAULT, default = 1)
-	subject = models.ForeignKey(Subject, on_delete = models.SET_DEFAULT, default = 1)
+	discipline = models.ForeignKey(Discipline, on_delete = models.SET_DEFAULT, default = get_default_disc)
+	section = models.ForeignKey(Section, on_delete = models.SET_DEFAULT, default = get_default_sec)
+	subject = models.ForeignKey(Subject, on_delete = models.SET_DEFAULT, default = get_default_sub)
 	date = models.DateTimeField(auto_now = True)
 	title = models.CharField(max_length = 120, default = 'no title')
 	shorttitle = models.CharField(max_length = 40, null = True, blank = True)
@@ -471,7 +500,7 @@ class Vertex(models.Model):
 	Another file related to every object of this class is file with encoded sglinks.
 	Sglinks are part of compilation. And this file is then created.
 	'''
-	def get_sglinks_dir(self, cwd):
+	def get_sglinks_dir(self, cwd = settings.COMP_DIR):
 		return os.path.join( cwd, self.vertex_id + 'sglinks.txt' )
 	
 	def write_sglinks(self, text, cwd):
@@ -479,6 +508,17 @@ class Vertex(models.Model):
 			file.truncate()
 			file.write( text )
 	
+	def read_sglinks(self):
+		from . import edge as edge_models
+		with open( self.get_sglinks_dir(), 'r') as file:
+			t = file.read()
+		sglinks = []
+		for code in t.split(';'):
+			if code:
+				cc = code.split(',')
+				sglinks.append( edge_models.Edge.sglink(cc[0], cc[1]) )
+		return sglinks
+			
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_VERTEX(cls, admin):
 		V = Vertex(user = admin, title = 'Dummy vertex', shorttitle = 'Dummy', submitted = True, is_default = True)

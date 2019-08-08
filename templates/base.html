@@ -41,18 +41,8 @@
 			{% block content %}
 			{% endblock %}
 		</div>
-{% include "footer.html" %}{% if edges %}
+{% include "footer.html" %}
 	</main>
-	<script>
-	$(document).ready(function() {
-		{% for edge in edges %}
-		tippy('#{{ edge.id }}', {content: '{{ edge.content|safe }}',});
-		{% if edge.successor_id %}
-		document.getElementById("{{ edge.id }}").href="{% url 'vertex' vertex=edge.successor_id %}";
-		{% endif %}
-		{% endfor %}
-	});
-	</script>{% endif %}
 {% block javascript %}{% endblock %}
 </body>
 </html>
