@@ -48,7 +48,7 @@ function modal_add_this_one(which) {
 		type: 'post',
 		async: false,
 		data: {
-			'path_id': "{{ path_id }}",
+			'path_id': "{{ this_path.path_id }}",
 			'vid': which,
 			'where': ADD_CALLER
 		},
@@ -64,7 +64,7 @@ function modal_choose_this_one(which) {
 		type: 'post',
 		async: false,
 		data: {
-			'path_id': "{{ path_id }}",
+			'path_id': "{{ this_path.path_id }}",
 			'vid': which,
 			'where': CHANGE_CALLER
 		},
