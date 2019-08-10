@@ -1,0 +1,20 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}samouczek rejestracji{% endblock %}
+
+{% block main_content %}
+<h5>Jak sie zarejestrować w SystemGraph</h5>
+<p>
+Aby zostać autorem wierzchołków, krawędzi i ścieżek musisz najpierw założyć i aktywować konto. Twoje konto zostanie utworzone, gdy wejdziesz na <a href="{% url 'register' %}">tą stronę</a> i podasz prawidłowe dane. Na podany adres email zostanie wówczas wysłana wiadomość zawierająca link do aktywacji konta. Po aktywacji konta będziesz mógł <a href="{% url 'login' %}">zalogować się</a> do SystemGraph.
+</p>
+<img src="/media/tutorial_register.jpg" width="100%;">
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<li style="margin-left: 25px;">
+		<ul>
+			<!-- <a href="{% url 'tutorial_register' %}">Rejestracja</a> -->
+		</ul>
+	</li>
+</div>
+{% endblock %}

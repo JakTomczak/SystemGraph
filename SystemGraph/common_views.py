@@ -29,7 +29,14 @@ def search_users(request):
 	return render(request, 'common/user_search.html', context)
 
 def about_SystemGraph(request):
-	return render(request, 'common/about_SystemGraph.html', {})
+	return render(request, 'about/about_SystemGraph.html', {})
+
+def tutorial_frontpage(request):
+	return render(request, 'about/tutorial_front.html', {})
+
+def tutorial_register(request):
+	return render(request, 'about/tutorial_registration.html', {})
+
 
 '''
 When you didn't change database, but changed base directory of this project,

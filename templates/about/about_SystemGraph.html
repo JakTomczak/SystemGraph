@@ -1,4 +1,4 @@
-{% extends 'base_2cols_smallpadd.html' %}
+{% extends 'base_2cols_mediumpadd.html' %}
 
 {% block title %}o SystemGraph{% endblock %}
 
@@ -13,4 +13,13 @@ SystemGraph jest projektem <i>open source</i> i jego repozytorium można znaleź
 <p>
 Wszelkie uwagi prosimy kierować na <a href="mailto:jak.tomczak@gmail.com">ten email</a>.
 </p>
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<a href="{% url 'register' %}">Utwórz konto</a>
+	<br>
+	<a href="{% url 'login' %}">Zaloguj się</a>
+	<br>
+	<a href="{% url 'tutorial_frontpage' %}">Przejdź samouczek</a>
+</div>
 {% endblock %}

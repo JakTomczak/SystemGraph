@@ -15,11 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
 
 from . import common_views
 
 about_patterns = [
 	path('', common_views.about_SystemGraph, name='about'),
+]
+
+tutorial_patterns = [
+	path('', common_views.tutorial_frontpage, name='tutorial_frontpage'),
+	path('register/', common_views.tutorial_register, name='tutorial_register'),
 ]
 
 urlpatterns = [
@@ -29,5 +35,12 @@ urlpatterns = [
     path('graph/', include('SGMain.urls')),
     path('ajax/', include('SGMain.ajax_urls')),
     path('', common_views.frontpage, name='start'),
-	path('about/', include(about_patterns))
+	
+	path('about/', include(about_patterns)),
+	
+	path('tutorial/', include(tutorial_patterns)),
 ]
+
+from django.conf import settings
+if settings.DEBUG:
+	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

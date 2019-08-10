@@ -1,0 +1,17 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}samouczek{% endblock %}
+
+{% block main_content %}
+<h5>Samouczek</h5>
+<p>
+SystemGraph jest witryną łączącą hosting materiałów wykładowych i naukowych z modelowaniem systemu naukowego do formy grafu. Poniżej przedstawiono tematy samouczka.
+</p>
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	<li style="margin-left: 25px;">
+		<ul>
+			<a href="{% url 'tutorial_register' %}">Rejestracja</a>
+		</ul>
+	</li>
+</div>
+{% endblock %}
