@@ -74,7 +74,9 @@ class Edge(models.Model):
 		else:
 			t = f.read()
 			f.close()
-			return t.replace('\n', '').replace('\r', '')
+			if t or not self.successor:
+				return t.replace('\n', '').replace('\r', '')
+			return self.successor.description().replace('\n', '').replace('\r', '')
 			
 	'''
 	Similar to Vertices, Edges also have their content in pre- and post compilation versions

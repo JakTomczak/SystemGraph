@@ -57,7 +57,7 @@ function save_content() {
 		type: 'post',
 		async: false,
 		data: {
-			'content': document.getElementById("id_content").value,
+			'content': document.getElementById("id_content").value
 		},
 		dataType: 'json'
 	});
@@ -110,7 +110,8 @@ function run_compilation() {
 		type: 'post',
 		async: false,
 		data: {
-			'content': document.getElementById("id_content").value
+			'content': document.getElementById("id_content").value,
+			'preamble': $("#id_preamble").val(),
 		},
 		dataType: 'json',
 		success: function (data) {

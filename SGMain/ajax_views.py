@@ -9,9 +9,9 @@ from datetime import datetime
 
 from . import tasks
 from . import compilation
-from .models import Vertex, Path, CompilationData, Subject, Edge, Edge_Proposition
+from .models import Vertex, Path, CompilationData, Subject, Edge, Edge_Proposition, Preamble
 
-def request_is_NOT_valid(request, vertex_id = None, edge_id = None):
+def change_preamble_and_return_failure(request, vertex_id = None, edge_id = None, run = True):
 	if int(vertex_id is not None) + int(edge_id is not None) != 1:
 		return True
 	object = None
@@ -26,6 +26,16 @@ def request_is_NOT_valid(request, vertex_id = None, edge_id = None):
 		except exceptions.ObjectDoesNotExist:
 			pass
 	if object and object.user == request.user:
+		preamble_id = request.POST.get('preamble', '')
+		if run and not preamble_id:
+			return True
+		if run and object.preamble.preamble_id != preamble_id:
+			try:
+				preamble = Preamble.objects.get(preamble_id = preamble_id)
+			except exceptions.ObjectDoesNotExist:
+				return True
+			object.preamble = preamble
+			object.save()
 		return False
 	# log
 	return True
@@ -133,7 +143,7 @@ def save_vertex_cd(request, vertex_id):
 @csrf_exempt
 def start_vertex_cont_compilation(request, vertex_id):
 	context = {'ok': False, 'error_message': ''}
-	if request_is_NOT_valid(request, vertex_id = vertex_id):
+	if change_preamble_and_return_failure(request, vertex_id = vertex_id):
 		return JsonResponse(context)
 	content = request.POST.get('content', '')
 	if content:
@@ -149,7 +159,7 @@ def start_vertex_cont_compilation(request, vertex_id):
 @csrf_exempt
 def start_vertex_desc_compilation(request, vertex_id):
 	context = {'ok': False, 'error_message': ''}
-	if request_is_NOT_valid(request, vertex_id = vertex_id):
+	if change_preamble_and_return_failure(request, vertex_id = vertex_id):
 		return JsonResponse(context)
 	description = request.POST.get('description', '')
 	if description:
@@ -166,7 +176,7 @@ def start_vertex_desc_compilation(request, vertex_id):
 def update_compilation_status(request):
 	vertex_id = request.POST.get('vertex_id', None)
 	edge_id = request.POST.get('edge_id', None)
-	if request_is_NOT_valid(request, vertex_id = vertex_id, edge_id = edge_id):
+	if change_preamble_and_return_failure(request, vertex_id = vertex_id, edge_id = edge_id, run = False):
 		return JsonResponse({'still': False, 'error': True, 'messages': []})
 	
 	desc = (request.POST.get('desc', None) == 'true')
@@ -193,7 +203,7 @@ def save_edge_content(request, edge_id):
 @csrf_exempt
 def start_edge_compilation(request, edge_id):
 	context = {'ok': False, 'error_message': ''}
-	if request_is_NOT_valid(request, edge_id = edge_id):
+	if change_preamble_and_return_failure(request, edge_id = edge_id):
 		return JsonResponse(context)
 	content = request.POST.get('content', '')
 	if content:

@@ -29,11 +29,19 @@ class SGlink (object):
 				self.valid = False
 				return
 			try:
+				t = t.value
+			except AttributeError:
+				print('coraz bliżej święta...')
+			try:
 				e = link.args[1]
 			except IndexError:
 				self.errortext += '<sglink> takes exactly two arguments.'
 				self.valid = False
 				return
+			try:
+				e = e.value
+			except AttributeError:
+				print('coraz bliżej święta!')
 			try:
 				edge = model.Edge.objects.get(edge_id = e)
 			except exceptions.ObjectDoesNotExist:
@@ -207,7 +215,7 @@ class CompilationCore(object):
 				sglink.set_id( used_edges[sglink.edge_id] )
 				if not sglink.valid:
 					return texsoup, sglinks, sglink.errortext
-			sgl.replace(sglink.id)
+			sgl.replace_with(sglink.id)
 			sglinks.append( sglink )
 		return texsoup, sglinks, b''
 		

@@ -14,8 +14,8 @@
 			<div style="flex: 4">
 				<div class="internal-menu around sidepadd">
 					<h3>Edycja <a id="vertex_view">wierzchołka</a></h3>
-					<button type="button" class="btn btn-secondary sgbutton" onclick="vertex_save_all_dont_compile()">Zapisz wszystko</button>
-					<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_all()">Opublikuj</button>
+					<button type="button" class="btn btn-secondary sgbutton" onclick="vertex_save_all_dont_compile()" id="button_save_both">Zapisz wszystko</button>
+					<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_all()" id="button_compile_both">Opublikuj</button>
 					<button type="button" class="btn btn-warning sgbutton" onclick="delete_this()">Usuń wierzchołek</button>
 				</div>
 				<div class="distinctarea border border-primary rounded big-margin">
@@ -81,8 +81,8 @@
 				<div class="distinctarea border border-primary rounded big-margin">
 					<div class="h5withbuttons">
 						<h5 for="{{ form.content.id_for_label }}">Treść</h5>
-						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()">Zapisz</button>
-						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_cont()">Zapisz i kompiluj</button>
+						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()" id="button_save_content">Zapisz</button>
+						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_cont()" id="button_compile_content">Zapisz i kompiluj</button>
 					</div>
 					{% render_field form.content class="form-control" rows="7" style="width:100%; min-width:150px" placeholder=form.content.label %}
 					{% for error in form.content.errors %}
@@ -92,8 +92,8 @@
 				<div class="distinctarea border border-primary rounded big-margin">
 					<div class="h5withbuttons">
 						<h5 for="{{ form.description.id_for_label }}">Skrócona forma lub opis</h5>
-						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()">Zapisz</button>
-						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_desc()">Zapisz i kompiluj</button>
+						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()" id="button_save_description">Zapisz</button>
+						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_desc()" id="button_compile_description">Zapisz i kompiluj</button>
 					</div>
 					{% render_field form.description class="form-control" rows="3" style="width:100%; min-width:150px" placeholder=form.description.label %}
 					{% for error in form.description.errors %}
@@ -185,7 +185,8 @@ function run_content_compilation() {
 		type: 'post',
 		async: false,
 		data: {
-			'content': document.getElementById("id_content").value
+			'content': document.getElementById("id_content").value,
+			'preamble': $("#id_preamble").val(),
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -218,7 +219,8 @@ function run_desc_compilation() {
 		type: 'post',
 		async: false,
 		data: {
-			'description': document.getElementById("id_description").value
+			'description': document.getElementById("id_description").value,
+			'preamble': $("#id_preamble").val(),
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -265,7 +267,12 @@ function vertex_compile_cont() {
 	run_content_compilation();
 }
 $(document).ready(function() {
-	{% if submitted %}
+	tippy('#button_save_both', {content: 'Nie uruchamiaj kompilacji',});
+	tippy('#button_compile_both', {content: 'Zapisz wszystko i kompiluj wszystko',});
+	tippy('#button_save_content', {content: 'Zapisz poniższą treść',});
+	tippy('#button_compile_content', {content: 'Zapisz i kompiluj poniższą treść',});
+	tippy('#button_save_description', {content: 'Zapisz poniższy opis',});
+	tippy('#button_compile_description', {content: 'Zapisz i kompiluj poniższy pis',});{% if submitted %}
 	is_submitted();
 	{% endif %}
 });
