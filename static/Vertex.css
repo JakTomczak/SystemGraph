@@ -90,14 +90,14 @@ button.right {
 	display: flex;
 	flex-direction: column;
 	position: relative;
+	overflow-y: scroll;
+    -ms-overflow-style: none;
+    oscrollbar-width: none;
 }
 
 .vv_the_central_frame {
-	overflow-y: scroll;
 	padding: 12px;
 	flex: 1;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 	font-size: 1rem;
 }
 

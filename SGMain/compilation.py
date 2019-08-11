@@ -66,13 +66,14 @@ class CompilationCore(object):
 	cwd = settings.COMP_DIR
 	begin_document_file = settings.BEGINTEX_FILE
 	end_document_file = settings.ENDTEX_FILE
-	errortext = b''
+	
 	pk = 'pk'
 	_mode = 0
 	
 	def __init__(self, text = None, vertex_id = None, desc = False, edge_id = None):
 		self.output = ''
 		self.error = False
+		self.errortext = b''
 		self.cdata = None
 		self.object = None
 		if text is not None:
@@ -208,7 +209,7 @@ class CompilationCore(object):
 					return texsoup, sglinks, sglink.errortext
 			sgl.replace(sglink.id)
 			sglinks.append( sglink )
-		return texsoup, sglinks, None
+		return texsoup, sglinks, b''
 		
 	def run(self):
 		self._run()
