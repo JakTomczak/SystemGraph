@@ -1,0 +1,30 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}samouczek wierzchołka{% endblock %}
+
+{% block main_content %}
+<h5>Samouczek SystemGraph: jak dodawać wierzchołki</h5>
+<p>
+Na tej witrynie wierzchołkiem nazywamy artykuł utworzony przez użytkownika. Nie nazywamy ich po prostu artykułami, ponieważ w założeniu powinny być to krótkie wypowiedzi, z których każdą można określić jako pojedynczą porcję wiedzy.
+</p>
+<p>
+Pod <a href="{% url 'new_vertex' %}">tym</a> adresem znajduje strona służąca do dodawania nowych wierzchołków. Zwykle odnośniki do tej strony można znaleźć w swoim panelu użytkownika oraz w panelu dowolnego tematu. 
+</p>
+<p>
+Jeżeli już wiesz, jaki wierzchołek chciałbyś dodać, sprawdź czy trójka "Dyscyplina <mo stretchy="true">&xrarr;</mo> Dział <mo stretchy="true">&xrarr;</mo> Temat" odpowiadająca twojemu przyszłemu wierzchołkowi istnieje. W tym celu proponujemy, abyś wszedł do <a href="{% url 'all_disciplines' %}">panelu wszystkich dyscyplin</a> i "schodząc głębiej" doszedł do panelu swojego wybranego tematu, dodając te dyscypliny/działy/tematy, których Ci brakuje. W panelu swojego wybranego tematu po prostu kliknij na przycisk "Dodaj nowy wierzchołek".
+</p>
+<p>
+Będąc w panelu dodawania nowego wierzchołka będziesz musiał wybrać temat, wybrać tytuł wierzchołka oraz wybrać rodzaj wierzchołka.
+</p>
+<img src="/media/tutorial_vertex.jpg" width="100%;">
+{% endblock %}
+{% block side_content %}
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	Pozostałe tematy samouczka
+	<li style="margin-left: 25px;">
+		<ul>
+			<a href="{% url 'tutorial_register' %}">Rejestracja</a>
+		</ul>
+	</li>
+</div>
+{% endblock %}

@@ -48,7 +48,7 @@ def edit_profile(request, username):
 	context = {'thisuser': username, 'form': form}
 	return render(request, 'common/edit_profile.html', context)
 	
-def all_user_verticies(request, username):
+def all_user_vertices(request, username):
 	try:
 		user = CustomUser.objects.get(username = username)
 	except exceptions.ObjectDoesNotExist:

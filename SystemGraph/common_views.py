@@ -37,6 +37,9 @@ def tutorial_frontpage(request):
 def tutorial_register(request):
 	return render(request, 'about/tutorial_registration.html', {})
 
+def tutorial_vertex(request):
+	return render(request, 'about/tutorial_vertex.html', {})
+
 
 '''
 When you didn't change database, but changed base directory of this project,

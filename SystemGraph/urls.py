@@ -26,6 +26,7 @@ about_patterns = [
 tutorial_patterns = [
 	path('', common_views.tutorial_frontpage, name='tutorial_frontpage'),
 	path('register/', common_views.tutorial_register, name='tutorial_register'),
+	path('vertex/', common_views.tutorial_vertex, name='tutorial_vertex'),
 ]
 
 urlpatterns = [
