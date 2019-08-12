@@ -1,0 +1,5 @@
+\NewConfigure{Forall}{3}
+\renewcommand\Forall[1]{\a:Forall\forall\b:Forall#1\c:Forall}
+
+\NewConfigure{Exists}{3}
+\renewcommand\Exists[1]{\a:Exists\exists\b:Exists#1\c:Exists}

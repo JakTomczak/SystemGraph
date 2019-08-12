@@ -9,10 +9,17 @@ sysgr_nginx.conf
 
 /userfiles/*
 !/userfiles/readme.txt
-/compilationfiles/*
 /proposals/*
 !/proposals/readme.txt
 migrations
 logs
 
-config.mk4
+/compilationfiles/*
+!/compilationfiles/AAAAAAAAAA.tex
+!/compilationfiles/AAAAAAAAAB.tex
+!/compilationfiles/Begin.tex
+!/compilationfiles/End.tex
+!/compilationfiles/commands.4ht
+!/compilationfiles/commands.sty
+!/compilationfiles/config.mk4
+!/compilationfiles/mathjax.cfg

@@ -1,0 +1,1 @@
+settings.latex_par = settings.latex_par .. " -interaction=nonstopmode"
