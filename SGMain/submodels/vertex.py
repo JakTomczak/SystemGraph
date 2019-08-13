@@ -389,6 +389,9 @@ class Vertex(models.Model):
 	def small_str(self):
 		return self.title
 		
+	def str_as_successor(self):
+		return '{} ({}, {})'.format(self.title, self.subject, self.user.username)
+		
 	def ajax(self, user):
 		if self.user == user:
 			inner = 'yes'

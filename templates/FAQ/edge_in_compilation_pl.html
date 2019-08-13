@@ -1,6 +1,12 @@
 <div class="FAQ_answer">
-	<p>Połączenie dwóch wierzchołków krawędzią sprawia, że zaczynają być uznawane za "bliższe" sobie, np. jeden ma wyższy priorytet w ukazywaniu się w "proponowanych" drugiego.</p>
-	<p>Możesz także nadpisać opis docelowego wierzchołka, tym samym unikalnie komentując przejście myślowe od pierwszego do drugiego.</p>
-	<p>Do treści wierzchołka wyjściowego możesz dodawać hiperłącza do wierzchołka docelowego. Efekt ten uzyskasz za pomocą znacznika \sglink. Znacznik ten jest dwuargumentowy: jego pierwszym argumentem jest tekst, który ma stać się hiperłączem (znacznikiem &lt;a&gt;), a drugim jest ID krawędzi. Na przykład \sglink{Witaj świecie}{EAAAAAAAAA}</p>
-	<p>Po najechaniu na wyżej opisane hiperłącze pojawi się opis wierzchołka docelowego. Jeżeli dana krawędź nadpisuje ten opis, pojawi się zamiast tego owa treść krawędzi.</p>
+	<p>Połączenie dwóch wierzchołków krawędzią sprawia, że zaczynają być uznawane za "bliższe" sobie, np. jeden ma wyższy priorytet w ukazywaniu się w <a class="fancy-a" id="FAQ_edge_in_comp_1">proponowanych</a> drugiego.</p>
+	<p>Możesz także nadpisać opis docelowego wierzchołka, tym samym unikalnie komentując przejście myślowe od wierzchołka pierwszego do drugiego. Takie nadpisanie często nazywamy treścią krawędzi. Treść krawędzi także ulega kompilacji.</p>
+	<p>Do treści wierzchołka wyjściowego możesz dodawać hiperłącza do wierzchołka docelowego. Efekt ten uzyskasz za pomocą <a class="fancy-a" id="FAQ_edge_in_comp_2">znacznika</a> \sglink. Znacznik ten jest <a class="fancy-a" id="FAQ_edge_in_comp_3">dwuargumentowy</a>: jego pierwszym argumentem jest tekst, który ma stać się hiperłączem (znacznikiem &lt;a&gt;), a drugim jest ID krawędzi. Na przykład \sglink{Witaj świecie}{EAAAAAAAAA}.</p>
+	<p>Po najechaniu na wyżej opisane hiperłącze <a class="fancy-a" id="FAQ_edge_in_comp_4">pojawi się</a> opis wierzchołka docelowego. Jeżeli dana krawędź nadpisuje ten opis, pojawi się zamiast tego owa treść krawędzi.</p>
 </div>
+<script>
+tippy('#FAQ_edge_in_comp_1', {content: 'W blokach otaczających treść w widoku wierzchołka',});
+tippy('#FAQ_edge_in_comp_2', {content: 'Przygotowanego na tą okazję znacznika języka LaTeX',});
+tippy('#FAQ_edge_in_comp_3', {content: 'Czyli musi być w formie \sglink{pierwszy argument}{drugi argument}',});
+tippy('#FAQ_edge_in_comp_4', {content: 'Dokładnie w taki sposób',});
+</script>

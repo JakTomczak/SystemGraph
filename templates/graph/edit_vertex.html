@@ -27,9 +27,10 @@
 					{% for error in form.title.errors %}
 						<span class="help-block">{{ error }}</span>
 					{% endfor %}
-					<div style="width: auto">
-						<label for="{{ form.ifshorttitle.id_for_label }}" class="inline_desc" style="float: left; margin-right: 10px; padding-top: 7px;">Krótki tytuł</label>
-						<div style="overflow: hidden;">{% render_field form.shorttitle class="form-control box-block-100" style="width:100%; min-width:150px" placeholder=form.shorttitle.label %}</div>
+					<div style="width: auto" class="flexonwidth">
+						<label for="{{ form.ifshorttitle.id_for_label }}" class="" style="width: 90px;">Krótki tytuł</label>
+						<div style="overflow: hidden; flex: 1;">{% render_field form.shorttitle class="form-control box-block-100" style="width:100%; min-width:150px" placeholder=form.shorttitle.label %}</div>
+{% include "includes/question_mark.html" with height=24 my_id='shorttitle' content='Krótki tytuł nie jest obowiązkowy. Maksymalnie 40 znaków.' %}
 						{% for error in form.shorttitle.errors %}
 							<span class="help-block">{{ error }}</span>
 						{% endfor %}
@@ -45,14 +46,17 @@
 		<div class="distinctarea border border-primary rounded big-margin">
 			<div class="h5withbuttons">
 				<h5>Wychodzące krawędzie</h5>
-				<button type="submit" name="newedge" class="btn btn-secondary btn-sm">Utwórz nową</button>
+				<button type="submit" name="newedge" class="btn btn-secondary">Utwórz nową</button>
 			</div>
 			{% if outgoing_edges %}
 			<div style="background: #cacaca;">
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th scope="col">ID krawędzi:</th>
+							<th scope="col" style="display: flex;">
+								<span style="margin-right: 20px;">ID krawędzi:</span>
+{% include "includes/question_mark.html" with height=16 my_id='edge_id' content='Drugi argument znacznika \sglink.' %}
+							</th>
 							<th scope="col">Wierzchołek docelowy:</th>
 							<th scope="col">Opis (nadpisany opis wierzchołka docelowego)</th>
 							<th scope="col"></th>
@@ -61,10 +65,12 @@
 					<tbody>
 						{% for edge in outgoing_edges %}
 						<tr>
-							<td>{{ edge.edge_id }}</td>
-							<td><a href="{{ edge.get_successor_url }}" class="fancy-a">{{ edge.successor.title }}</a></td>
+							<td style="width: 170px;">{{ edge.edge_id }}</td>
+							<td>
+								<a style="width: 100%;" role="button" id="edge_succ_{{ edge.edge_id }}" class="btn btn-outline-dark btn-sm" href="{{ edge.get_successor_url }}">{{ edge.successor.str_as_successor }}</a>
+							</td>
 							<td>{{ edge.get_content|safe }}</td>
-							<td><a  class="btn btn-secondary btn-sm" href="{% url 'edit_edge' edge_id=edge.edge_id %}" role="button">Edytuj</a></td>
+							<td><a style="padding-right: 16px; padding-left: 16px;" class="btn btn-secondary btn-sm" href="{% url 'edit_edge' edge_id=edge.edge_id %}" role="button">Edytuj</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -77,12 +83,12 @@
 {% include "includes/singleframe/FAQ.html" with in="FAQ/edge_in_compilation_pl.html" header="Czym są krawędzie i jak ich używać?" %}
 		<div class="div-column">
 			<div style="flex: 4">
-{% include "includes/widget.html" with widget=form.preamble margin="big" header="Preambuła" %}
+{% include "includes/widget_with_qm.html" with widget=form.preamble margin="big" header="Preambuła" qm_content="Do wyboru z  utworzonych przez ciebie oraz kilku domyślnych."  %}
 				<div class="distinctarea border border-primary rounded big-margin">
 					<div class="h5withbuttons">
 						<h5 for="{{ form.content.id_for_label }}">Treść</h5>
 						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()" id="button_save_content">Zapisz</button>
-						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_cont()" id="button_compile_content">Zapisz i kompiluj</button>
+						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_cont()" id="button_compile_content">Kompiluj</button>
 					</div>
 					{% render_field form.content class="form-control" rows="7" style="width:100%; min-width:150px" placeholder=form.content.label %}
 					{% for error in form.content.errors %}
@@ -93,7 +99,7 @@
 					<div class="h5withbuttons">
 						<h5 for="{{ form.description.id_for_label }}">Skrócona forma lub opis</h5>
 						<button type="button" class="btn btn-secondary sgbutton" onclick="save_cont_and_desc()" id="button_save_description">Zapisz</button>
-						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_desc()" id="button_compile_description">Zapisz i kompiluj</button>
+						<button type="button" class="btn btn-primary sgbutton" onclick="vertex_compile_desc()" id="button_compile_description">Kompiluj</button>
 					</div>
 					{% render_field form.description class="form-control" rows="3" style="width:100%; min-width:150px" placeholder=form.description.label %}
 					{% for error in form.description.errors %}
@@ -272,7 +278,9 @@ $(document).ready(function() {
 	tippy('#button_save_content', {content: 'Zapisz poniższą treść',});
 	tippy('#button_compile_content', {content: 'Zapisz i kompiluj poniższą treść',});
 	tippy('#button_save_description', {content: 'Zapisz poniższy opis',});
-	tippy('#button_compile_description', {content: 'Zapisz i kompiluj poniższy pis',});{% if submitted %}
+	tippy('#button_compile_description', {content: 'Zapisz i kompiluj poniższy opis',});{% for edge in outgoing_edges %}{% if edge.successor.description %}
+	tippy('#edge_succ_{{ edge.edge_id }}', {content: '{{ edge.successor.description|safe }}',});
+	{% endif %}{% endfor %}{% if submitted %}
 	is_submitted();
 	{% endif %}
 });

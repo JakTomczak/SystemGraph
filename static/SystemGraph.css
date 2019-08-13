@@ -291,6 +291,21 @@ div.flexonwidth {
 	margin-top: 4px;
 }
 
+.flexonwidth label {
+	/* float: left; */
+	/* margin-right: 8px; */
+	padding-top: 7px;
+	padding-left: 6px;
+	/* padding-right: 8px; */
+	/* flex: 0; */
+	/* align-self: center; */
+}
+
+.svg_container {
+	margin-right: 6px;
+	margin-left: 6px;
+}
+
 .nowrap {
 	white-space: nowrap;
 	overflow: hidden;

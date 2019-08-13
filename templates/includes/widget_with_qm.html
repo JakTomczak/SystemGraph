@@ -1,0 +1,12 @@
+{% load widget_tweaks %}
+<div class="distinctarea paddtop border border-primary rounded {{ margin }}-margin">
+	<div class="paddtop">
+		<h5 for="{{ widget.id_for_label }}" style="display: inline; float: left; margin-right: 20px;">{{ header }}</h5>
+{% include "includes/question_mark.html" with height=24 my_id=widget.label content=qm_content %}
+	</div>{% if rows %}
+	{% render_field widget class="form-control" placeholder=widget.label rows=rows %}{% else %}
+	{% render_field widget class="form-control" placeholder=widget.label %}{% endif %}
+	{% for error in widget.errors %}
+		<span class="help-block">{{ error }}</span>
+	{% endfor %}
+</div>
