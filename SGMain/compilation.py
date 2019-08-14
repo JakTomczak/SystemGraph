@@ -196,7 +196,10 @@ class CompilationCore(object):
 		
 	@classmethod
 	def get_sglinks(cls, textext, vertex):
-		texsoup = TexSoup(textext)
+		try:
+			texsoup = TexSoup(textext)
+		except Exception as e:
+			return None, [], 'Could not parse LaTeX code. {}'.format(e)
 		sglinks = []
 		used_edges = {}
 		for sgl in texsoup.find_all(name = 'sglink'):

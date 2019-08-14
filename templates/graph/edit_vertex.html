@@ -279,7 +279,7 @@ $(document).ready(function() {
 	tippy('#button_compile_content', {content: 'Zapisz i kompiluj poniższą treść',});
 	tippy('#button_save_description', {content: 'Zapisz poniższy opis',});
 	tippy('#button_compile_description', {content: 'Zapisz i kompiluj poniższy opis',});{% for edge in outgoing_edges %}{% if edge.successor.description %}
-	tippy('#edge_succ_{{ edge.edge_id }}', {content: '{{ edge.successor.description|safe }}',});
+	tippy('#edge_succ_{{ edge.edge_id }}', {content: '{{ edge.successor.get_description|safe }}',});
 	{% endif %}{% endfor %}{% if submitted %}
 	is_submitted();
 	{% endif %}
