@@ -388,9 +388,15 @@ class Vertex(models.Model):
 	
 	def small_str(self):
 		return self.title
+	
+	def str_title_subject_user(self):
+		return '{} ({}, {})'.format(self.title, self.subject, self.user.username)
 		
 	def str_as_successor(self):
-		return '{} ({}, {})'.format(self.title, self.subject, self.user.username)
+		return self.str_title_subject_user()
+	
+	def str_as_path_entry(self):
+		return '{}, {}: {} ({})'.format(str(self.discipline), str(self.subject), self.title, self.user.username)
 		
 	def ajax(self, user):
 		if self.user == user:

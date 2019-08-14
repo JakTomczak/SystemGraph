@@ -321,21 +321,31 @@ def view_vertex(request, vertex_id):
 		except exceptions.ObjectDoesNotExist:
 			return render(request, 'errors/404.html')
 		previous, next = this_path.get_others(entry)
-	(bolist, lelist, rilist, tolist) = tools.four_directions(this_vertex)
-	if request.user == this_vertex.user:
-		thisuser = True
-	else:
-		thisuser = False
+	# (bolist, lelist, rilist, tolist) = tools.four_directions(this_vertex)
+	displayer = tools.Displayer(this_vertex)
+	big_lists = {
+		'bottom': displayer.run(this_vertex.vertex_class.bottom),
+		'left': displayer.run(this_vertex.vertex_class.left),
+		'right': displayer.run(this_vertex.vertex_class.right),
+		'top': displayer.run(this_vertex.vertex_class.top)
+	}
+	small_lists = {
+		'bottom': big_lists['bottom'][:4],
+		'left': big_lists['left'][:4],
+		'right': big_lists['right'][:4],
+		'top': big_lists['top'][:4]
+	}
 	context = {
-		'vertex_view': 1, 
+		'vertex_view': 1, # changes in base.html
 		'links': this_vertex.read_sglinks(), 
-		'thisuser': thisuser, 
+		'thisuser': request.user == this_vertex.user, 
 		'thisvertex': this_vertex, 
 		'thisvertexcontent': content, 
-		'bottom': bolist, 
-		'left': lelist, 
-		'right': rilist, 
-		'top': tolist, 
+		'small_lists': small_lists,
+		# 'bottom': bolist, 
+		# 'left': lelist, 
+		# 'right': rilist, 
+		# 'top': tolist, 
 		'current_path': this_path,
 		'prev_entries': previous,
 		'next_entries': next

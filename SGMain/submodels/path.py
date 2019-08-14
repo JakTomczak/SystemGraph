@@ -148,10 +148,13 @@ class Path_Entry(models.Model):
 		verbose_name_plural = "Path Entries"
 		
 	def __str__(self):
-		return str(self.index) + '. ' + self.vertex.small_str()
+		return '{}: {}. {}'.format(self.path, self.index, self.vertex.str_title_subject_user())
 		
 	def big_str(self):
 		return str(self.index) + '. ' + str(self.vertex)
 		
 	def very_big_str(self):
 		return str(self.index) + '. ' + self.vertex.big_str()
+	
+	def str_in_sigleframe(self):
+		return '{}. {}'.format(self.index, self.vertex.str_as_path_entry())

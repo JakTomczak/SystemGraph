@@ -1,6 +1,6 @@
 <div class="innerdistinctarea border border-warning rounded small-margin" style="display: flex;">
 	<div style="flex: 1;">
-		<a href="{% url 'view_vertex' vertex_id=this_entry.vertex.vertex_id %}?path={{ this_entry.path.path_id }}&index={{ this_entry.index }}" class="fancy-a">{{ this_entry.very_big_str }}</a>
+		<a href="{% url 'view_vertex' vertex_id=this_entry.vertex.vertex_id %}?path={{ this_entry.path.path_id }}&index={{ this_entry.index }}" class="fancy-a">{{ this_entry.str_in_sigleframe }}</a>
 		<br>
 		<span>{{ this_entry.vertex.description|safe }}</span>
 	</div>{% if user == this_entry.vertex.user %}

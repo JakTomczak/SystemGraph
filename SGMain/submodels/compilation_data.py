@@ -12,6 +12,9 @@ class CompilationData(models.Model):
 	step = models.IntegerField(default = -1)
 	state = models.CharField(max_length = 30, default = "IDLE")
 	messages = models.TextField(default = '')
+	
+	def __str__(self):
+		return self.fcode
 		
 	def launch(self):
 		CompilationLaunch(compilation = self).save()
@@ -89,3 +92,6 @@ class CompilationLaunch(models.Model):
 	
 	class Meta:
 		verbose_name_plural = "Compilation launches"
+	
+	def __str__(self):
+		return str(self.compilation)

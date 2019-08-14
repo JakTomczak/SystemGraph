@@ -3,15 +3,15 @@
 {% block title %}wierzchołek{% endblock %}
 
 {% block content %}
-{% include "graph/view_vertex/top.html" with list=top %}
+{% include "graph/view_vertex/top.html" with list=small_lists.top %}
 <div class="vv_big_midrow_frame" id="the_innerframe">
-{% include "graph/view_vertex/left.html" with list=left %}
+{% include "graph/view_vertex/left.html" with list=small_lists.left %}
 	<div class="vv_big_centcol_frame" >
 {% include "graph/view_vertex/center.html" %}
 	</div>
-{% include "graph/view_vertex/right.html" with list=right %}
+{% include "graph/view_vertex/right.html" with list=small_lists.right %}
 </div>
-{% include "graph/view_vertex/bottom.html" with list=bottom %}
+{% include "graph/view_vertex/bottom.html" with list=small_lists.bottom %}
 {% endblock %}
 {% block javascript %}
 <script>

@@ -30,11 +30,12 @@ class Edge(models.Model):
 	edge_id = models.CharField(max_length = 10, primary_key = True, default = 'EAAAAAAAAA')
 	edge_class = models.ForeignKey(Edge_Class, on_delete = models.SET_NULL, null = True)
 	preamble = models.ForeignKey(vertex_models.Preamble, on_delete = models.SET_DEFAULT, default = settings.DEFAULT_PREAMBLE_ID)
-	user = models.ForeignKey(user_model.CustomUser, on_delete = models.SET_DEFAULT, default = 1)
+	user = models.ForeignKey(user_model.CustomUser, on_delete = models.SET_DEFAULT, default = 1, related_name='user')
 	predecessor = models.ForeignKey(vertex_models.Vertex, on_delete = models.CASCADE, related_name='predecessor', null = True)
 	successor = models.ForeignKey(vertex_models.Vertex, on_delete = models.CASCADE, related_name='successor', null = True)
 	directory = models.CharField(max_length = 200, null = True)
 	frozen = models.BooleanField(default = False)
+	father = models.ForeignKey(user_model.CustomUser, null = True, on_delete = models.SET_NULL, related_name='father')
 	
 	def __str__(self):
 		return self.edge_id
@@ -271,13 +272,14 @@ class Edge_Proposition(models.Model):
 			user = self.predecessor.user,
 			predecessor = self.predecessor,
 			successor = self.successor,
-			frozen = frozen
+			frozen = frozen,
+			father = self.father,
 		).save()
 		
 	def _new_edge_prop(self):
 		Edge_Proposition(
 			prop_id = Edge_Proposition.new_id(),
-			father = self.predecessor.user,
+			father = self.predecessor.user, # ?
 			predecessor = self.predecessor,
 			successor = self.successor,
 			code = ext_pre
