@@ -1,0 +1,21 @@
+<div class="distinctarea paddtop border border-primary rounded big-margin">
+	{% if not front %}Tematy samouczka{% endif %}
+	<ul style="margin-left: 25px;">
+		<li>{% if register %}
+			<span>Rejestracja</span>{% else %}
+			<a href="{% url 'tutorial_register' %}">Rejestracja</a>{% endif %}
+		</li>
+		<li>{% if vertex %}
+			<span>Dodawanie wierzchołka</span>{% else %}
+			<a href="{% url 'tutorial_vertex' %}">Dodawanie wierzchołka</a>{% endif %}
+		</li>
+		<li>{% if vertex_edit %}
+			<span>Edycja wierzchołka</span>{% else %}
+			<a href="{% url 'tutorial_vertex_edit' %}">Edycja wierzchołka</a>{% endif %}
+		</li>
+		<li>{% if compile %}
+			<span>Kompilacja i preambuła</span>{% else %}
+			<a href="{% url 'tutorial_compile' %}">Kompilacja i preambuła</a>{% endif %}
+		</li>
+	</ul>
+</div>

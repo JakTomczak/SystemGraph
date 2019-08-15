@@ -5,7 +5,7 @@
 {% block main_content %}
 <h5>Samouczek SystemGraph: jak dodawać wierzchołki</h5>
 <p>
-Na tej witrynie wierzchołkiem nazywamy artykuł utworzony przez użytkownika. Nie nazywamy ich po prostu artykułami, ponieważ w założeniu powinny być to krótkie wypowiedzi, z których każdą można określić jako pojedynczą porcję wiedzy.
+W SytemGraph wierzchołkiem nazywamy artykuł utworzony przez użytkownika. Nie nazywamy ich po prostu artykułami, ponieważ w założeniu powinny być to krótkie wypowiedzi, z których każdą można określić jako pojedynczą porcję wiedzy.
 </p>
 <p>
 Pod <a href="{% url 'new_vertex' %}">tym</a> adresem znajduje strona służąca do dodawania nowych wierzchołków. Zwykle odnośniki do tej strony można znaleźć w swoim panelu użytkownika oraz w panelu dowolnego tematu. 
@@ -19,12 +19,6 @@ Będąc w panelu dodawania nowego wierzchołka będziesz musiał wybrać temat, 
 <img src="/media/tutorial_vertex.jpg" width="100%;">
 {% endblock %}
 {% block side_content %}
-<div class="distinctarea paddtop border border-primary rounded big-margin">
-	Pozostałe tematy samouczka
-	<li style="margin-left: 25px;">
-		<ul>
-			<a href="{% url 'tutorial_register' %}">Rejestracja</a>
-		</ul>
-	</li>
-</div>
+{% include "includes/tutorial_list.html" with vertex=1 %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_vertex_class_pl.html" header="Co to jest rodzaj wierzchołka?" %}
 {% endblock %}

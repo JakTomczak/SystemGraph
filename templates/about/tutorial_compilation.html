@@ -1,0 +1,20 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}samouczek kompilacji{% endblock %}
+
+{% block main_content %}
+<h5>Samouczek SystemGraph: kompilacja i preambuła</h5>
+<p>
+W SystemGraph kompilować można trzy teksty źródłowe: treść wierzchołka, opis wierzchołka i treść krawędzi. Kompilacja odbywa się z języka znaczników <a href="https://pl.wikipedia.org/wiki/LaTeX">LaTeX</a> do języka HTML (języka przeglądarek internetowych).
+</p>
+<p>
+Każdy dokument LaTeX potrzebuje preambuły, czyli zbioru znaczników, dodanych przed tekstem właściwym, służących głównie do importu bibliotek oraz ustalenia opcji kompilacji i formatowania. Ponieważ często zdarza się, że użytkownicy LaTeXa kopiują preambułę pomiędzy artykułami, w SystemGraph trzymamy preambuły w osobnym pliku i łączymy je z tekstem właściwym automatycznie przed kompilacją. Wtedy także automatycznie dodajemy znaczniki begin{document} i end{document}.
+</p>
+<p>
+Kompilacja odbywa się na naszym serwerze i może potrwać kilka sekund.
+</p>
+{% endblock %}
+{% block side_content %}
+{% include "includes/tutorial_list.html" with compile=1 %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/preamble_content_pl.html" header="Zawartość preambuły?" %}
+{% endblock %}

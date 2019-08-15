@@ -1,0 +1,31 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}samouczek edycji wierzchołka{% endblock %}
+
+{% block main_content %}
+<h5>Samouczek SystemGraph: edycja wierzchołków</h5>
+<p>
+Po dodaniu nowego wierzchołka zostaniesz przekierowany do panelu jego edycji. Aby wyświetlić panel edycji wierzchołka musisz być zalogowany, a wierzchołek, który próbujesz edytować musi należeć do Ciebie.
+</p>
+<p>
+Hiperłącze prowadzące do panelu edycji danego wierzchołka można znaleźć na wielu podstronach. W szczególności, hiperłącze to można znaleźć najeżdżając na ikonkę listy w widoku wierzchołka oraz na stronie swojego profilu (bezpośrednio lub po kliknięciu na przycisk "Pokaż wszystkie").
+</p>
+<p>
+W panelu edycji wierzchołka możesz zmienić jego temat, tytuł i rodzaj wierzchołka. Możesz także dodać krótki tytuł, dodawać i edytować krawędzie oraz dodać i opublikować treść i opis wierzchołka.
+</p>
+<p>
+Krawędzie służą kilku celom i zajmujemy się nimi w jednym z następnych tematów tego samouczka.
+</p>
+<p>
+W SystemGraph rozumiemy, że prosty (niesformatowany) tekst nie nadaje się do przedstawiania m. in. formuł i symboli matematycznych. Problem ten rozwiązaliśmy wymagając od autorów wierzchołków, aby ci pisali treść wierzchołka itp. w formie tekstu źródłowego języka znaczników LaTeX. Jeżeli nie rozumiesz poprzedniego zdania, a nie potrzebujesz używać nic ponad prosty tekst, nie przejmuj się. Po prostu wybierz preambułę obsługującą język polski, wypełnij pole "Treść" wedle uzniania i kliknij przycisk "Opublikuj".
+</p>
+<p>
+Gdy uruchomisz kompilację, wybrana przez Ciebie preambuła oraz aktualny tekst zostaną połączone w jeden dokument. Ani w preambule, ani w tekście źródłowym nie musisz (nie możesz) dodawać znaczników begin{document} i end{document} - zostaną one dodane automatycznie. Gdy uruchomisz kompilację, na stronie pojawi się log kompilacji, w którym wyświetlony zostanie jej obecny postęp, w tym także ewentualne błędy.
+</p>
+<img src="/media/tutorial_edit_vertex_pre.jpg" width="100%;">
+<img src="/media/tutorial_edit_vertex_post.jpg" width="100%;">
+{% endblock %}
+{% block side_content %}
+{% include "includes/tutorial_list.html" with vertex_edit=1 %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_latex_pl.html" header="Kompilacja i LaTeX" %}
+{% endblock %}

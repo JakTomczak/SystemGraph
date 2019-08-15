@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from . import common_views
 
@@ -27,6 +28,8 @@ tutorial_patterns = [
 	path('', common_views.tutorial_frontpage, name='tutorial_frontpage'),
 	path('register/', common_views.tutorial_register, name='tutorial_register'),
 	path('vertex/', common_views.tutorial_vertex, name='tutorial_vertex'),
+	path('vertex_edit/', TemplateView.as_view(template_name = 'about/tutorial_vertex_edit.html'), name='tutorial_vertex_edit'),
+	path('compilation/', TemplateView.as_view(template_name = 'about/tutorial_compilation.html'), name='tutorial_compile'),
 ]
 
 urlpatterns = [
