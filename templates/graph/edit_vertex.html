@@ -53,12 +53,19 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th scope="col" style="display: flex;">
-								<span style="margin-right: 20px;">ID krawędzi:</span>
+							<th scope="col">
+								<div style="display: flex;">
+									<span style="margin-right: 20px;">ID krawędzi:</span>
 {% include "includes/question_mark.html" with height=16 my_id='edge_id' content='Drugi argument znacznika \sglink.' %}
+								</div>
 							</th>
 							<th scope="col">Wierzchołek docelowy:</th>
-							<th scope="col">Opis (nadpisany opis wierzchołka docelowego)</th>
+							<th scope="col" style="min-width: 300px;">
+								<div style="display: flex;">
+									<span style="margin-right: 20px;">Treść:</span>
+{% include "includes/question_mark.html" with height=16 my_id='edge_cont' content='Nieobowiązkowa. Po stworzeniu znacznika \sglink z danej krawędzi, po najechaniu na tak utworzone łącze, treść krawędzi zostanie wyświetlona.' %}
+								</div>
+							</th>
 							<th scope="col"></th>
 						</tr>
 					</thead>

@@ -11,7 +11,7 @@
 <form method="post" id="edit-edge-form">
 	{% csrf_token %}
 	<input type="hidden" id="hidden_action" value="" name="action">
-	<div class="internal-menu space-between sidepadd">
+	<div class="internal-menu paddtop space-between sidepadd">
 		<h4>Edycja krawędzi</h4>
 		<button type="button" class="btn btn-secondary sgbutton" onclick="save_dont_compile()">Zapisz&nbspbez kompilacji</button>
 		<button type="button" class="btn btn-primary sgbutton" onclick="save_and_compile()">Zapisz i kompiluj</button>
@@ -20,7 +20,7 @@
 	{% for hidden in form.hidden_fields %}
 		{{ hidden }}
 	{% endfor %}
-	<div class="distinctarea paddtop border border-primary rounded medium-margin">
+	<div class="distinctarea bigpadd border border-primary rounded medium-margin">
 		<h5>Początek (wierzchołek wyjściowy)</h5>
 {% include 'includes/singleframe/vertex.html' with this_vertex=predecessor %}
 	</div>
@@ -29,8 +29,8 @@
 {% include 'includes/singleframe/vertex.html' with this_vertex=successor %}{% else %}
 {% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=successor chosen=is_chosen my_id="succ" header="Koniec (wierzchołek docelowy)" %}{% endif %}
 	</div>
-{% include "includes/widget.html" with widget=form.preamble margin="medium" header="Preambuła" %}
-{% include "includes/widget.html" with widget=form.content margin="medium" header="Treść nadpisująca opis wierzchołka docelowego" rows=3 %}
+{% include "includes/widget_with_qm.html" with widget=form.preamble margin="big" header="Preambuła" qm_content="Do wyboru z  utworzonych przez ciebie oraz kilku domyślnych."  %}
+{% include "includes/widget.html" with widget=form.content margin="big" header="Treść nadpisująca opis wierzchołka docelowego" rows=3 %}
 </form>
 {% endblock %}
 {% block side_content %}

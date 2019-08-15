@@ -255,13 +255,18 @@ li.form-group a {
 	padding-right: 10px;
 }
 
+.bigpadd {
+	padding: 13px 15px 10px 13px;
+}
+
 .distinctarea {
-	/* display: flex; */
-	/* flex-direction: column; */
+	background-color: var(--secondary-one);
+}
+
+.distinctarea:not(.bigpadd) {
 	padding-bottom: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
-	background-color: var(--secondary-one);
 }
 
 .distinctarea :not(.internal-menu) h5 {
