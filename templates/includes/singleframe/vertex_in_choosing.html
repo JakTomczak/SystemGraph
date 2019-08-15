@@ -16,7 +16,7 @@
 <div id="chosen_div_{{ my_id }}" class="innerdistinctarea border border-warning rounded small-margin">
 	<a id="chosen_a_{{ my_id }}" href="{% url 'view_vertex' vertex_id=this_vertex.vertex_id %}{% if path_id %}?path={{ path_id }}&index={{ my_id }}{% endif %}" class="fancy-a">{{ this_vertex }}</a> {% if user == this_vertex.user or new_edge %}<a id="edit_a_{{ my_id }}" style="float: right" href="{% url 'edit_vertex' vertex_id=this_vertex.vertex_id %}">edytuj</a>{% endif %}
 	<br>
-	<span id="desc_span_{{ my_id }}">{{ this_vertex.description|safe }}</span>
+	<span id="desc_span_{{ my_id }}">{{ this_vertex.get_description|safe }}</span>
 </div>
 <script>
 var CHOSEN_VID_{{ my_id }} = 'none';

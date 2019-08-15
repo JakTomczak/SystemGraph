@@ -407,7 +407,7 @@ class Vertex(models.Model):
 			'str': str(self), 
 			'vid': self.vertex_id, 
 			'inner': inner,
-			'description': self.description(), 
+			'description': self.get_description(), 
 			'view_url': self.get_url(), 
 			'edit_url': self.get_edit_url() 
 		}
@@ -448,6 +448,9 @@ class Vertex(models.Model):
 				return t
 		else:
 			return ''
+	
+	def get_description(self):
+		return self.description().replace('\n', '').replace('\r', '')
 			
 	def get_url(self):
 		return reverse('view_vertex', kwargs={'vertex_id': self.vertex_id})

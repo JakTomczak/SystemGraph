@@ -321,7 +321,6 @@ def view_vertex(request, vertex_id):
 		except exceptions.ObjectDoesNotExist:
 			return render(request, 'errors/404.html')
 		previous, next = this_path.get_others(entry)
-	# (bolist, lelist, rilist, tolist) = tools.four_directions(this_vertex)
 	displayer = tools.Displayer(this_vertex)
 	big_lists = {
 		'bottom': displayer.run(this_vertex.vertex_class.bottom),
@@ -342,10 +341,6 @@ def view_vertex(request, vertex_id):
 		'thisvertex': this_vertex, 
 		'thisvertexcontent': content, 
 		'small_lists': small_lists,
-		# 'bottom': bolist, 
-		# 'left': lelist, 
-		# 'right': rilist, 
-		# 'top': tolist, 
 		'current_path': this_path,
 		'prev_entries': previous,
 		'next_entries': next

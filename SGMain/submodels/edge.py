@@ -69,7 +69,7 @@ class Edge(models.Model):
 			f = codecs.open( self.directory, 'r', encoding = 'utf-8')
 		except (TypeError, IOError):
 			if self.successor:
-				return self.successor.description().replace('\n', '').replace('\r', '')
+				return self.successor.get_description()
 			else:
 				return ''
 		else:
@@ -77,7 +77,7 @@ class Edge(models.Model):
 			f.close()
 			if t or not self.successor:
 				return t.replace('\n', '').replace('\r', '')
-			return self.successor.description().replace('\n', '').replace('\r', '')
+			return self.successor.get_description()
 			
 	'''
 	Similar to Vertices, Edges also have their content in pre- and post compilation versions
