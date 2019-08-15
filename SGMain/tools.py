@@ -40,9 +40,9 @@ def userproposal(message):
 weights = {
 	'initial': {
 		0: 0.1, # not the same disciplines
-		1: 1, # only the same discipline
-		2: 3, # only the same section
-		3: 6, # the same subject
+		1: 0.9, # only the same discipline
+		2: 1.7, # only the same section
+		3: 2.5, # the same subject
 	},
 	'modifiers': {
 		'the_same_author': 1.3,
@@ -106,7 +106,7 @@ class Displayer (object):
 			output.append(vert_dict)
 		return sorted( output, key = itemgetter('weight'), reverse = True )[:16]
 	
-	def _weight(self, vertex):
+	def _weight(self, vertex, time = True):
 		init = int(vertex.discipline == self.discipline) + int(vertex.section == self.section) + int(vertex.subject == self.subject)
 		weight = weights['initial'][init]
 		if vertex.user == self.user:
@@ -115,12 +115,13 @@ class Displayer (object):
 			weight += self.edge_weight(edge, 'outgoing')
 		for edge in self.incoming.filter(predecessor = vertex):
 			weight += self.edge_weight(edge, 'incoming')
-		seconds_between = (vertex.date - self.vertex.date).total_seconds()
-		weight += seconds_between / seconds_in_thousand_years
+		if time:
+			seconds_between = (vertex.date - self.vertex.date).total_seconds()
+			weight += seconds_between / seconds_in_thousand_years
 		return weight
 	
 	def edge_weight(self, edge, type):
 		eweight = weights['from_edge'][type]
-		if edge.father != self.user:
+		if edge.father and edge.father != self.user:
 			eweight *= weights['edge_modifier']['user_is_not_father']
 		return eweight

@@ -41,7 +41,7 @@
 			{% block content %}
 			{% endblock %}
 		</div>
-{% include "footer.html" %}
+{% if not vertex_view %}{% include "footer.html" %}{% endif %}
 	</main>
 {% block javascript %}{% endblock %}
 </body>

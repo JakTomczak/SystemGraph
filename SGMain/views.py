@@ -328,18 +328,22 @@ def view_vertex(request, vertex_id):
 		'right': displayer.run(this_vertex.vertex_class.right),
 		'top': displayer.run(this_vertex.vertex_class.top)
 	}
-	small_lists = {
-		'bottom': big_lists['bottom'][:4],
-		'left': big_lists['left'][:4],
-		'right': big_lists['right'][:4],
-		'top': big_lists['top'][:4]
-	}
+	small_lists = {}
+		# 'bottom': big_lists['bottom'][:4],
+		# 'left': big_lists['left'][:4],
+		# 'right': big_lists['right'][:4],
+		# 'top': big_lists['top'][:4]
+	# }
+	for key, value in big_lists.items():
+		small_lists[key] = value[:4]
+		big_lists[key] = value[4:16]
 	context = {
 		'vertex_view': 1, # changes in base.html
 		'links': this_vertex.read_sglinks(), 
 		'thisuser': request.user == this_vertex.user, 
 		'thisvertex': this_vertex, 
 		'thisvertexcontent': content, 
+		'big_lists': big_lists,
 		'small_lists': small_lists,
 		'current_path': this_path,
 		'prev_entries': previous,

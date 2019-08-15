@@ -1,0 +1,8 @@
+{% if list %}<div class="vv_menu_wrapper" id="vv_{{ my_id }}_menu_wrapper">
+	<div class="vv_menu">
+		<button class="vv_menu_btn" id="vv_{{ my_id }}_menu_btn">więcej</button>
+		<div class="vv_menu_dropdown" id="vv_{{ my_id }}_menu_dropdown">{% for vertdict in list %}
+			<a href="{% url 'view_vertex' vertex_id=vertdict.vertex.vertex_id %}" >{{ vertdict.title|truncatechars:37 }}</a>{% endfor %}
+		</div>
+	</div>
+</div>{% endif %}
