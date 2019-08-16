@@ -3,7 +3,13 @@ function calc_main_height() {
 	// alert(window_height);
 	var navbar_height = document.getElementById('the_navbar').offsetHeight;
 	// alert(navbar_height);
-	var footer_height = document.getElementById('the_footer').offsetHeight;
+	var footer_height;
+	try {
+		footer_height = document.getElementById('the_footer').offsetHeight;
+	}
+	catch {
+		footer_height = 0;
+	}
 	// alert(footer_height);
 	var minheight = window_height - footer_height - navbar_height;
 	// alert(minheight);

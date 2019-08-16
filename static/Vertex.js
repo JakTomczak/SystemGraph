@@ -20,6 +20,13 @@ function calc_max_height() {
 	
 }
 
+function calc_min_height() {
+	var butt_height = document.getElementById('right_showhide').offsetHeight;
+	var menu_height = document.getElementById('vv_the_menu_wrapper').offsetHeight;
+	var minheight = butt_height + 2*menu_height;
+	document.getElementById("the_innerframe").style.minHeight = minheight + 'px';
+}
+
 function calc_cframe_margin() {
 	// var leftnavbarwidth = document.getElementById('vv_navbar_left').offsetWidth;
 	// var rightnavbarwidth = document.getElementById('vv_navbar_right').offsetWidth;
@@ -34,11 +41,29 @@ function calc_cframe_margin() {
 	}catch {}
 }
 
+function calc_hidden_right_dropdown(side) {
+	var dropdown = null;
+	try {
+		dropdown = document.getElementById("vv_more_" + side + "_menu_dropdown");
+	}catch {}
+	var height;
+	if (dropdown) {
+		dropdown.style.display = 'block';
+		height = dropdown.clientHeight;
+		dropdown.removeAttribute("style");
+		button_height = document.getElementById("vv_more_" + side + "_menu_btn").offsetHeight;
+		dropdown.style.bottom = ((button_height-height)/2) + 'px';
+	}
+}
+
 $(document).ready(function() {
 	document.getElementById("upper_sidebar").style.minHeight = vertbars_min_height + 'px';
 	document.getElementById("lower_sidebar").style.minHeight = vertbars_min_height + 'px';
 	calc_max_height();
+	calc_min_height();
 	calc_cframe_margin();
+	calc_hidden_right_dropdown("right");
+	calc_hidden_right_dropdown("left");
 });
 
 function Left_Show_Hide() {

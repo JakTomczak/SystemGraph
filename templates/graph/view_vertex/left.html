@@ -1,11 +1,12 @@
 <div id="left_sidebar" class="sidebar" style="border-top: 1px dashed;">
 {% for vertdict in list %}
 	<div class="sidebar_element">
-		<small><a href="{% url 'view_vertex' vertex_id=vertdict.vertex.vertex_id %}" >{{ vertdict.title|truncatechars:37 }}</a></small>
+		<small class="nowrap"><a href="{% url 'view_vertex' vertex_id=vertdict.vertex.vertex_id %}" >{{ vertdict.title|truncatechars:37 }}</a></small>
 		<br>
 		<small class="verysmall">{{ vertdict.description|safe }}</small>
 	</div>
 {% endfor %}
+{% include "graph/view_vertex/more.html" with list=more my_id='more_left' %}
 </div>
 <div class="vertbuttonholder">
 	<button id="left_showhide" onclick="Left_Show_Hide()" class="vertex-button rightleft left">

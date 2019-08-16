@@ -324,13 +324,20 @@ class CompilationCore(object):
 		edge.directory = outputfile
 		edge.save()
 	
+	def unexpected_error(self):
+		self.errortext = 'Unexpected error occured. You have experienced error, which we were not prepared for. Please send us message explaining what you did.'
+		self._log_error()
+	
 def compile_v1(vertex_id = None, desc = False, edge_id = None, text = ''):
 	ccore = CompilationCore(vertex_id = vertex_id, desc = desc, edge_id = edge_id, text = text)
-	if not ccore.error:
-		ccore.prepare()
-	if not ccore.error:
-		ccore.run()
-	if not ccore.error:
-		ccore.clean_up()
-	if not ccore.error:
-		ccore.cdata.close()
+	try:
+		if not ccore.error:
+			ccore.prepare()
+		if not ccore.error:
+			ccore.run()
+		if not ccore.error:
+			ccore.clean_up()
+		if not ccore.error:
+			ccore.cdata.close()
+	except:
+		ccore.unexpected_error()

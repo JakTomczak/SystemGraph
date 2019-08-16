@@ -329,11 +329,6 @@ def view_vertex(request, vertex_id):
 		'top': displayer.run(this_vertex.vertex_class.top)
 	}
 	small_lists = {}
-		# 'bottom': big_lists['bottom'][:4],
-		# 'left': big_lists['left'][:4],
-		# 'right': big_lists['right'][:4],
-		# 'top': big_lists['top'][:4]
-	# }
 	for key, value in big_lists.items():
 		small_lists[key] = value[:4]
 		big_lists[key] = value[4:16]
