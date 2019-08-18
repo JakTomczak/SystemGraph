@@ -404,7 +404,7 @@ def new_vertex_class(request):
 def new_edge(request):
 	if not request.user or request.user.is_anonymous:
 		return render(request, '401.html')
-	possible = model.Vertex.objects.filter(user = request.user) | model.Vertex.objects.filter(submitted = True)
+	possible = model.Vertex.objects.filter(user = request.user) | model.Vertex.get_submitted()
 	if request.method == 'POST':
 		action = request.POST['action'].split(',')
 		if 'save' in action:
@@ -486,7 +486,7 @@ def edit_edge(request, edge_id):
 		'form': form, 
 		'predecessor': this_edge.predecessor, 
 		'edge_id': edge_id, 
-		'vertices': model.Vertex.objects.filter(user = request.user, submitted = True)
+		'vertices': model.Vertex.objects.filter(user = request.user)
 	}
 	if this_edge.successor:
 		context['successor'] = this_edge.successor

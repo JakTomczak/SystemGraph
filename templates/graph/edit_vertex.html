@@ -28,7 +28,7 @@
 						<span class="help-block">{{ error }}</span>
 					{% endfor %}
 					<div style="width: auto" class="flexonwidth">
-						<label for="{{ form.ifshorttitle.id_for_label }}" class="" style="width: 90px;">Krótki tytuł</label>
+						<label for="{{ form.shorttitle.id_for_label }}" class="" style="width: 90px;">Krótki tytuł</label>
 						<div style="overflow: hidden; flex: 1;">{% render_field form.shorttitle class="form-control box-block-100" style="width:100%; min-width:150px" placeholder=form.shorttitle.label %}</div>
 {% include "includes/question_mark.html" with height=24 my_id='shorttitle' content='Krótki tytuł nie jest obowiązkowy. Maksymalnie 40 znaków.' %}
 						{% for error in form.shorttitle.errors %}
