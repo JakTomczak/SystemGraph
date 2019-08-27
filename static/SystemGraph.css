@@ -497,3 +497,19 @@ a:not([href]) {
 	display: flex;
 	flex-direction: column;
 }
+
+.modal_hidden_add_butts .add_button {
+	display: none;
+}
+
+.modal_hidden_add_butts .choose_button {
+	display: block;
+}
+
+.modal_hidden_change_butts .add_button {
+	display: block;
+}
+
+.modal_hidden_change_butts .choose_button {
+	display: none;
+}

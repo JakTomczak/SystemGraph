@@ -20,7 +20,7 @@
 	<h4 style="margin: 16px 26px 9px;">Kolejne wierzchołki ścieżki</h4>
 	<a type="button" class="btn btn-outline-secondary" style="margin: 7px 40px 0;" onclick="add_new_to_path(0)">Dodaj na początku</a>
 	<div class="distinctarea border border-primary rounded big-margin">
-{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=first chosen="1" my_id="1" header="Wierzchołek początkowy" mtitle="Zmień wierzchołek nr 1" %}
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=first path_id=this_path.path_id chosen="1" my_id="1" header="Wierzchołek początkowy" mtitle="Zmień wierzchołek nr 1" %}
 	</div>
 	{% for vert in the_rest %}
 	{% with ii=forloop.counter|add:'1'|stringformat:"s" %}
@@ -28,7 +28,7 @@
 	{% with mt="Zmień wierzchołek nr "|add:ii %}
 	<a type="button" class="btn btn-outline-secondary" style="margin: 7px 40px 0;" onclick="add_new_to_path({{ forloop.counter }})">Dodaj tutaj</a>
 	<div class="distinctarea border border-primary rounded big-margin">
-{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=vert chosen="1" my_id=ii header=head mtitle=mt %}
+{% include 'includes/singleframe/vertex_in_choosing.html' with this_vertex=vert path_id=this_path.path_id chosen="1" my_id=ii header=head mtitle=mt %}
 	</div>
 	{% endwith %}
 	{% endwith %}

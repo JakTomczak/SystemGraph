@@ -15,7 +15,7 @@
 					<th scope="col"></th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="modal_tbody" class="modal_hidden_add_butts">
 				{% for vertex in query %}
 				<tr>
 					<td><a href="{% url 'view_vertex' vertex_id=vertex.vertex_id %}" class="fancy-a">{{ vertex.vertex_id }}</a></td>
@@ -24,9 +24,9 @@
 					<td>{{ vertex.user.username }}</td>
 					<td>
 					{% if add %}
-						<button name="modal-add-button" type="button" onclick="modal_add_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Dodaj</button>
+						<button class="add_button" name="modal-add-button" type="button" onclick="modal_add_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Dodaj</button>
 					{% endif %}
-						<button name="modal-choose-button" type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button>
+						<button class="choose_button" name="modal-choose-button" type="button" onclick="modal_choose_this_one('{{ vertex.vertex_id }}')" {% if small %}style="font-size:11px;"{% endif %}>Wybierz</button>
 					</td>
 				</tr>
 				{% endfor %}
@@ -98,15 +98,11 @@ function MODAL_TITLE(title) {
 function MODAL_SHOW() {
 	{% if add %}var adds = document.getElementsByName("modal-add-button");
 	var chooses = document.getElementsByName("modal-choose-button");
-	for(var i = 0; i < adds.length; i++) {
-		if (ADD_CALLER === null) {
-			adds[i].style.display = "none";
-			chooses[i].style.display = "block";
-		}
-		else {
-			chooses[i].style.display = "none";
-			adds[i].style.display = "block";
-		}
+	if (ADD_CALLER === null) {
+		document.getElementById('modal_tbody').className = 'modal_hidden_add_butts';
+	}
+	else {
+		document.getElementById('modal_tbody').className = 'modal_hidden_change_butts';
 	}{% endif %}
 	document.getElementById("SG-modal-choosing").style.display = "block";
 }
@@ -149,6 +145,7 @@ $(document).ready(function() {
 	$('#modal_choose_table thead tr:eq(0) th').each( function (i) {
 		$(this).css( 'background-color', 'white');
 	} );
+	
 	
 	var table = $('#modal_choose_table').DataTable({
 		orderCellsTop: true,
