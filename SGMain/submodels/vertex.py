@@ -451,6 +451,14 @@ class Vertex(models.Model):
 	
 	def get_description(self):
 		return self.description().replace('\n', '').replace('\r', '')
+	
+	def get_description_from(self, another):
+		try:
+			from . import edge as edge_models
+			edge = edge_models.Edge.objects.get(predecessor = another, successor = self)
+			return edge.get_true_content()
+		except:
+			return self.description().replace('\n', '').replace('\r', '')
 			
 	def get_url(self):
 		return reverse('view_vertex', kwargs={'vertex_id': self.vertex_id})

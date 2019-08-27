@@ -58,12 +58,12 @@ class CompilationData(models.Model):
 			return ''
 		if cdata.step != -1:
 			return 'Kompilacja w toku.'
-		if now < cdata.last_end_time + datetime.timedelta(seconds = 4):
+		if now < cdata.last_end_time + datetime.timedelta(seconds = 5):
 			return 'Zaczekaj chwilę pomiędzy kompilacjami.'
-		minutes_ago = now - datetime.timedelta(minutes = 4)
+		minutes_ago = now - datetime.timedelta(minutes = 5)
 		launches = CompilationLaunch.objects.filter(compilation = cdata, time__gte = minutes_ago)
 		if len(launches) >= 10:
-			return 'Możesz uruchamiać kompilację jedynie 10 razy w ciągu 4 minut.'
+			return 'Możesz uruchamiać kompilację jedynie 10 razy w ciągu 5 minut.'
 		return ''
 	
 	# returns (still_running, error, m) where m is one ise message or list of compilation messages

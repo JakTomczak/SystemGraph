@@ -100,7 +100,7 @@ class Displayer (object):
 			vert_dict = {
 				'vertex': vertex,
 				'weight': weight,
-				'description': vertex.get_description(),
+				'description': vertex.get_description_from(self.vertex),
 				'title': vertex.shorttitle if vertex.shorttitle else vertex.title
 			}
 			output.append(vert_dict)
