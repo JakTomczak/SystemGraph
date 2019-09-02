@@ -1,0 +1,36 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}samouczek krawędzi{% endblock %}
+
+{% block main_content %}
+<h5>Samouczek SystemGraph: jak dodawać krawędzie</h5>
+<p>
+W SytemGraph krawędzią nazywamy obiekt reprezentujący pewną <i>zależność</i> pomiędzy dwoma wierzchołkami.
+</p>
+<p>
+Krawędzie w SystemGraph są <i>skierowane</i>, tj. posiadają wierzchołek wyjściowy - poprzednika oraz wierzchołek docelowy - następnika.
+</p>
+<p>
+Podczas dodawania krawędzi za poprzednika i następnika możesz wybrać wierzchołki opublikowane lub należące do ciebie nieopublikowane.
+</p>
+<p>
+Jeżeli za poprzednika wybrałeś swój wierzchołek, a za następnika wybrałeś albo swój wierzchołek, albo pozostawiłeś go niewybranym, krawędź zostanie utworzona, a ty zostaniesz przekierowany do edycji nowej krawędzi.
+</p>
+<p>
+Jeżeli za poprzednika lub następnika wybrałeś wierzchołek, którego autorem jest inny użytkownik, twoja krawędź nie będzie stworzona od razu - zamiast tego utworzona zostanie <i>propozycja krawędzi</i>.
+</p>
+<p>
+Propozycja krawędzi będzie oczekiwała na bycie zaakceptowaną lub odrzuconą przez użytkownika (lub dwóch użytkowników), na którego wierzchołku oparta jest rozważana proponowana krawędź.
+</p>
+<p>
+Spamowanie propozycji krawędzi jest utrudnione, np. nie można utworzyć propozycji, jeżeli taka sama już istnieje lub została już odrzucona.
+</p>
+<p>
+Jeżeli istnieje choć jedna propozycja krawędzi czekająca na twoje zaakceptowanie lub odrzucenie, w górnej części swojego profilu znajdziesz sekcję poświęconą właśnie tym akcjom.
+</p>
+{% endblock %}
+{% block side_content %}
+{% include "includes/tutorial_list.html" with vertex=1 %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/does_edge_have_to_have_start_pl.html" header="Czy krawędź musi mieć początek?" %}
+{% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_edge_without_successor_pl.html" header="Co to jest krawędź bez sukcesora?" %}
+{% endblock %}

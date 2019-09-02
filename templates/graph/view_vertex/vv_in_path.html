@@ -10,7 +10,7 @@
 {% endif %}{% if next_entries %}
 <div class="vv_menu_wrapper" id="vv_next_menu_wrapper">
 	<div class="vv_menu">
-		<button class="vv_menu_btn" id="vv_next_menu_btn">Następne w ścieżce</button>
+		<button class="vv_menu_btn" id="vv_next_menu_btn">Następne w&nbsp;ścieżce</button>
 		<div class="vv_menu_dropdown" id="vv_next_menu_dropdown">{% for entry in next_entries %}
 			<a href="{% url 'view_vertex' vertex_id=entry.vertex.vertex_id %}?path={{ current_path.path_id }}&index={{ entry.index }}">{{ entry.big_str }}</a>{% endfor %}
 		</div>

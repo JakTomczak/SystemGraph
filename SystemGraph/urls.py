@@ -30,6 +30,7 @@ tutorial_patterns = [
 	path('vertex/', common_views.tutorial_vertex, name='tutorial_vertex'),
 	path('vertex_edit/', TemplateView.as_view(template_name = 'about/tutorial_vertex_edit.html'), name='tutorial_vertex_edit'),
 	path('compilation/', TemplateView.as_view(template_name = 'about/tutorial_compilation.html'), name='tutorial_compile'),
+	path('edge/', TemplateView.as_view(template_name = 'about/tutorial_edge.html'), name='tutorial_edge'),
 ]
 
 urlpatterns = [
