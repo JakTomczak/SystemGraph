@@ -8,7 +8,8 @@ from . import views
 urlpatterns = [
 	path('search/', common_views.search_vertices, name='vertex_search'),
 	
-	path('add_new_discipline/', views.new_discipline, name = 'new_discipline'),
+	#path('add_new_discipline/', views.new_discipline, name = 'new_discipline'),
+	path('add_new_discipline/', views.NewDiscipline.as_view(), name = 'new_discipline'),
 	path('add_new_section/<parent_pk>/', views.new_section, name = 'new_section'),
 	path('add_new_section/', lambda request: redirect('new_section', parent_pk = 1, permanent = False), name='new_section'),
 	path('add_new_subject/<parent_pk>/', views.new_subject, name = 'new_subject'),

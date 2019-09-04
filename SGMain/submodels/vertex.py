@@ -128,9 +128,11 @@ class Discipline(models.Model):
 	@classmethod
 	def get_default(cls):
 		try:
-			return Discipline.objects.get(is_default = True)
+			return cls.objects.get(is_default = True)
 		except exceptions.ObjectDoesNotExist:
-			return Discipline.objects.all()[0]
+			return cls.objects.all()[0]
+		except exceptions.MultipleObjectsReturned:
+			return cls.objects.filter(is_default = True)[0]
 	
 	def create_default(self):
 		obj = Section(
