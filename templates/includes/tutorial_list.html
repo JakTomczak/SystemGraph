@@ -17,8 +17,8 @@
 			<span>Kompilacja i preambuła</span>{% else %}
 			<a href="{% url 'tutorial_compile' %}">Kompilacja i preambuła</a>{% endif %}
 		</li>
-		<li>{% if compile %}
-			<span>Kompilacja i preambuła</span>{% else %}
+		<li>{% if edge %}
+			<span>Dodawanie krawędzi</span>{% else %}
 			<a href="{% url 'tutorial_edge' %}">Dodawanie krawędzi</a>{% endif %}
 		</li>
 	</ul>

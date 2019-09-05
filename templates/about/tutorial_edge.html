@@ -8,10 +8,10 @@
 W SytemGraph krawędzią nazywamy obiekt reprezentujący pewną <i>zależność</i> pomiędzy dwoma wierzchołkami.
 </p>
 <p>
-Krawędzie w SystemGraph są <i>skierowane</i>, tj. posiadają wierzchołek wyjściowy - poprzednika oraz wierzchołek docelowy - następnika.
+Krawędzie w SystemGraph są <i>skierowane</i>, tj. posiadają wierzchołek wyjściowy - <i>poprzednika</i> oraz wierzchołek docelowy - <i>następnika</i>.
 </p>
 <p>
-Podczas dodawania krawędzi za poprzednika i następnika możesz wybrać wierzchołki opublikowane lub należące do ciebie nieopublikowane.
+Podczas dodawania krawędzi za poprzednika i następnika możesz wybrać wierzchołki opublikowane lub należące do Ciebie nieopublikowane.
 </p>
 <p>
 Jeżeli za poprzednika wybrałeś swój wierzchołek, a za następnika wybrałeś albo swój wierzchołek, albo pozostawiłeś go niewybranym, krawędź zostanie utworzona, a ty zostaniesz przekierowany do edycji nowej krawędzi.
@@ -26,11 +26,11 @@ Propozycja krawędzi będzie oczekiwała na bycie zaakceptowaną lub odrzuconą 
 Spamowanie propozycji krawędzi jest utrudnione, np. nie można utworzyć propozycji, jeżeli taka sama już istnieje lub została już odrzucona.
 </p>
 <p>
-Jeżeli istnieje choć jedna propozycja krawędzi czekająca na twoje zaakceptowanie lub odrzucenie, w górnej części swojego profilu znajdziesz sekcję poświęconą właśnie tym akcjom.
+Jeżeli istnieje choć jedna propozycja krawędzi czekająca na Twoje zaakceptowanie lub odrzucenie, w górnej części swojego profilu znajdziesz sekcję poświęconą właśnie tym akcjom.
 </p>
 {% endblock %}
 {% block side_content %}
-{% include "includes/tutorial_list.html" with vertex=1 %}
+{% include "includes/tutorial_list.html" with edge=1 %}
 {% include "includes/singleframe/FAQ.html" with in="FAQ/does_edge_have_to_have_start_pl.html" header="Czy krawędź musi mieć początek?" %}
 {% include "includes/singleframe/FAQ.html" with in="FAQ/what_is_edge_without_successor_pl.html" header="Co to jest krawędź bez sukcesora?" %}
 {% endblock %}

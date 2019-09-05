@@ -92,22 +92,27 @@ class CompilationCore(object):
 				self.load_vertex(vertex_id, desc)
 			else:
 				self.load_edge(edge_id)
+		if self.errortext:
+			try:
+				self._log_error()
+			except AttributeError:
+				pass
 		
 	def load_text(self, text):
-		if CompilationCore.check_text(text):
-			self.text = text
-	
-	# to do
-	@classmethod
-	def check_text(cls, text):
-		return True
+		if '<script' in text:
+			self.errortext = 'You cannot use <script> tags.'
+			return
+		if '</' in text:
+			self.errortext = 'You cannot use "</", which is end of html tag symbol.'
+			return
+		self.text = text
 		
 	def load_vertex(self, vertex_id, desc):
 		try:
 			self.object = model.Vertex.objects.get(vertex_id = vertex_id)
 			self.cdata = model.CompilationData.objects.get(fcode = self.fcode)
 		except exceptions.ObjectDoesNotExist:
-			self.error = True
+			self.errortext = 'Internal server error has occured.'
 			return
 		self.cdata.launch()
 		self._mode = 1
@@ -121,7 +126,7 @@ class CompilationCore(object):
 			self.object = model.Edge.objects.get(edge_id = edge_id)
 			self.cdata = model.CompilationData.objects.get(fcode = self.fcode)
 		except exceptions.ObjectDoesNotExist:
-			self.error = True
+			self.errortext = 'Internal server error has occured.'
 			return
 		self.cdata.launch()
 		self._mode = 3
