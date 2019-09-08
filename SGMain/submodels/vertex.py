@@ -116,83 +116,164 @@ class Preamble(models.Model):
 		B.title = 'Domyślna preambuła'
 		B.description = 'Działa z tekstem polskim i matematycznymi formułami.'
 		B.save()
+
+class SG_Model(models.Model):
+	model_name = ''
+	view_prefix = 'view_'
+	edit_prefix = 'edit_'
+	new_prefix = 'new_'
+	_pk = 'pk'
+	letter = '-'
 	
-class Discipline(models.Model):
-	polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
-	default = models.ForeignKey('Section', null = True, on_delete = models.SET_NULL, related_name='parent')
-	is_default = models.BooleanField(default = False)
-	
-	def __str__(self):
-		return self.polish_name
+	class Meta:
+		abstract = True
 	
 	@classmethod
 	def get_default(cls):
 		try:
 			return cls.objects.get(is_default = True)
-		except exceptions.ObjectDoesNotExist:
+		except (exceptions.FieldError, exceptions.ObjectDoesNotExist):
 			return cls.objects.all()[0]
 		except exceptions.MultipleObjectsReturned:
 			return cls.objects.filter(is_default = True)[0]
+	
+	@classmethod
+	def get_from_pk(cls, pk, default = True):
+		try:
+			return cls.objects.get(pk = pk)
+		except exceptions.ObjectDoesNotExist:
+			if default:
+				return cls.get_default()
+			else:
+				return None
+	
+	@classmethod
+	def get_view_name(cls):
+		return cls.view_prefix + cls.model_name
+	
+	@classmethod
+	def get_edit_name(cls):
+		return cls.edit_prefix + cls.model_name
+	
+	@classmethod
+	def get_new_name(cls):
+		return cls.new_prefix + cls.model_name
+	
+	def get_url(self):
+		return self.get_view_url()
+	
+	def get_view_url(self):
+		return reverse( self.__class__.get_view_name(), kwargs={self._pk: self.pk} )
+	
+	def get_edit_url(self):
+		return reverse( self.__class__.get_edit_name(), kwargs={self._pk: self.pk} )
+	
+	def get_new_url(self):
+		return reverse( self.__class__.get_new_name() )
+		
+	@classmethod
+	def new_id(cls):
+		_new_id = tools.id_generator(cls.letter)
+		while len( cls.objects.filter(pk = _new_id) ):
+			_new_id = tools.id_generator(cls.letter)
+		return _new_id
+			
+	def save_from_dict(self, dict):
+		for key in dict:
+			setattr(self, key, dict[key]) # embed in try maybe?
+		self.save()
+	
+	def add_parents_to_session(self, session):
+		pass
+	
+	def add_self_to_session(self, session):
+		session[self.model_name] = self.pk
+		self.add_parents_to_session(session)
+
+class SG_OrganizationLevel(SG_Model):
+	is_default = models.BooleanField(default = False)
+	parent_field = None
+	
+	class Meta:
+		abstract = True
+	
+	def perms(self, user):
+		perms_dict = user.is_authorized(self.model_name)
+		empty = len( self.vertex_set.all() ) < 1
+		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty ) and not self.is_default
+		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty ) and not self.is_default
+		return delete_p, edit_p
+	
+	def _prop_message(cls):
+		return '''{time}
+			User {user}
+			proposes {action} of {cname}
+			'''.format(time = datetime.datetime.now(), cname = cls.__name__)
+		
+	def propose_deletion(self, user):
+		message = self.__class__._prop_message()
+		message += 'of pk {pk}\n'.format(action = 'DELETION', user = user.username, pk = self.pk)
+		tools.userproposal(message)
+	
+	def propose_change(self, user, data_dict):
+		message = self.__class__._prop_message()
+		message += 'of pk {pk}\n'.format(action = 'EDITION', user = user.username, pk = self.pk)
+		for key in data_dict:
+			message += key + ': ' + data_dict[key] + '\n'
+		tools.userproposal(message)
+	
+	def get_closest_default(self):	# Always override this method
+		return self.__class__.objects.all()[0]
+	
+	def change_vertices_predelete(self):
+		obj = self.get_closest_default()
+		for vertex in self.vertex_set.all():
+			vertex.save_from_OrganizationLevel(obj)
+	
+	def set_parent(self, parent):
+		if self.parent_field is not None:
+			setattr(self, self.parent_field, parent)
+	
+class Discipline(SG_OrganizationLevel):
+	model_name = 'discipline'
+	
+	polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
+	default = models.ForeignKey('Section', null = True, on_delete = models.SET_NULL, related_name='parent')
+	
+	def __str__(self):
+		return self.polish_name
 	
 	def create_default(self):
 		obj = Section(
 			polish_name = 'Brak działu',
 			discipline = self,
-			is_default = True
+			is_default = True,
 		)
 		obj.save()
 		self.default = obj
 		self.save()
 	
-	def get_url(self):
-		return reverse('view_discipline', kwargs={'pk': self.pk})
-	
-	def get_edit_url(self):
-		return reverse('edit_discipline', kwargs={'pk': self.pk})
-	
 	def get_add_new_section_url(self):
 		return reverse('new_section', kwargs={'parent_pk': self.pk})
 	
 	def get_add_new_vertex_url(self):
-		return reverse('new_vertex', kwargs={'subject_pk': self.default.default.pk})
+		return '#'
+		# return reverse('new_vertex', kwargs={'subject_pk': self.default.default.pk})
 	
-	def perms(self, user):
-		perms_dict = user.is_authorized('discipline')
-		empty = len( Vertex.objects.filter(discipline = self) ) < 1
-		edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
-		delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
-		return delete_p, edit_p
-		
-	def propose_deletion(self, user):
-		message = str(datetime.datetime.now()) + '\n'
-		message += 'user: ' + user.username + '\n'
-		message += 'delete discipline\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
-		tools.userproposal(message)
-	
-	def propose_change(self, user, data_dict):
-		message = str(datetime.datetime.now()) + '\nDiscipline change\n'
-		message += 'user: ' + user.username + '\n'
-		message += 'discipline str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
-		for key in data_dict:
-			message += key + ': ' + data_dict[key] + '\n'
-		tools.userproposal(message)
-	
-	def change_vertices_predelete(self):
-		for vertex in Vertex.objects.filter(discipline = self):
-			vertex.discipline = Discipline.get_default()
-			vertex.section = vertex.discipline.default
-			vertex.subject = vertex.section.default
-			vertex.save()
+	def get_closest_default(self):
+		return Discipline.get_default()
 	
 	@classmethod
 	def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
 		Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
 		
-class Section(models.Model):
+class Section(SG_OrganizationLevel):
+	model_name = 'section'
+	parent_field = 'discipline'
+
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany dział')
 	discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
 	default = models.ForeignKey('Subject', null = True, on_delete = models.SET_NULL, related_name='parent')
-	is_default = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return self.polish_name
@@ -208,51 +289,187 @@ class Section(models.Model):
 		self.default = obj
 		self.save()
 	
-	def get_url(self):
-		return reverse('view_section', kwargs={'pk': self.pk})
-	
-	def get_edit_url(self):
-		return reverse('edit_section', kwargs={'pk': self.pk})
-	
 	def get_add_new_subject_url(self):
 		return reverse('new_subject', kwargs={'parent_pk': self.pk})
 	
 	def get_add_new_vertex_url(self):
 		return reverse('new_vertex', kwargs={'subject_pk': self.default.pk})
 	
-	def perms(self, user):
-		perms_dict = user.is_authorized('section')
-		empty = len( Vertex.objects.filter(section = self) ) < 1
-		edit_p = ( perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty ) ) and not self.is_default
-		delete_p = ( perms_dict['delete'] or ( perms_dict['empty_delete'] and empty ) ) and not self.is_default
-		return delete_p, edit_p
-		
-	def propose_deletion(self, user):
-		message = str(datetime.datetime.now()) + '\n'
-		message += 'user: ' + user.username + '\n'
-		message += 'delete section\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
-		tools.userproposal(message)
-	
-	def propose_change(self, user, data_dict):
-		message = str(datetime.datetime.now()) + '\nSection change\n'
-		message += 'user: ' + user.username + '\n'
-		message += 'section str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
-		for key in data_dict:
-			message += key + ': ' + data_dict[key] + '\n'
-		tools.userproposal(message)
-	
-	def change_vertices_predelete(self):
+	def get_closest_default(self):
 		if self.is_default:
-			for vertex in Vertex.objects.filter(section = self):
-				vertex.discipline = Discipline.get_default()
-				vertex.section = vertex.discipline.default
-				vertex.subject = vertex.section.default
-				vertex.save()
+			return Discipline.get_default().default
 		else:
-			for vertex in Vertex.objects.filter(section = self):
-				vertex.section = self.discipline.default
-				vertex.subject = vertex.section.default
-				vertex.save()
+			return self.discipline.default
+	
+	def add_parents_to_session(self, session):
+		if self.discipline:
+			session[self.discipline.model_name] = self.discipline.pk
+	
+# class Discipline(models.Model):
+	# polish_name = models.CharField(max_length = 60, default = 'Nienazwana dyscyplina')
+	# default = models.ForeignKey('Section', null = True, on_delete = models.SET_NULL, related_name='parent')
+	# is_default = models.BooleanField(default = False)
+	
+	# def __str__(self):
+		# return self.polish_name
+	
+	# @classmethod
+	# def get_default(cls):
+		# try:
+			# return cls.objects.get(is_default = True)
+		# except exceptions.ObjectDoesNotExist:
+			# return cls.objects.all()[0]
+		# except exceptions.MultipleObjectsReturned:
+			# return cls.objects.filter(is_default = True)[0]
+	
+	# @classmethod
+	# def get_from_pk(cls, pk, default = True):
+		# try:
+			# return cls.objects.get(pk = pk)
+		# except exceptions.ObjectDoesNotExist as e:
+			# if default:
+				# return cls.get_default()
+			# else:
+				# return None
+	
+	# def create_default(self):
+		# obj = Section(
+			# polish_name = 'Brak działu',
+			# discipline = self,
+			# is_default = True
+		# )
+		# obj.save()
+		# self.default = obj
+		# self.save()
+	
+	# def get_url(self):
+		# return reverse('view_discipline', kwargs={'pk': self.pk})
+	
+	# def get_edit_url(self):
+		# return reverse('edit_discipline', kwargs={'pk': self.pk})
+	
+	# def get_add_new_section_url(self):
+		# return reverse('new_section', kwargs={'parent_pk': self.pk})
+	
+	# def get_add_new_vertex_url(self):
+		# return '#'
+		# # return reverse('new_vertex', kwargs={'subject_pk': self.default.default.pk})
+	
+	# def perms(self, user):
+		# perms_dict = user.is_authorized('discipline')
+		# empty = len( Vertex.objects.filter(discipline = self) ) < 1
+		# edit_p = perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty )
+		# delete_p = perms_dict['delete'] or ( perms_dict['empty_delete'] and empty )
+		# return delete_p, edit_p
+		
+	# def propose_deletion(self, user):
+		# message = str(datetime.datetime.now()) + '\n'
+		# message += 'user: ' + user.username + '\n'
+		# message += 'delete discipline\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		# tools.userproposal(message)
+	
+	# def propose_change(self, user, data_dict):
+		# message = str(datetime.datetime.now()) + '\nDiscipline change\n'
+		# message += 'user: ' + user.username + '\n'
+		# message += 'discipline str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		# for key in data_dict:
+			# message += key + ': ' + data_dict[key] + '\n'
+		# tools.userproposal(message)
+	
+	# def change_vertices_predelete(self):
+		# for vertex in Vertex.objects.filter(discipline = self):
+			# vertex.discipline = Discipline.get_default()
+			# vertex.section = vertex.discipline.default
+			# vertex.subject = vertex.section.default
+			# vertex.save()
+	
+	# @classmethod
+	# def FIRST_TIME_RUN_ADD_DEFAULT_DISCIPLINE(cls):
+		# Discipline(polish_name = 'Brak dyscypliny', is_default = True).save()
+		
+# class Section(models.Model):
+	# polish_name = models.CharField(max_length = 60, default = 'Nienazwany dział')
+	# discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
+	# default = models.ForeignKey('Subject', null = True, on_delete = models.SET_NULL, related_name='parent')
+	# is_default = models.BooleanField(default = False)
+	
+	# def __str__(self):
+		# return self.polish_name
+	
+	# def create_default(self):
+		# obj = Subject(
+			# polish_name = 'Brak tematu',
+			# discipline = self.discipline,
+			# section = self,
+			# is_default = True
+		# )
+		# obj.save()
+		# self.default = obj
+		# self.save()
+	
+	# @classmethod
+	# def get_from_pk(cls, pk, default = True):
+		# try:
+			# return cls.objects.get(pk = pk)
+		# except exceptions.ObjectDoesNotExist as e:
+			# if default:
+				# return cls.get_default()
+			# else:
+				# return None
+	
+	# @classmethod
+	# def get_parent_from_pk(cls, pk, default = True):
+		# this = cls.get_from_pk(pk, default= default)
+		# if default or this is not None:
+			# return this.discipline
+		# else:
+			# return None
+	
+	# def get_url(self):
+		# return reverse('view_section', kwargs={'pk': self.pk})
+	
+	# def get_edit_url(self):
+		# return reverse('edit_section', kwargs={'pk': self.pk})
+	
+	# def get_add_new_subject_url(self):
+		# return reverse('new_subject', kwargs={'parent_pk': self.pk})
+	
+	# def get_add_new_vertex_url(self):
+		# return reverse('new_vertex', kwargs={'subject_pk': self.default.pk})
+	
+	# def perms(self, user):
+		# perms_dict = user.is_authorized('section')
+		# empty = len( Vertex.objects.filter(section = self) ) < 1
+		# edit_p = ( perms_dict['full_edit'] or ( perms_dict['empty_edit'] and empty ) ) and not self.is_default
+		# delete_p = ( perms_dict['delete'] or ( perms_dict['empty_delete'] and empty ) ) and not self.is_default
+		# return delete_p, edit_p
+		
+	# def propose_deletion(self, user):
+		# message = str(datetime.datetime.now()) + '\n'
+		# message += 'user: ' + user.username + '\n'
+		# message += 'delete section\nstr: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		# tools.userproposal(message)
+	
+	# def propose_change(self, user, data_dict):
+		# message = str(datetime.datetime.now()) + '\nSection change\n'
+		# message += 'user: ' + user.username + '\n'
+		# message += 'section str: ' + str(self) + ', pk: ' + str(self.pk) + '\n'
+		# for key in data_dict:
+			# message += key + ': ' + data_dict[key] + '\n'
+		# tools.userproposal(message)
+	
+	# def change_vertices_predelete(self):
+		# if self.is_default:
+			# for vertex in Vertex.objects.filter(section = self):
+				# vertex.discipline = Discipline.get_default()
+				# vertex.section = vertex.discipline.default
+				# vertex.subject = vertex.section.default
+				# vertex.save()
+		# else:
+			# for vertex in Vertex.objects.filter(section = self):
+				# vertex.section = self.discipline.default
+				# vertex.subject = vertex.section.default
+				# vertex.save()
 		
 class Subject(models.Model):
 	polish_name = models.CharField(max_length = 60, default = 'Nienazwany temat')
@@ -278,6 +495,16 @@ class Subject(models.Model):
 			'new_section_url': self.discipline.get_add_new_section_url(),
 			'new_subject_url': self.section.get_add_new_subject_url(),
 		}
+	
+	@classmethod
+	def get_from_pk(cls, pk, default = True):
+		try:
+			return cls.objects.get(pk = pk)
+		except exceptions.ObjectDoesNotExist as e:
+			if default:
+				return cls.get_default()
+			else:
+				return None
 	
 	def get_url(self):
 		return reverse('view_subject', kwargs={'pk': self.pk})
@@ -553,3 +780,18 @@ class Vertex(models.Model):
 			return Vertex.objects.get(is_default = True)
 		except exceptions.ObjectDoesNotExist: # More then one default Vertex is forbidden in this project.
 			return Vertex.objects.all()[0]
+	
+	def save_from_OrganizationLevel(self, obj):
+		if obj.model_name == Discipline.model_name:
+			self.discipline = obj
+			self.section = obj.default
+			self.subject = obj.default.default
+		elif obj.model_name == Section.model_name:
+			self.section = obj
+			self.discipline = obj.discipline
+			self.subject = obj.default
+		elif obj.model_name == Subject.model_name:
+			self.subject = obj
+			self.section = obj.section
+			self.discipline = obj.discipline
+		self.save()

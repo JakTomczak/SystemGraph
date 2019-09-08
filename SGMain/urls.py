@@ -5,13 +5,18 @@ from django.shortcuts import redirect
 from SystemGraph import common_views
 from . import views
 
+def my_patterns_middeware(pattern, view_class):
+	return path(pattern, view_class.as_view(), name = view_class.get_pattern_name())
+
 urlpatterns = [
-	path('search/', common_views.search_vertices, name='vertex_search'),
+	path('search/', common_views.search_vertices, name = 'vertex_search'),
 	
 	#path('add_new_discipline/', views.new_discipline, name = 'new_discipline'),
-	path('add_new_discipline/', views.NewDiscipline.as_view(), name = 'new_discipline'),
-	path('add_new_section/<parent_pk>/', views.new_section, name = 'new_section'),
-	path('add_new_section/', lambda request: redirect('new_section', parent_pk = 1, permanent = False), name='new_section'),
+	# path('add_new_discipline/', views.NewDiscipline.as_view(), name = 'new_discipline'),
+	my_patterns_middeware('add_new_discipline/', views.NewDiscipline),
+	my_patterns_middeware('add_new_section/', views.NewSection),
+	# path('add_new_section/<parent_pk>/', views.new_section, name = 'new_section'),
+	# path('add_new_section/', lambda request: redirect('new_section', parent_pk = 1, permanent = False), name='new_section'),
 	path('add_new_subject/<parent_pk>/', views.new_subject, name = 'new_subject'),
 	path('add_new_subject/', lambda request: redirect('new_subject', parent_pk = 1, permanent = False), name='new_subject'),
 	

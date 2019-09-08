@@ -4,7 +4,7 @@
 
 {% block main_content %}
 <h4>{{ this_discipline }}</h4>
-{% url 'new_section' parent_pk=this_discipline.pk as href %}
+{% url 'new_section' as href %}
 {% include "includes/simple_header_with_a.html" with text="Wszystkie dostępne działy" atext="Utwórz nowy dział" %}
 <div class="distinctarea paddtop border border-primary rounded big-margin">
 {% for sec in sections %}

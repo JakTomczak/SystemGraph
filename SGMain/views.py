@@ -5,7 +5,7 @@ from functools import wraps
 from django.shortcuts import render, redirect
 from django.contrib import messages
 import django.core.exceptions as exceptions
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 
 from . import models as model
@@ -14,113 +14,83 @@ from . import tools
 from users.models import CustomUser
 
 class SG_View(object):
-	def __init__(self, **kwargs):
-		self.mini_self = self.create_mini_self()
-		super().__init__(**kwargs)
-		
-	def create_mini_self(self):
-		return ['undefined', None, None]
+	this_class = None
 	
-	def add_self_to_previous(self):
-		if 'previous' not in self.request.session:
-			self.request.session['previous'] = []
-		self.request.session['previous'].append(self.mini_self)
-		print(self.request.session['previous'])
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 	
-	def get_previous(self, from_end = 1):
-		try:
-			return self.request.session['previous'][-from_end]
-		except (AttributeError, KeyError, IndexError):
-			return None
-	
-	def get_recent(self, ith_to_last = 5):
-		if 'previous' in self.request and len(self.request.session['previous']):
-			return self.request.session['previous'][-ith_to_last:]
-		else:
-			return None
+	def sg_dispatch(self):
+		pass
 
 def start_create_view(view_func):
-	def get_parent_from_miniview_list(self, mv_list):
-		if not mv_list:
-			return self.parent_class.get_default()
-		not_found = True
-		i = len(mv_list)
-		while not_found and i >= 0:
-			i -= 1
-			if mv_list[i][0] in self.accepted_parents:
-				not_found = False
-		if not_found:
-			return self.parent_class.get_default()
-		else:
-			return self.accepted_parents[ mv_list[i][0] ](mv_list[i][1]) # calls function which get object from pk
-	
 	@wraps(view_func)
 	def wrapper(self, *args, **kwargs):
 		if not self.request.user or self.request.user.is_anonymous:
 			return render(self.request, 'errors/401.html')
 		if self.parent_class is not None:
-			recent = self.get_recent()
-			self.parent = get_parent_from_miniview_list(self, recent)
+			if self.parent_class.model_name in self.request.session:
+				self.parent = self.parent_class.get_from_pk( self.request.session[self.parent_class.model_name] )
+			else:
+				self.parent = self.parent_class.get_default()
+		self.sg_dispatch()
 		return view_func(self, *args, **kwargs)
 	return wrapper
 
 class SG_CreateView(SG_View, CreateView):
 	success_message = ''
 	parent_class = None
-	accepted_parents = {} # in form of <code>: <this_class.get_from_pk>
 	
-	def __init__(self, **kwargs):
-		super(SG_CreateView, self).__init__(**kwargs)
+	def __init__(self, *args, **kwargs):
+		super(SG_CreateView, self).__init__(*args, **kwargs)
 	
 	def get_success_message(self):
-		return success_message
+		return self.success_message
+	
+	def chosen_to_session(self, form):
+		self.object.add_self_to_session(self.request.session)
 	
 	def success(self):
 		messages.add_message(self.request, messages.SUCCESS, self.get_success_message())
 	
 	@start_create_view
 	def dispatch(self, *args, **kwargs):
-		self.add_self_to_previous()
 		return super().dispatch(*args, **kwargs)
 	
 	def form_valid(self, form):
+		result = super().form_valid(form)
+		self.object.set_parent(self.parent)
+		self
+		self.chosen_to_session(form)
 		self.success()
-		return super().form_valid(form)
+		return result
+	
+	@classmethod
+	def get_pattern_name(cls):
+		return cls.this_class.get_new_name()
 
 class NewDiscipline(SG_CreateView):
+	this_class = model.Discipline
 	form_class = forms.Discipline_Form
 	initial = {'polish_name': '', }
 	template_name = 'graph/add_new_discipline.html'
 	success_url = reverse_lazy('all_disciplines')
 	success_message = 'Nowa dyscyplina została dodana.'
-	
-	def create_mini_self(self):
-		return ['new_discipline', None, None]
-	
-	# @start_view_login_required
-	# def dispatch(self, *args, **kwargs):
-		# # if not self.request.user or self.request.user.is_anonymous:
-			# # return render(self.request, 'errors/401.html')
-		# return super().dispatch(*args, **kwargs)
-	
-	# def form_valid(self, form):
-		# messages.add_message(self.request, messages.SUCCESS, 'Nowa dyscyplina została dodana.')
-		# return super().form_valid(form)
-		
 
-def new_discipline(request):
-	if not request.user or request.user.is_anonymous:
-		return render(request, 'errors/401.html')
-	if request.method == 'POST':
-		form = forms.Discipline_Form(request.POST)
-		if 'save' in request.POST and form.is_valid():
-			form.save()
-			messages.add_message(request, messages.SUCCESS, 'Nowa dyscyplina została dodana.')
-			return redirect('all_disciplines')
-	else:
-		form = forms.Discipline_Form(initial={'polish_name': ''})
-	context = {'form': form}
-	return render(request, 'graph/add_new_discipline.html', context)
+class NewSection(SG_CreateView):
+	this_class = model.Section
+	form_class = forms.Section_Form
+	initial = {'polish_name': '', }
+	template_name = 'graph/add_new_section.html'
+	success_message = 'Nowy dział został dodany.'
+	parent_class = model.Discipline
+	
+	def get_success_url(self):
+		return str(self.parent.get_url())
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['this_discipline'] = self.parent
+		return context
 
 def new_section(request, parent_pk):
 	try:

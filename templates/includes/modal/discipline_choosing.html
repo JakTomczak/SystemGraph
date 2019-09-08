@@ -1,0 +1,110 @@
+<div class="SG-modal" id="discipline-choosing-modal">
+	<div class="SG-modal-content">
+		<header style="position: relative; padding: 20px; 0">
+			<span id="discipline-modal-title" style="font-size: x-large;">Wybór tematu</span>
+			<span class="close-button" id="close_discipline_modal_button"></span>
+		</header>
+		{% if query %}
+		<table class="table table-striped border border-primary rounded" id="discipline_modal_table" style="font-size: 15px;">
+			<thead>
+				<tr>
+					<th scope="col">Dyscyplina</th>
+					<th scope="col">Dział</th>
+					<th scope="col">Temat</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for subject in query %}
+				<tr>
+					<td>{{ subject.discipline }}</td>
+					<td>{{ subject.section }}</td>
+					<td>{{ subject }}</td>
+					<td>
+						<button type="button" onclick="dss_modal_choose_this_one({{ subject.pk }})" style="font-size:11px;">Wybierz</button>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		<h5>Brak wyników</h5>
+		{% endif %}
+	</div>
+</div>
+<script>
+var DSS_DISPLAY_FUN;
+function dss_modal_choose_this_one(which) {
+	$.ajax({
+		url: '{% url "get_subject_from_pk" %}',
+		type: 'post',
+		async: false,
+		data: {
+			'pk': which
+		},
+		dataType: 'json',
+		success: function (data) {
+			DSS_DISPLAY_FUN(data.subject);
+			DSS_MODAL_HIDE();
+		}
+	});
+}
+
+function DSS_MODAL_SHOW() {
+	document.getElementById("dss-choosing-modal").style.display = "block";
+}
+
+function DSS_MODAL_HIDE() {
+	document.getElementById("dss-choosing-modal").style.display = "none";
+}
+
+var ftext = ['dyscyplinę', 'dział', 'temat']
+var idtext = ['discipline', 'section', 'subject']
+$(document).ready(function() {
+	var dss_modal = document.getElementById("dss-choosing-modal");
+	DSS_MODAL_HIDE();
+	document.getElementById("close_dss_modal_button").onclick = function() {
+		DSS_MODAL_HIDE();
+	}
+	window.onclick = function(event) {
+		if (event.target == dss_modal) {
+			DSS_MODAL_HIDE();
+		}
+	}
+	$('#dss_modal_table thead tr').clone(true).appendTo( '#dss_modal_table thead' );
+	$('#dss_modal_table thead tr:eq(1) th').each( function (i) {
+		if (i < 3) {
+			var title = $(this).text();
+			$(this).html( '<input type="text" style="width: 100%;" id="input-' + idtext[i] + '" placeholder="filtruj ' + ftext[i] + '" />' );
+
+			$( 'input', this ).on( 'keyup change', function () {
+				if ( table.column(i).search() !== this.value ) {
+					table
+						.column(i)
+						.search( this.value )
+						.draw();
+				}
+			} );
+		}
+		$(this).css( 'padding', '6px 4px');
+	} );
+	
+	$('#dss_modal_table thead tr:eq(0) th').each( function (i) {
+		$(this).css( 'background-color', 'white');
+	} );
+	
+	var table = $('#dss_modal_table').DataTable({
+		orderCellsTop: true,
+		"pageLength": 8,
+		"bLengthChange": false,
+		"bFilter": true,
+		"pagingType": "simple",
+	});
+	
+	$('#dss_modal_table').css( 'min-width', 'min-content');
+	$('#dss_modal_table').css( 'width', '100%');
+	$('#input-discipline').css( 'min-width', '90px');
+	$('#input-section').css( 'min-width', '90px');
+	$('#input-subject').css( 'min-width', '90px');
+});
+</script>
