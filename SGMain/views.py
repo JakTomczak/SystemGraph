@@ -283,7 +283,7 @@ def edit_vertex(request, vertex_id):
 			return redirect('profile', username = user.username)
 		if 'newedge' in request.POST:
 			request.session['pred'] = this_vertex.vertex_id
-			return redirect('new_edge')
+			return redirect('new_edge', parent_pk = this_vertex.vertex_id)
 		if 'save' in action and form.is_valid():
 			subject_pk = request.POST['dss_pk'] or '1'
 			this_vertex.change_dss_from_pk( int(subject_pk) )
@@ -401,7 +401,14 @@ def new_vertex_class(request):
 	context = {'form': form}
 	return render(request, 'graph/add_new_vertex_class.html', context)
 
-def new_edge(request):
+def new_edge(request, parent_pk):
+	if not parent_pk.startswith('V'):
+		vertex = None
+	else:
+		try:
+			vertex = model.Vertex.objects.get(pk = parent_pk)
+		except exceptions.ObjectDoesNotExist:
+			return render(request, 'errors/404.html')
 	if not request.user or request.user.is_anonymous:
 		return render(request, '401.html')
 	possible = model.Vertex.objects.filter(user = request.user) | model.Vertex.get_submitted()
@@ -442,9 +449,14 @@ def new_edge(request):
 				messages.add_message(request, messages.SUCCESS, 'Propozycja krawędzi została utworzona.')
 				del request.session['pred']
 				return redirect('profile', username = request.user.username)
+	if vertex is None:
+		vertex = model.Vertex.get_default()
+		pchosen = False
+	else:
+		pchosen = True
 	context = {
-		'pred_is_chosen': True, 
-		'predecessor': model.Vertex.objects.get( vertex_id = request.session.get('pred') ), 
+		'pred_is_chosen': pchosen, 
+		'predecessor': vertex, 
 		'succ_is_chosen': False,
 		'successor': model.Vertex.get_default(), 
 		'vertices': possible

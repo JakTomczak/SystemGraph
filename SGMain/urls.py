@@ -33,7 +33,8 @@ urlpatterns = [
 	
 	path('add_new_vertex_class/', views.new_vertex_class, name = 'new_vertex_class'),
 	
-	path('add_new_edge/', views.new_edge, name='new_edge'),
+	path('add_new_edge/<parent_pk>/', views.new_edge, name='new_edge'),
+	path('add_new_edge/', lambda request: redirect('new_edge', parent_pk = 'none', permanent = False), name='new_edge'),
 	path('edit_edge/<edge_id>/', views.edit_edge, name='edit_edge'),
 	
 	path('add_new_path/', views.new_path, name='new_path'),
