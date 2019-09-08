@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -33,3 +33,20 @@ class SG_PasswordChangeView(PasswordChangeView):
 	def form_valid(self, form):
 		messages.success(self.request, 'Hasło zostało zmienione.')
 		return super().form_valid(form)
+
+def delete_user(request):
+	if not request.user or request.user.is_anonymous:
+		return render(request, 'errors/401.html')
+	user = request.user
+	if request.method == 'POST':
+		form = user_forms.DeleteAccountForm(request.POST, user = user)
+		if 'delete' in request.POST and form.is_valid():
+			user.is_active = False
+			user.save()
+			messages.success(request, 'Konto zostało usunięte.')
+			return redirect('logout')
+	else:
+		form = user_forms.DeleteAccountForm(user = user)
+	context = {'form': form}
+	return render(request, 'users/delete.html', context)
+	

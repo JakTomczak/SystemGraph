@@ -34,9 +34,9 @@ def edit_profile(request, username):
 	try:
 		user = CustomUser.objects.get(username = username)
 	except exceptions.ObjectDoesNotExist:
-		return render(request, '404.html')
+		return render(request, 'errors/404.html')
 	if request.user != user:
-		return render(request, '403.html')
+		return render(request, 'errors/403.html')
 	if request.method == 'POST':
 		form = forms.Edit_Profile_Form(data = request.POST, user = user)
 		if 'save' in request.POST and form.is_valid():
@@ -52,7 +52,7 @@ def all_user_vertices(request, username):
 	try:
 		user = CustomUser.objects.get(username = username)
 	except exceptions.ObjectDoesNotExist:
-		return render(request, '404.html')
+		return render(request, 'errors/404.html')
 	context = {
 		'Vertices': model.Vertex.objects.filter(user = user, submitted = True).order_by('-date'),
 		'this_user': user

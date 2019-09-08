@@ -6,11 +6,8 @@
 <form method="POST">
 	{% csrf_token %}
 {% include "includes/simple_form_header.html" with hidden_fields=form.hidden_fields text="Zaloguj się" button="Zaloguj" %}
-	{% for hidden in form.hidden_fields %}
-		{{ hidden }}
-	{% endfor %}
-	{% include "includes/widget.html" with widget=form.username margin="big" header="Nazwa użytkownika" %}
-	{% include "includes/widget.html" with widget=form.password margin="big" header="Hasło" %}
+{% include "includes/widget.html" with widget=form.username margin="big" header="Nazwa użytkownika" %}
+{% include "includes/widget.html" with widget=form.password margin="big" header="Hasło" %}
 </form>
 {% endblock %}
 {% block side_content %}

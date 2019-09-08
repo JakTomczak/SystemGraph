@@ -14,6 +14,8 @@
 		{{ hidden }}
 	{% endfor %}
 {% include "includes/widget.html" with widget=form.email margin="big" header="Email" %}
+	<br>
+	<a href="{% url 'delete' %}" class="btn btn-warning" role="button" >Usuń profil</a>
 </form>
 {% endblock %}
 {% block side_content %}

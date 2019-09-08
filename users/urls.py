@@ -13,6 +13,7 @@ urlpatterns = [
 	path('registration_complete/', TemplateView.as_view(template_name = 'users/registration_complete.html'), name='registration_complete'),
 	path('activate/<activation_key>/', users_views.SG_ActivationView.as_view(), name='activate'),
 	path('activation_complete/', TemplateView.as_view( template_name = 'users/activation_complite.html' ), name='activation_complete'),
+    path('delete/', users_views.delete_user, name='delete'),
     path('login/', auth_views.LoginView.as_view(template_name = 'users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name = 'users/logout.html'), name='logout'),
     path('password_change/', users_views.SG_PasswordChangeView.as_view(), name='password_change'),

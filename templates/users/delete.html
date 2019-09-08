@@ -1,0 +1,17 @@
+{% extends 'base_2cols_mediumpadd.html' %}
+
+{% block title %}usuwanie konta{% endblock %}
+
+{% block main_content %}
+<form method="POST">
+	{% csrf_token %}
+	<div class="internal-menu around sidepadd">
+		<h4>Usuwanie konta</h4>
+		<button type="submit" name="delete" class="btn btn-warning sgbutton">Usuń</button>
+	</div>
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+	{% include "includes/widget.html" with widget=form.password margin="big" header="Hasło" %}
+</form>
+{% endblock %}

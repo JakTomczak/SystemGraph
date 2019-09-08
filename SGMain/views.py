@@ -410,7 +410,7 @@ def new_edge(request, parent_pk):
 		except exceptions.ObjectDoesNotExist:
 			return render(request, 'errors/404.html')
 	if not request.user or request.user.is_anonymous:
-		return render(request, '401.html')
+		return render(request, 'errors/401.html')
 	possible = model.Vertex.objects.filter(user = request.user) | model.Vertex.get_submitted()
 	if request.method == 'POST':
 		action = request.POST['action'].split(',')
