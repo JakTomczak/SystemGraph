@@ -10,32 +10,29 @@
 	<div style="display:flex;">
 		<div style="flex: 1;">
 			<div class="distinctarea paddtop border border-primary rounded medium-margin">
-				<h4>Innowacyjny sposób przeglądania i pisania treści</h4>
+				<h4>Witaj w SystemGraph</h4>
 				<p>
-				Tradycyjnie, pisząc treści naukowe i dydaktyczne, jeżeli pomiędzy dwoma zagadnieniami istnieje zależność, którą wartoby nakreślić, jesteśmy skazani na poświęcenie zdania lub całego paragrafu na zwrócenie uwagi na ową zależność. W ten sposób możemy zaplątać się w gęstwinie odniesień do poprzednich zagadnień. Ale nie w SystemGraph!
+Dumnie prezentujemy SystemGraph - platformę łączącą <span class="sg_tippy" id="front-authors">autorów</span> treści naukowych z ich <span class="sg_tippy" id="front-readers">czytelnikami</span>, wzbogaconą o innowacyjne rozwiązania, zwłaszcza w kontekście ścisłego uporządkowania treści.
 				</p>
 			</div>
 			<div class="d-area paddtop border border-primary rounded medium-margin">
 				<h4>Treść jako wierzchołki, zależności jako krawędzie</h4>
 				<p>
-				W SystemGraph pewną wybraną przez ciebie (autora) porcję wiedzy nazywamy wierzchołkiem. Może to być na przykład pojedyncza definicja lub jeden przykład. Pomiędzy swoim wierzchołkiem, a dowolnym innym wierzchołkiem możesz stworzyć krawędź, czyli zaawansowane hiperłącze. Krawędzie mogą nakreślać zależność pomiędzy łączącymi je wierzchołkami i nie tylko. <a href="{% url 'tutorial_edge' %}" class="fancy-a">Przeczytaj o wszystkich ich zastosowaniach.</a>
+W SystemGraph pewną wybraną przez Ciebie (autora) porcję wiedzy nazywamy wierzchołkiem. Może to być na przykład pojedyncza definicja lub jeden przykład. Pomiędzy swoim wierzchołkiem, a dowolnym innym wierzchołkiem możesz stworzyć krawędź, czyli zaawansowane hiperłącze. Krawędzie mogą nakreślać zależność pomiędzy łączącymi je wierzchołkami i nie tylko. <a href="{% url 'tutorial_edge' %}" class="fancy-a">Przeczytaj o wszystkich ich zastosowaniach.</a>
 				</p>
 			</div>
 		</div>
 		<div style="flex: 1; height: min-content;">
 			<div class="d-area paddtop border border-primary rounded medium-margin">
-				<h4>Platforma do dzielenia się wiedzą</h4>
+				<h4>Cała nauka uporządkowana</h4>
 				<p>
-				SystemGraph jest aplikacją zwiększającą komunikatywność, głównie na płaszczyznach profesor - student oraz profesor - hobbysta. SystemGraph stara się być dla materiałów wykładowych tym, czym Wikipedia jest dla encyklopedii. 
-				</p>
-				<p>
-				Chcesz podzielić się wiedzą w SystemGraph? <a href="{% url 'register' %}" class="fancy-a">Załóż konto</a> lub <a href="{% url 'tutorial_frontpage' %}" class="fancy-a">przejdź samouczek</a>!
+Grafy - matematyczne struktury wierzchołków i krawędzi - doskonale nadają się do zamodelowania dowolnej nauki ścisłej. Każde zagadnienie naukowe możemy bowiem modelować pojedynczym wierzchołkiem, a każdą zależność pomiędzy zagadnieniami modelować krawędzią. W SystemGraph model taki to <b>więcej niż tylko podstrony i hiperłącza</b>.
 				</p>
 			</div>
 			<div class="distinctarea paddtop border border-primary rounded medium-margin">
-				<h4>Stwórzmy kompletny graf nauki</h4>
+				<h4>Skierowany do kadry naukowej</h4>
 				<p>
-				W wielu miejscach w Internecie można przeczytać mądre rzeczy, ale odczuwamy brak jednego miejsca, w którym naukowcy dzieliliby się swoją wiedzą z czytelnikami. A ponieważ nauka, ze swoimi ścisłymi definicjami, jest dobrze reprezentowana za pomocą grafu, narodziła się idea SystemGraph.
+SystemGraph oferuje Państwu możliwość trzymania całej swojej wiedzy i dorobku naukowego w jednym miejscu, przy jednoczesnym daniu możliwości zapoznania się z tymi zagadnieniami każdemu zainteresowanemu użytkownikowi. Jedyne czego wymagamy, to wpisanie aktualnie posiadanych materiałów naukowych do naszej struktury grafu.
 				</p>
 			</div>
 		</div>
@@ -49,30 +46,59 @@
 			<div class="d-area paddtop border border-primary rounded medium-margin">
 				<h4>LaTeX, MathML i Tippy</h4>
 				<p>
-				Jeśli cenisz sobie dokumenty pisane w języku LaTeX, mamy dobrą wiadomość. Z myślą o pięknych wzorach matematycznych, głównym jęzkiem w SystemGraph jest właśnie LaTeX. Piękno LaTeXa po kompilacji w przeglądarce internetowej osiągamy za pomocą języka MathML. Aby jeszcze bardziej upiększyć tekst twoich wierzchołków możesz wykorzystać technologię Tippy.
+Jeśli cenisz sobie dokumenty pisane w języku LaTeX, mamy dobrą wiadomość. Z myślą o pięknych wzorach matematycznych, głównym językiem w SystemGraph jest właśnie LaTeX. Podczas edycji wierzchołka dodajesz treść w tym języku, a po dokonaniu <span class="sg_tippy" id="front-compilation">kompilacji</span> czytelnikom ukaże się treść w języku <span class="sg_tippy" id="front-mathml">MathML</span>. Aby jeszcze bardziej zwiększyć estetykę Twoich wierzchołków możesz wykorzystać technologię <span class="sg_tippy" id="front-tippy">Tippy</span>.
 				</p>
 			</div>
 			<div class="distinctarea paddtop border border-primary rounded medium-margin">
-				<h4>Skierowany do kadry naukowej</h4>
+				<h4>Masz naukową prezentację w Beamerze?</h4>
 				<p>
-				Nie oszukujmy się, materiały wykładowe są dla studentów naprawdę cenne i pomocne. Jeśli na przykład ma Pan/Pani Profesor prezentację w Beamerze, dodanie wierzchołka będzie bardzo łątwe. Wystarczy założyć konto, kliknąć "dodaj wierzchołek" i skopiować LaTeXowy tekst do treści wierzchołka. Na naszym serwerze dokonamy kompilacji i od tego momentu, każdy będzie miał dostęp do jakże cennej wiedzy.
+Przypuśćmy, że masz prezentację w Beamerze, czy przepisanie jej do naszej platformy będzie uciążliwe? Otóż nie, po prostu <a href="{% url 'register' %}">zarejestruj się</a>, <a id="front-addv" href="{% url 'new_vertex' %}">dodaj wierzchołek</a> a do jego <span class="sg_tippy" id="front-vcontent">treści</span> skopiuj swój pojedynczy slajd (w formacie LaTeX). Po opublikowaniu tego wierzchołka, każdy będzie mógł zapoznać się z jego treścią.
+				</p>
+			</div>
+			<div class="d-area paddtop border border-primary rounded medium-margin">
+				<h4>Innowacyjny sposób przeglądania i pisania treści</h4>
+				<p>
+Tradycyjnie, pisząc treści naukowe i dydaktyczne, jeżeli pomiędzy dwoma zagadnieniami istnieje zależność, którą wartoby nakreślić, jesteśmy skazani na poświęcenie zdania lub całego paragrafu na zwrócenie uwagi na ową zależność. W ten sposób możemy zaplątać się w gęstwinie odniesień do poprzednich zagadnień. Ale nie w SystemGraph! Tutaj jedynie dodajesz krawędź do odpowiedniego wierzchołka, którą dodatkowo możesz zaopatrzyć komentarzem.
 				</p>
 			</div>
 		</div>
 		<div style="flex: 1;">
 			<div class="distinctarea paddtop border border-primary rounded medium-margin">
-				<h4>Dodaj własne wierzchołki</h4>
+				<h4>Uporządkowana wędrówka po grafie</h4>
 				<p>
-					{% if user.is_authenticated %}{% if already %}{{ user.username }}, jesteś już aktywnym autorem w SystemGraph! Wspaniale. <a class="fancy-a" href="{% url 'new_vertex' %}">Dodaj</a> kolejny wierzchołek lub wejdź na swój profil (link w prawym górnym rogu), aby utworzyć inne części grafu.{% else %}{{ user.username }}, nie masz jeszcze swoich wierzchołków. Zainteresowany <a class="fancy-a" href="{% url 'new_vertex' %}">dodaniem swojego pierwszego</a>? Pamiętaj, że w SystemGraph twój <a class="fancy-a" href="{% url 'profile' username=user.username %}">profil</a> jest twoim panelem sterowania i z niego możesz dodawać inne części grafu.{% endif %}{% else %}Witaj w SystemGraph! Po <a class="fancy-a" href="{% url 'login' %}">zalogowaniu się</a> będziesz mógł dodawać swoje wierzchoki, krawędzie i ścieżki. Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się.</a>{% endif %}
+Jeśli chcesz aby twoi czytelnicy (np. studenci) przeglądali wierzchołki SystemGraph w określonej kolejności, możesz stworzyć ścieżkę. Możesz stworzyć tyle ścieżek ile chcesz i dzielić się linkami bezpośrednio do nich.
 				</p>
 			</div>
 			<div class="d-area paddtop border border-primary rounded medium-margin">
-				<h4>Uporządkowana wędrówka po grafie</h4>
+				<h4>Dodaj własne wierzchołki</h4>
 				<p>
-					Jeśli chcesz aby twoi czytelnicy (np. studenci) przeglądali wierzchołki SystemGraph w określonej kolejności, możesz stworzyć ścieżkę. Możesz stworzyć tyle ścieżek ile chcesz i dzielić się linkami bezpośrednio do nich.
+{% if user.is_authenticated %}{% if already %}{{ user.username }}, jesteś już aktywnym autorem w SystemGraph! Wspaniale. <a class="fancy-a" href="{% url 'new_vertex' %}">Dodaj</a> kolejny wierzchołek lub wejdź na swój profil (link w prawym górnym rogu), aby utworzyć inne części grafu.{% else %}{{ user.username }}, nie masz jeszcze swoich wierzchołków. Zainteresowany <a class="fancy-a" href="{% url 'new_vertex' %}">dodaniem swojego pierwszego</a>? Pamiętaj, że w SystemGraph twój <a class="fancy-a" href="{% url 'profile' username=user.username %}">profil</a> jest twoim panelem sterowania i z niego możesz dodawać inne części grafu.{% endif %}{% else %}Witaj w SystemGraph! Po <a class="fancy-a" href="{% url 'login' %}">zalogowaniu się</a> będziesz mógł dodawać swoje wierzchoki, krawędzie i ścieżki. Nie masz konta? <a class="fancy-a" href="{% url 'register' %}">Zarejestruj się.</a>{% endif %}
+				</p>
+			</div>
+			<div class="distinctarea paddtop border border-primary rounded medium-margin">
+				<h4>Liniowość jest przestarzała</h4>
+				<p>
+W dzisiejszych czasach możemy użyć najnowszych technologii, aby zastąpić starożytną technikę pisania treści <span class="sg_tippy" id="front-linear">liniowo</span>. W SystemGraph każdy wątek, który można określić jako pojedyczną informację dostaje osobną podstronę i, dzięki temu, od i do każdego zagadnienia mogą być poprowadzone <span class="sg_tippy" id="front-reference">odniesienia</span>. Czytelnicy mogą wówczas przeglądać treści opublikowane w SystemGraph w sposób <span class="sg_tippy" id="front-orderly">uporządkowany</span> lub wybierać <span class="sg_tippy" id="front-nearest">zagadnienia najbliższe</span> aktualnie przeglądanemu.
 				</p>
 			</div>
 		</div>
 	</div>
 </div>
+{% endblock %}
+{% block javascript %}
+<script>
+$(document).ready(function() { 
+	tippy('#front-authors', {content: 'naukowców i profesjonalistów',});
+	tippy('#front-readers', {content: 'studentów i hobbystów',});
+	tippy('#front-compilation', {content: 'Ty klikasz na przycisk "Kompiluj", a my dokonujemy kompilacji na naszym serwerze',});
+	tippy('#front-mathml', {content: 'Język napisany specjalnie do prezentowania wzorów matematycznych w przeglądarce',});
+	tippy('#front-addv', {content: 'Jeżeli podczas wybierania tematu nie znajdziesz odpowiedniego, po prostu wzbogać SystemGraph o takowy.',});
+	tippy('#front-vcontent', {content: 'Treść możesz zmieniać podczas edycji wierzchołka. Po dodaniu wierzchołka zostaniesz przekierowany do jego edycji.',});
+	tippy('#front-tippy', {content: 'czyli biblioteka tworząca dokładnie takie tooltipy',});
+	tippy('#front-linear', {content: 'zagadnienie po zagadnieniu, akapit po akapicie',});
+	tippy('#front-reference', {content: 'w SystemGraph odniesienia takie nazywamy krawędziami',});
+	tippy('#front-orderly', {content: 'za pomocą utworzonych przez użytkowników ścieżek',});
+	tippy('#front-nearest', {content: 'Względem każdego wierzchołka tworzymy zbiór jemu najbliższych na bazie tematu oraz liczby krawędzi.',});
+});
+</script>
 {% endblock %}

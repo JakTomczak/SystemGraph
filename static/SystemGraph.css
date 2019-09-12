@@ -513,3 +513,8 @@ a:not([href]) {
 .modal_hidden_change_butts .choose_button {
 	display: none;
 }
+
+.sg_tippy {
+	text-decoration: underline;
+	font-weight: 550;
+}
