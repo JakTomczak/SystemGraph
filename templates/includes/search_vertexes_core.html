@@ -14,7 +14,7 @@
 			<tr>
 				<td><a href="{% url 'view_vertex' vertex_id=vertex.vertex_id %}" class="fancy-a">{{ vertex.vertex_id }}</a></td>
 				<td>{{ vertex.title }}</td>
-				<td>{{ vertex.date.date|date:"d.m.Y" }}</td>
+				<td>{{ vertex.date.date|date:"Y.m.d" }}</td>
 				<td>{{ vertex.user.username }}</td>
 			</tr>
 			{% endfor %}
